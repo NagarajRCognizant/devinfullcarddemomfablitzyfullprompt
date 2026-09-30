@@ -1,0 +1,63 @@
+{{- if .Values.gateway.enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "carddemo.fullname" . }}-gateway
+  labels:
+    {{- include "carddemo.labels" . | nindent 4 }}
+    app.kubernetes.io/component: gateway
+spec:
+  replicas: {{ .Values.gateway.replicas }}
+  selector:
+    matchLabels:
+      app.kubernetes.io/instance: {{ .Release.Name }}
+      app.kubernetes.io/component: gateway
+  template:
+    metadata:
+      labels:
+        {{- include "carddemo.labels" . | nindent 8 }}
+        app.kubernetes.io/component: gateway
+    spec:
+      containers:
+        # The single entry point the screens address, as the terminal addressed one CICS region.
+        - name: gateway
+          image: {{ include "carddemo.image" (dict "root" . "component" .Values.gateway) }}
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            - name: http
+              containerPort: {{ .Values.gateway.port }}
+          env:
+            - name: SERVER_ADDRESS
+              value: "0.0.0.0"
+            - name: CARDDEMO_ACCOUNT_URI
+              value: http://{{ include "carddemo.fullname" . }}-account-service:{{ .Values.accountService.port }}
+            - name: CARDDEMO_IDENTITY_URI
+              value: http://{{ include "carddemo.fullname" . }}-identity-service:{{ .Values.identityService.port }}
+            - name: CARDDEMO_AUTHORIZATION_URI
+              value: http://{{ include "carddemo.fullname" . }}-authorization-service:{{ .Values.authorizationService.port }}
+            - name: CARDDEMO_TRANSACTION_URI
+              value: http://{{ include "carddemo.fullname" . }}-transaction-service:{{ .Values.transactionService.port }}
+            # The edge verifies the realm's signature against its JWKS, so a call the sign-on would
+            # have refused is rejected before it reaches a service.
+            {{- include "carddemo.realmEnv" . | nindent 12 }}
+          {{- include "carddemo.probes" . | nindent 10 }}
+          resources:
+            {{- toYaml .Values.gateway.resources | nindent 12 }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "carddemo.fullname" . }}-gateway
+  labels:
+    {{- include "carddemo.labels" . | nindent 4 }}
+    app.kubernetes.io/component: gateway
+spec:
+  type: ClusterIP
+  ports:
+    - name: http
+      port: {{ .Values.gateway.port }}
+      targetPort: http
+  selector:
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/component: gateway
+{{- end }}

@@ -1,0 +1,5 @@
+ request_id | report_name | start_date |  end_date  | requested_by | user_id_length 
+------------+-------------+------------+------------+--------------+----------------
+          4 | Custom      | 2022-06-01 | 2022-06-30 | USER0001     |              8
+(1 row)
+

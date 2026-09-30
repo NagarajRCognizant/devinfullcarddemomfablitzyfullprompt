@@ -1,0 +1,1168 @@
+### health
+$ curl http://127.0.0.1:8090/actuator/health
+HTTP 200
+{
+    "status": "UP",
+    "groups": [
+        "liveness",
+        "readiness"
+    ]
+}
+
+### sign-on - user id required
+$ curl -X POST -H Content-Type: application/json -d {"userId":"","password":"PASSWORD"} http://127.0.0.1:8090/api/signon
+HTTP 400
+{
+    "status": "VALIDATION_ERROR",
+    "message": "Please enter User ID ...",
+    "fieldFlags": {
+        "userId": "BLANK"
+    }
+}
+
+### sign-on - password required
+$ curl -X POST -H Content-Type: application/json -d {"userId":"ADMIN001","password":""} http://127.0.0.1:8090/api/signon
+HTTP 400
+{
+    "status": "VALIDATION_ERROR",
+    "message": "Please enter Password ...",
+    "fieldFlags": {
+        "password": "BLANK"
+    }
+}
+
+### sign-on - unknown user
+$ curl -X POST -H Content-Type: application/json -d {"userId":"NOSUCH","password":"PASSWORD"} http://127.0.0.1:8090/api/signon
+HTTP 401
+{
+    "status": "SIGNON_FAILED",
+    "message": "User not found. Try again ...",
+    "fieldFlags": {}
+}
+
+### sign-on - wrong password
+$ curl -X POST -H Content-Type: application/json -d {"userId":"ADMIN001","password":"WRONG"} http://127.0.0.1:8090/api/signon
+HTTP 401
+{
+    "status": "SIGNON_FAILED",
+    "message": "Wrong Password. Try again ...",
+    "fieldFlags": {}
+}
+
+### sign-on - administrator, lower case is folded up
+$ curl -X POST -H Content-Type: application/json -d {"userId":"admin001","password":"password"} http://127.0.0.1:8090/api/signon
+HTTP 200
+{
+    "userId": "ADMIN001",
+    "firstName": "MARGARET",
+    "lastName": "GOLD",
+    "userType": "A",
+    "nextScreen": "COADM01C",
+    "accessToken": "eyJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJjYXJkZGVtby1pZGVudGl0eS1zZXJ2aWNlIiwic3ViIjoiQURNSU4wMDEiLCJ1c2VyVHlwZSI6IkEiLCJleHAiOjE3ODk2MzI4NDYsImlhdCI6MTc4OTYzMTA0Niwicm9sZXMiOiJST0xFX0FETUlOIn0.sn5Hh3wX5SugHw5QTZWyHv1Er5h3AtjZWHYu_VH7tiw",
+    "expiresInSeconds": 1800
+}
+
+### sign-on - regular user
+$ curl -X POST -H Content-Type: application/json -d {"userId":"USER0001","password":"PASSWORD"} http://127.0.0.1:8090/api/signon
+HTTP 200
+{
+    "userId": "USER0001",
+    "firstName": "LAWRENCE",
+    "lastName": "THOMAS",
+    "userType": "U",
+    "nextScreen": "COMEN01C",
+    "accessToken": "eyJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJjYXJkZGVtby1pZGVudGl0eS1zZXJ2aWNlIiwic3ViIjoiVVNFUjAwMDEiLCJ1c2VyVHlwZSI6IlUiLCJleHAiOjE3ODk2MzI4NDYsImlhdCI6MTc4OTYzMTA0Niwicm9sZXMiOiJST0xFX1VTRVIifQ.Fg3JZHD86OGtQH4JszqrhgL42SBhonE0cocONwqqcho",
+    "expiresInSeconds": 1800
+}
+
+### account view without a token is refused
+$ curl http://127.0.0.1:8090/api/accounts/00000000001
+HTTP 401
+
+### admin menu (COADM01C)
+$ curl -H Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJjYXJkZGVtby1pZGVudGl0eS1zZXJ2aWNlIiwic3ViIjoiQURNSU4wMDEiLCJ1c2VyVHlwZSI6IkEiLCJleHAiOjE3ODk2MzI4NDYsImlhdCI6MTc4OTYzMTA0Niwicm9sZXMiOiJST0xFX0FETUlOIn0.sn5Hh3wX5SugHw5QTZWyHv1Er5h3AtjZWHYu_VH7tiw http://127.0.0.1:8090/api/admin-menu
+HTTP 200
+[
+    {
+        "optionNumber": 1,
+        "name": "User List (Security)",
+        "program": "COUSR00C"
+    },
+    {
+        "optionNumber": 2,
+        "name": "User Add (Security)",
+        "program": "COUSR01C"
+    },
+    {
+        "optionNumber": 3,
+        "name": "User Update (Security)",
+        "program": "COUSR02C"
+    },
+    {
+        "optionNumber": 4,
+        "name": "User Delete (Security)",
+        "program": "COUSR03C"
+    },
+    {
+        "optionNumber": 5,
+        "name": "Transaction Type List/Update (Db2)",
+        "program": "COTRTLIC"
+    },
+    {
+        "optionNumber": 6,
+        "name": "Transaction Type Maintenance (Db2)",
+        "program": "COTRTUPC"
+    }
+]
+
+### admin menu - option 1 starts COUSR00C
+$ curl -H Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJjYXJkZGVtby1pZGVudGl0eS1zZXJ2aWNlIiwic3ViIjoiQURNSU4wMDEiLCJ1c2VyVHlwZSI6IkEiLCJleHAiOjE3ODk2MzI4NDYsImlhdCI6MTc4OTYzMTA0Niwicm9sZXMiOiJST0xFX0FETUlOIn0.sn5Hh3wX5SugHw5QTZWyHv1Er5h3AtjZWHYu_VH7tiw http://127.0.0.1:8090/api/admin-menu/selection?option=1
+HTTP 200
+{
+    "optionNumber": 1,
+    "name": "User List (Security)",
+    "program": "COUSR00C"
+}
+
+### admin menu - option 9 is out of range
+$ curl -H Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJjYXJkZGVtby1pZGVudGl0eS1zZXJ2aWNlIiwic3ViIjoiQURNSU4wMDEiLCJ1c2VyVHlwZSI6IkEiLCJleHAiOjE3ODk2MzI4NDYsImlhdCI6MTc4OTYzMTA0Niwicm9sZXMiOiJST0xFX0FETUlOIn0.sn5Hh3wX5SugHw5QTZWyHv1Er5h3AtjZWHYu_VH7tiw http://127.0.0.1:8090/api/admin-menu/selection?option=9
+HTTP 400
+{
+    "status": "VALIDATION_ERROR",
+    "message": "Please enter a valid option number...",
+    "fieldFlags": {
+        "option": "NOT_OK"
+    }
+}
+
+### admin menu - a regular user is refused
+$ curl -H Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJjYXJkZGVtby1pZGVudGl0eS1zZXJ2aWNlIiwic3ViIjoiVVNFUjAwMDEiLCJ1c2VyVHlwZSI6IlUiLCJleHAiOjE3ODk2MzI4NDYsImlhdCI6MTc4OTYzMTA0Niwicm9sZXMiOiJST0xFX1VTRVIifQ.Fg3JZHD86OGtQH4JszqrhgL42SBhonE0cocONwqqcho http://127.0.0.1:8090/api/admin-menu
+HTTP 403
+
+### user list - first page
+$ curl -H Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJjYXJkZGVtby1pZGVudGl0eS1zZXJ2aWNlIiwic3ViIjoiQURNSU4wMDEiLCJ1c2VyVHlwZSI6IkEiLCJleHAiOjE3ODk2MzI4NDYsImlhdCI6MTc4OTYzMTA0Niwicm9sZXMiOiJST0xFX0FETUlOIn0.sn5Hh3wX5SugHw5QTZWyHv1Er5h3AtjZWHYu_VH7tiw http://127.0.0.1:8090/api/users?direction=FIRST
+HTTP 200
+{
+    "users": [
+        {
+            "userId": "ADMIN001",
+            "firstName": "MARGARET",
+            "lastName": "GOLD",
+            "userType": "A"
+        },
+        {
+            "userId": "ADMIN002",
+            "firstName": "RUSSELL",
+            "lastName": "RUSSELL",
+            "userType": "A"
+        },
+        {
+            "userId": "ADMIN003",
+            "firstName": "RAYMOND",
+            "lastName": "WHITMORE",
+            "userType": "A"
+        },
+        {
+            "userId": "ADMIN004",
+            "firstName": "EMMANUEL",
+            "lastName": "CASGRAIN",
+            "userType": "A"
+        },
+        {
+            "userId": "ADMIN005",
+            "firstName": "GRANVILLE",
+            "lastName": "LACHAPELLE",
+            "userType": "A"
+        },
+        {
+            "userId": "USER0001",
+            "firstName": "LAWRENCE",
+            "lastName": "THOMAS",
+            "userType": "U"
+        },
+        {
+            "userId": "USER0002",
+            "firstName": "AJITH",
+            "lastName": "KUMAR",
+            "userType": "U"
+        },
+        {
+            "userId": "USER0003",
+            "firstName": "LAURITZ",
+            "lastName": "ALME",
+            "userType": "U"
+        },
+        {
+            "userId": "USER0004",
+            "firstName": "AVERARDO",
+            "lastName": "MAZZI",
+            "userType": "U"
+        },
+        {
+            "userId": "USER0005",
+            "firstName": "LEE",
+            "lastName": "TING",
+            "userType": "U"
+        }
+    ],
+    "firstUserId": "ADMIN001",
+    "lastUserId": "USER0005",
+    "pageNumber": 1,
+    "nextPageAvailable": false,
+    "message": "You have reached the bottom of the page..."
+}
+
+### user list - keyed start
+$ curl -H Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJjYXJkZGVtby1pZGVudGl0eS1zZXJ2aWNlIiwic3ViIjoiQURNSU4wMDEiLCJ1c2VyVHlwZSI6IkEiLCJleHAiOjE3ODk2MzI4NDYsImlhdCI6MTc4OTYzMTA0Niwicm9sZXMiOiJST0xFX0FETUlOIn0.sn5Hh3wX5SugHw5QTZWyHv1Er5h3AtjZWHYu_VH7tiw http://127.0.0.1:8090/api/users?userId=USER0001&direction=FIRST
+HTTP 200
+{
+    "users": [
+        {
+            "userId": "USER0001",
+            "firstName": "LAWRENCE",
+            "lastName": "THOMAS",
+            "userType": "U"
+        },
+        {
+            "userId": "USER0002",
+            "firstName": "AJITH",
+            "lastName": "KUMAR",
+            "userType": "U"
+        },
+        {
+            "userId": "USER0003",
+            "firstName": "LAURITZ",
+            "lastName": "ALME",
+            "userType": "U"
+        },
+        {
+            "userId": "USER0004",
+            "firstName": "AVERARDO",
+            "lastName": "MAZZI",
+            "userType": "U"
+        },
+        {
+            "userId": "USER0005",
+            "firstName": "LEE",
+            "lastName": "TING",
+            "userType": "U"
+        }
+    ],
+    "firstUserId": "USER0001",
+    "lastUserId": "USER0005",
+    "pageNumber": 1,
+    "nextPageAvailable": false,
+    "message": "You have reached the bottom of the page..."
+}
+
+### user list - page forward past the last user
+$ curl -H Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJjYXJkZGVtby1pZGVudGl0eS1zZXJ2aWNlIiwic3ViIjoiQURNSU4wMDEiLCJ1c2VyVHlwZSI6IkEiLCJleHAiOjE3ODk2MzI4NDYsImlhdCI6MTc4OTYzMTA0Niwicm9sZXMiOiJST0xFX0FETUlOIn0.sn5Hh3wX5SugHw5QTZWyHv1Er5h3AtjZWHYu_VH7tiw http://127.0.0.1:8090/api/users?userId=USER0005&direction=NEXT
+HTTP 200
+{
+    "users": [],
+    "firstUserId": null,
+    "lastUserId": null,
+    "pageNumber": 1,
+    "nextPageAvailable": false,
+    "message": "You are already at the bottom of the page..."
+}
+
+### user list - page back from the first user
+$ curl -H Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJjYXJkZGVtby1pZGVudGl0eS1zZXJ2aWNlIiwic3ViIjoiQURNSU4wMDEiLCJ1c2VyVHlwZSI6IkEiLCJleHAiOjE3ODk2MzI4NDYsImlhdCI6MTc4OTYzMTA0Niwicm9sZXMiOiJST0xFX0FETUlOIn0.sn5Hh3wX5SugHw5QTZWyHv1Er5h3AtjZWHYu_VH7tiw http://127.0.0.1:8090/api/users?userId=ADMIN001&direction=PREVIOUS
+HTTP 200
+{
+    "users": [],
+    "firstUserId": null,
+    "lastUserId": null,
+    "pageNumber": 1,
+    "nextPageAvailable": true,
+    "message": "You are already at the top of the page..."
+}
+
+### user add - missing first name
+$ curl -X POST -H Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJjYXJkZGVtby1pZGVudGl0eS1zZXJ2aWNlIiwic3ViIjoiQURNSU4wMDEiLCJ1c2VyVHlwZSI6IkEiLCJleHAiOjE3ODk2MzI4NDYsImlhdCI6MTc4OTYzMTA0Niwicm9sZXMiOiJST0xFX0FETUlOIn0.sn5Hh3wX5SugHw5QTZWyHv1Er5h3AtjZWHYu_VH7tiw -H Content-Type: application/json -d {"firstName":"","lastName":"SMOKE","userId":"SMOKE001","password":"PASSWORD","userType":"U"} http://127.0.0.1:8090/api/users
+HTTP 400
+{
+    "status": "VALIDATION_ERROR",
+    "message": "First Name can NOT be empty...",
+    "fieldFlags": {
+        "firstName": "BLANK"
+    }
+}
+
+### user add
+$ curl -X POST -H Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJjYXJkZGVtby1pZGVudGl0eS1zZXJ2aWNlIiwic3ViIjoiQURNSU4wMDEiLCJ1c2VyVHlwZSI6IkEiLCJleHAiOjE3ODk2MzI4NDYsImlhdCI6MTc4OTYzMTA0Niwicm9sZXMiOiJST0xFX0FETUlOIn0.sn5Hh3wX5SugHw5QTZWyHv1Er5h3AtjZWHYu_VH7tiw -H Content-Type: application/json -d {"firstName":"SMOKE","lastName":"TESTER","userId":"SMOKE001","password":"PASSWORD","userType":"U"} http://127.0.0.1:8090/api/users
+HTTP 201
+{
+    "message": "User SMOKE001 has been added ...",
+    "user": {
+        "userId": "SMOKE001",
+        "firstName": "SMOKE",
+        "lastName": "TESTER",
+        "password": "PASSWORD",
+        "userType": "U"
+    }
+}
+
+### user add - duplicate user id
+$ curl -X POST -H Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJjYXJkZGVtby1pZGVudGl0eS1zZXJ2aWNlIiwic3ViIjoiQURNSU4wMDEiLCJ1c2VyVHlwZSI6IkEiLCJleHAiOjE3ODk2MzI4NDYsImlhdCI6MTc4OTYzMTA0Niwicm9sZXMiOiJST0xFX0FETUlOIn0.sn5Hh3wX5SugHw5QTZWyHv1Er5h3AtjZWHYu_VH7tiw -H Content-Type: application/json -d {"firstName":"SMOKE","lastName":"TESTER","userId":"SMOKE001","password":"PASSWORD","userType":"U"} http://127.0.0.1:8090/api/users
+HTTP 409
+{
+    "status": "DUPLICATE_USER",
+    "message": "User ID already exist...",
+    "fieldFlags": {}
+}
+
+### user fetch
+$ curl -H Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJjYXJkZGVtby1pZGVudGl0eS1zZXJ2aWNlIiwic3ViIjoiQURNSU4wMDEiLCJ1c2VyVHlwZSI6IkEiLCJleHAiOjE3ODk2MzI4NDYsImlhdCI6MTc4OTYzMTA0Niwicm9sZXMiOiJST0xFX0FETUlOIn0.sn5Hh3wX5SugHw5QTZWyHv1Er5h3AtjZWHYu_VH7tiw http://127.0.0.1:8090/api/users/SMOKE001
+HTTP 200
+{
+    "userId": "SMOKE001",
+    "firstName": "SMOKE",
+    "lastName": "TESTER",
+    "password": "PASSWORD",
+    "userType": "U"
+}
+
+### user fetch - unknown user
+$ curl -H Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJjYXJkZGVtby1pZGVudGl0eS1zZXJ2aWNlIiwic3ViIjoiQURNSU4wMDEiLCJ1c2VyVHlwZSI6IkEiLCJleHAiOjE3ODk2MzI4NDYsImlhdCI6MTc4OTYzMTA0Niwicm9sZXMiOiJST0xFX0FETUlOIn0.sn5Hh3wX5SugHw5QTZWyHv1Er5h3AtjZWHYu_VH7tiw http://127.0.0.1:8090/api/users/NOSUCH
+HTTP 404
+{
+    "status": "NOT_FOUND",
+    "message": "User ID NOT found...",
+    "fieldFlags": {
+        "userId": "NOT_OK"
+    }
+}
+
+### user update - nothing modified
+$ curl -X PUT -H Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJjYXJkZGVtby1pZGVudGl0eS1zZXJ2aWNlIiwic3ViIjoiQURNSU4wMDEiLCJ1c2VyVHlwZSI6IkEiLCJleHAiOjE3ODk2MzI4NDYsImlhdCI6MTc4OTYzMTA0Niwicm9sZXMiOiJST0xFX0FETUlOIn0.sn5Hh3wX5SugHw5QTZWyHv1Er5h3AtjZWHYu_VH7tiw -H Content-Type: application/json -d {"firstName":"SMOKE","lastName":"TESTER","password":"PASSWORD","userType":"U"} http://127.0.0.1:8090/api/users/SMOKE001
+HTTP 400
+{
+    "status": "NO_CHANGES",
+    "message": "Please modify to update ...",
+    "fieldFlags": {}
+}
+
+### user update
+$ curl -X PUT -H Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJjYXJkZGVtby1pZGVudGl0eS1zZXJ2aWNlIiwic3ViIjoiQURNSU4wMDEiLCJ1c2VyVHlwZSI6IkEiLCJleHAiOjE3ODk2MzI4NDYsImlhdCI6MTc4OTYzMTA0Niwicm9sZXMiOiJST0xFX0FETUlOIn0.sn5Hh3wX5SugHw5QTZWyHv1Er5h3AtjZWHYu_VH7tiw -H Content-Type: application/json -d {"firstName":"SMOKED","lastName":"TESTER","password":"PASSWORD","userType":"A"} http://127.0.0.1:8090/api/users/SMOKE001
+HTTP 200
+{
+    "message": "User SMOKE001 has been updated ...",
+    "user": {
+        "userId": "SMOKE001",
+        "firstName": "SMOKED",
+        "lastName": "TESTER",
+        "password": "PASSWORD",
+        "userType": "A"
+    }
+}
+
+### user delete
+$ curl -X DELETE -H Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJjYXJkZGVtby1pZGVudGl0eS1zZXJ2aWNlIiwic3ViIjoiQURNSU4wMDEiLCJ1c2VyVHlwZSI6IkEiLCJleHAiOjE3ODk2MzI4NDYsImlhdCI6MTc4OTYzMTA0Niwicm9sZXMiOiJST0xFX0FETUlOIn0.sn5Hh3wX5SugHw5QTZWyHv1Er5h3AtjZWHYu_VH7tiw http://127.0.0.1:8090/api/users/SMOKE001
+HTTP 200
+{
+    "message": "User SMOKE001 has been deleted ...",
+    "user": null
+}
+
+### user delete - already gone
+$ curl -X DELETE -H Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJjYXJkZGVtby1pZGVudGl0eS1zZXJ2aWNlIiwic3ViIjoiQURNSU4wMDEiLCJ1c2VyVHlwZSI6IkEiLCJleHAiOjE3ODk2MzI4NDYsImlhdCI6MTc4OTYzMTA0Niwicm9sZXMiOiJST0xFX0FETUlOIn0.sn5Hh3wX5SugHw5QTZWyHv1Er5h3AtjZWHYu_VH7tiw http://127.0.0.1:8090/api/users/SMOKE001
+HTTP 404
+{
+    "status": "NOT_FOUND",
+    "message": "User ID NOT found...",
+    "fieldFlags": {
+        "userId": "NOT_OK"
+    }
+}
+
+### menu options for a regular user (COMEN01C)
+$ curl -H Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJjYXJkZGVtby1pZGVudGl0eS1zZXJ2aWNlIiwic3ViIjoiVVNFUjAwMDEiLCJ1c2VyVHlwZSI6IlUiLCJleHAiOjE3ODk2MzI4NDYsImlhdCI6MTc4OTYzMTA0Niwicm9sZXMiOiJST0xFX1VTRVIifQ.Fg3JZHD86OGtQH4JszqrhgL42SBhonE0cocONwqqcho http://127.0.0.1:8090/api/menu
+HTTP 200
+{
+    "userId": "USER0001",
+    "userType": "U",
+    "userTypeName": "Regular user",
+    "options": [
+        {
+            "number": 1,
+            "name": "Account View",
+            "program": "COACTVWC",
+            "userType": "U",
+            "accessible": true
+        },
+        {
+            "number": 2,
+            "name": "Account Update",
+            "program": "COACTUPC",
+            "userType": "U",
+            "accessible": true
+        }
+    ]
+}
+
+### menu options for an administrator
+$ curl -H Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJjYXJkZGVtby1pZGVudGl0eS1zZXJ2aWNlIiwic3ViIjoiQURNSU4wMDEiLCJ1c2VyVHlwZSI6IkEiLCJleHAiOjE3ODk2MzI4NDYsImlhdCI6MTc4OTYzMTA0Niwicm9sZXMiOiJST0xFX0FETUlOIn0.sn5Hh3wX5SugHw5QTZWyHv1Er5h3AtjZWHYu_VH7tiw http://127.0.0.1:8090/api/menu
+HTTP 200
+{
+    "userId": "ADMIN001",
+    "userType": "A",
+    "userTypeName": "Administrator",
+    "options": [
+        {
+            "number": 1,
+            "name": "Account View",
+            "program": "COACTVWC",
+            "userType": "U",
+            "accessible": true
+        },
+        {
+            "number": 2,
+            "name": "Account Update",
+            "program": "COACTUPC",
+            "userType": "U",
+            "accessible": true
+        }
+    ]
+}
+
+### account view prompt (empty COACTVW map)
+$ curl -H Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJjYXJkZGVtby1pZGVudGl0eS1zZXJ2aWNlIiwic3ViIjoiVVNFUjAwMDEiLCJ1c2VyVHlwZSI6IlUiLCJleHAiOjE3ODk2MzI4NDYsImlhdCI6MTc4OTYzMTA0Niwicm9sZXMiOiJST0xFX1VTRVIifQ.Fg3JZHD86OGtQH4JszqrhgL42SBhonE0cocONwqqcho http://127.0.0.1:8090/api/accounts/view
+HTTP 200
+{
+    "details": null,
+    "infoMessage": "Enter or update id of account to display"
+}
+
+### account view - existing account
+$ curl -H Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJjYXJkZGVtby1pZGVudGl0eS1zZXJ2aWNlIiwic3ViIjoiVVNFUjAwMDEiLCJ1c2VyVHlwZSI6IlUiLCJleHAiOjE3ODk2MzI4NDYsImlhdCI6MTc4OTYzMTA0Niwicm9sZXMiOiJST0xFX1VTRVIifQ.Fg3JZHD86OGtQH4JszqrhgL42SBhonE0cocONwqqcho http://127.0.0.1:8090/api/accounts/00000000001
+HTTP 200
+{
+    "details": {
+        "accountId": "00000000001",
+        "activeStatus": "Y",
+        "currentBalance": {
+            "amount": 194.0,
+            "display": "+        194.00"
+        },
+        "creditLimit": {
+            "amount": 2020.0,
+            "display": "+      2,020.00"
+        },
+        "cashCreditLimit": {
+            "amount": 1020.0,
+            "display": "+      1,020.00"
+        },
+        "currentCycleCredit": {
+            "amount": 0.0,
+            "display": "+          0.00"
+        },
+        "currentCycleDebit": {
+            "amount": 0.0,
+            "display": "+          0.00"
+        },
+        "openDate": "2014-11-20",
+        "expirationDate": "2025-05-20",
+        "reissueDate": "2025-05-20",
+        "groupId": "",
+        "customerId": "000000001",
+        "cardNumber": "9680294154603697",
+        "ssn": "020973888",
+        "ssnFormatted": "020-97-3888",
+        "ficoScore": 274,
+        "dateOfBirth": "1961-06-08",
+        "firstName": "Immanuel",
+        "middleName": "Madeline",
+        "lastName": "Kessler",
+        "addressLine1": "618 Deshaun Route",
+        "addressLine2": "Apt. 802",
+        "city": "Altenwerthshire",
+        "state": "NC",
+        "zip": "12546",
+        "country": "USA",
+        "phone1": "(908)119-8310",
+        "phone2": "(373)693-8684",
+        "governmentIssuedId": "00000000000049368437",
+        "eftAccountId": "0053581756",
+        "primaryCardHolder": "Y"
+    },
+    "infoMessage": "Displaying details of given Account"
+}
+
+### account view - failing account filter edit
+$ curl -H Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJjYXJkZGVtby1pZGVudGl0eS1zZXJ2aWNlIiwic3ViIjoiVVNFUjAwMDEiLCJ1c2VyVHlwZSI6IlUiLCJleHAiOjE3ODk2MzI4NDYsImlhdCI6MTc4OTYzMTA0Niwicm9sZXMiOiJST0xFX1VTRVIifQ.Fg3JZHD86OGtQH4JszqrhgL42SBhonE0cocONwqqcho http://127.0.0.1:8090/api/accounts/0000000000A
+HTTP 400
+{
+    "status": "ACCOUNT_ID_NOT_VALID",
+    "message": "Account Filter must  be a non-zero 11 digit number",
+    "fieldFlags": {
+        "accountId": "NOT_OK"
+    }
+}
+
+### account view - unknown account
+$ curl -H Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJjYXJkZGVtby1pZGVudGl0eS1zZXJ2aWNlIiwic3ViIjoiVVNFUjAwMDEiLCJ1c2VyVHlwZSI6IlUiLCJleHAiOjE3ODk2MzI4NDYsImlhdCI6MTc4OTYzMTA0Niwicm9sZXMiOiJST0xFX1VTRVIifQ.Fg3JZHD86OGtQH4JszqrhgL42SBhonE0cocONwqqcho http://127.0.0.1:8090/api/accounts/99999999999
+HTTP 404
+{
+    "status": "NOT_FOUND",
+    "message": "Account:99999999999 not found in Cross ref file.",
+    "fieldFlags": {
+        "accountId": "NOT_OK"
+    }
+}
+
+### account update - fetch for update
+$ curl -H Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJjYXJkZGVtby1pZGVudGl0eS1zZXJ2aWNlIiwic3ViIjoiVVNFUjAwMDEiLCJ1c2VyVHlwZSI6IlUiLCJleHAiOjE3ODk2MzI4NDYsImlhdCI6MTc4OTYzMTA0Niwicm9sZXMiOiJST0xFX1VTRVIifQ.Fg3JZHD86OGtQH4JszqrhgL42SBhonE0cocONwqqcho http://127.0.0.1:8090/api/accounts/00000000009/update
+HTTP 200
+{
+    "status": "DETAILS_FETCHED",
+    "infoMessage": "Update account details presented above.",
+    "errorMessage": null,
+    "original": {
+        "accountId": "00000000009",
+        "activeStatus": "Y",
+        "currentBalance": "560.00",
+        "creditLimit": "8201.00",
+        "cashCreditLimit": "2065.00",
+        "openYear": "2016",
+        "openMonth": "08",
+        "openDay": "27",
+        "expiryYear": "2024",
+        "expiryMonth": "12",
+        "expiryDay": "27",
+        "reissueYear": "2024",
+        "reissueMonth": "12",
+        "reissueDay": "27",
+        "currentCycleCredit": "0.00",
+        "currentCycleDebit": "0.00",
+        "groupId": "",
+        "customerId": "000000009",
+        "ssnPart1": "842",
+        "ssnPart2": "03",
+        "ssnPart3": "5847",
+        "dobYear": "1975",
+        "dobMonth": "11",
+        "dobDay": "07",
+        "ficoScore": "699",
+        "firstName": "Melvin",
+        "middleName": "Regan",
+        "lastName": "Ondricka",
+        "addressLine1": "87893 Samson Flats",
+        "addressLine2": "Apt. 135",
+        "city": "New Braden",
+        "state": "VI",
+        "zip": "21113",
+        "country": "USA",
+        "phone1Area": "035",
+        "phone1Prefix": "456",
+        "phone1Line": "1404",
+        "phone2Area": "412",
+        "phone2Prefix": "440",
+        "phone2Line": "3130",
+        "governmentIssuedId": "00000000000568299451",
+        "eftAccountId": "0039446039",
+        "primaryCardHolder": "Y"
+    },
+    "updated": {
+        "accountId": "00000000009",
+        "activeStatus": "Y",
+        "currentBalance": "560.00",
+        "creditLimit": "8201.00",
+        "cashCreditLimit": "2065.00",
+        "openYear": "2016",
+        "openMonth": "08",
+        "openDay": "27",
+        "expiryYear": "2024",
+        "expiryMonth": "12",
+        "expiryDay": "27",
+        "reissueYear": "2024",
+        "reissueMonth": "12",
+        "reissueDay": "27",
+        "currentCycleCredit": "0.00",
+        "currentCycleDebit": "0.00",
+        "groupId": "",
+        "customerId": "000000009",
+        "ssnPart1": "842",
+        "ssnPart2": "03",
+        "ssnPart3": "5847",
+        "dobYear": "1975",
+        "dobMonth": "11",
+        "dobDay": "07",
+        "ficoScore": "699",
+        "firstName": "Melvin",
+        "middleName": "Regan",
+        "lastName": "Ondricka",
+        "addressLine1": "87893 Samson Flats",
+        "addressLine2": "Apt. 135",
+        "city": "New Braden",
+        "state": "VI",
+        "zip": "21113",
+        "country": "USA",
+        "phone1Area": "035",
+        "phone1Prefix": "456",
+        "phone1Line": "1404",
+        "phone2Area": "412",
+        "phone2Prefix": "440",
+        "phone2Line": "3130",
+        "governmentIssuedId": "00000000000568299451",
+        "eftAccountId": "0039446039",
+        "primaryCardHolder": "Y"
+    },
+    "details": {
+        "accountId": "00000000009",
+        "activeStatus": "Y",
+        "currentBalance": {
+            "amount": 560.0,
+            "display": "+        560.00"
+        },
+        "creditLimit": {
+            "amount": 8201.0,
+            "display": "+      8,201.00"
+        },
+        "cashCreditLimit": {
+            "amount": 2065.0,
+            "display": "+      2,065.00"
+        },
+        "currentCycleCredit": {
+            "amount": 0.0,
+            "display": "+          0.00"
+        },
+        "currentCycleDebit": {
+            "amount": 0.0,
+            "display": "+          0.00"
+        },
+        "openDate": "2016-08-27",
+        "expirationDate": "2024-12-27",
+        "reissueDate": "2024-12-27",
+        "groupId": "",
+        "customerId": "000000009",
+        "cardNumber": "9501733721429893",
+        "ssn": "842035847",
+        "ssnFormatted": "842-03-5847",
+        "ficoScore": 699,
+        "dateOfBirth": "1975-11-07",
+        "firstName": "Melvin",
+        "middleName": "Regan",
+        "lastName": "Ondricka",
+        "addressLine1": "87893 Samson Flats",
+        "addressLine2": "Apt. 135",
+        "city": "New Braden",
+        "state": "VI",
+        "zip": "21113",
+        "country": "USA",
+        "phone1": "(035)456-1404",
+        "phone2": "(412)440-3130",
+        "governmentIssuedId": "00000000000568299451",
+        "eftAccountId": "0039446039",
+        "primaryCardHolder": "Y"
+    },
+    "fieldFlags": {}
+}
+
+### account update - no change detected
+$ curl -X POST -H Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJjYXJkZGVtby1pZGVudGl0eS1zZXJ2aWNlIiwic3ViIjoiVVNFUjAwMDEiLCJ1c2VyVHlwZSI6IlUiLCJleHAiOjE3ODk2MzI4NDYsImlhdCI6MTc4OTYzMTA0Niwicm9sZXMiOiJST0xFX1VTRVIifQ.Fg3JZHD86OGtQH4JszqrhgL42SBhonE0cocONwqqcho -H Content-Type: application/json -d {"original": {"accountId": "00000000009", "activeStatus": "Y", "currentBalance": "560.00", "creditLimit": "8201.00", "cashCreditLimit": "2065.00", "openYear": "2016", "openMonth": "08", "openDay": "27", "expiryYear": "2024", "expiryMonth": "12", "expiryDay": "27", "reissueYear": "2024", "reissueMonth": "12", "reissueDay": "27", "currentCycleCredit": "0.00", "currentCycleDebit": "0.00", "groupId": "", "customerId": "000000009", "ssnPart1": "842", "ssnPart2": "03", "ssnPart3": "5847", "dobYear": "1975", "dobMonth": "11", "dobDay": "07", "ficoScore": "699", "firstName": "Melvin", "middleName": "Regan", "lastName": "Ondricka", "addressLine1": "87893 Samson Flats", "addressLine2": "Apt. 135", "city": "New Braden", "state": "VI", "zip": "21113", "country": "USA", "phone1Area": "035", "phone1Prefix": "456", "phone1Line": "1404", "phone2Area": "412", "phone2Prefix": "440", "phone2Line": "3130", "governmentIssuedId": "00000000000568299451", "eftAccountId": "0039446039", "primaryCardHolder": "Y"}, "updated": {"accountId": "00000000009", "activeStatus": "Y", "currentBalance": "560.00", "creditLimit": "8201.00", "cashCreditLimit": "2065.00", "openYear": "2016", "openMonth": "08", "openDay": "27", "expiryYear": "2024", "expiryMonth": "12", "expiryDay": "27", "reissueYear": "2024", "reissueMonth": "12", "reissueDay": "27", "currentCycleCredit": "0.00", "currentCycleDebit": "0.00", "groupId": "", "customerId": "000000009", "ssnPart1": "842", "ssnPart2": "03", "ssnPart3": "5847", "dobYear": "1975", "dobMonth": "11", "dobDay": "07", "ficoScore": "699", "firstName": "Melvin", "middleName": "Regan", "lastName": "Ondricka", "addressLine1": "87893 Samson Flats", "addressLine2": "Apt. 135", "city": "New Braden", "state": "VI", "zip": "21113", "country": "USA", "phone1Area": "035", "phone1Prefix": "456", "phone1Line": "1404", "phone2Area": "412", "phone2Prefix": "440", "phone2Line": "3130", "governmentIssuedId": "00000000000568299451", "eftAccountId": "0039446039", "primaryCardHolder": "Y"}} http://127.0.0.1:8090/api/accounts/00000000009/update/validate
+HTTP 200
+{
+    "status": "NO_CHANGES",
+    "infoMessage": "Update account details presented above.",
+    "errorMessage": "No change detected with respect to values fetched.",
+    "original": {
+        "accountId": "00000000009",
+        "activeStatus": "Y",
+        "currentBalance": "560.00",
+        "creditLimit": "8201.00",
+        "cashCreditLimit": "2065.00",
+        "openYear": "2016",
+        "openMonth": "08",
+        "openDay": "27",
+        "expiryYear": "2024",
+        "expiryMonth": "12",
+        "expiryDay": "27",
+        "reissueYear": "2024",
+        "reissueMonth": "12",
+        "reissueDay": "27",
+        "currentCycleCredit": "0.00",
+        "currentCycleDebit": "0.00",
+        "groupId": "",
+        "customerId": "000000009",
+        "ssnPart1": "842",
+        "ssnPart2": "03",
+        "ssnPart3": "5847",
+        "dobYear": "1975",
+        "dobMonth": "11",
+        "dobDay": "07",
+        "ficoScore": "699",
+        "firstName": "Melvin",
+        "middleName": "Regan",
+        "lastName": "Ondricka",
+        "addressLine1": "87893 Samson Flats",
+        "addressLine2": "Apt. 135",
+        "city": "New Braden",
+        "state": "VI",
+        "zip": "21113",
+        "country": "USA",
+        "phone1Area": "035",
+        "phone1Prefix": "456",
+        "phone1Line": "1404",
+        "phone2Area": "412",
+        "phone2Prefix": "440",
+        "phone2Line": "3130",
+        "governmentIssuedId": "00000000000568299451",
+        "eftAccountId": "0039446039",
+        "primaryCardHolder": "Y"
+    },
+    "updated": {
+        "accountId": "00000000009",
+        "activeStatus": "Y",
+        "currentBalance": "560.00",
+        "creditLimit": "8201.00",
+        "cashCreditLimit": "2065.00",
+        "openYear": "2016",
+        "openMonth": "08",
+        "openDay": "27",
+        "expiryYear": "2024",
+        "expiryMonth": "12",
+        "expiryDay": "27",
+        "reissueYear": "2024",
+        "reissueMonth": "12",
+        "reissueDay": "27",
+        "currentCycleCredit": "0.00",
+        "currentCycleDebit": "0.00",
+        "groupId": "",
+        "customerId": "000000009",
+        "ssnPart1": "842",
+        "ssnPart2": "03",
+        "ssnPart3": "5847",
+        "dobYear": "1975",
+        "dobMonth": "11",
+        "dobDay": "07",
+        "ficoScore": "699",
+        "firstName": "Melvin",
+        "middleName": "Regan",
+        "lastName": "Ondricka",
+        "addressLine1": "87893 Samson Flats",
+        "addressLine2": "Apt. 135",
+        "city": "New Braden",
+        "state": "VI",
+        "zip": "21113",
+        "country": "USA",
+        "phone1Area": "035",
+        "phone1Prefix": "456",
+        "phone1Line": "1404",
+        "phone2Area": "412",
+        "phone2Prefix": "440",
+        "phone2Line": "3130",
+        "governmentIssuedId": "00000000000568299451",
+        "eftAccountId": "0039446039",
+        "primaryCardHolder": "Y"
+    },
+    "details": null,
+    "fieldFlags": {}
+}
+
+### account update - edits pass, waiting for F5
+$ curl -X POST -H Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJjYXJkZGVtby1pZGVudGl0eS1zZXJ2aWNlIiwic3ViIjoiVVNFUjAwMDEiLCJ1c2VyVHlwZSI6IlUiLCJleHAiOjE3ODk2MzI4NDYsImlhdCI6MTc4OTYzMTA0Niwicm9sZXMiOiJST0xFX1VTRVIifQ.Fg3JZHD86OGtQH4JszqrhgL42SBhonE0cocONwqqcho -H Content-Type: application/json -d {"original": {"accountId": "00000000009", "activeStatus": "Y", "currentBalance": "560.00", "creditLimit": "8201.00", "cashCreditLimit": "2065.00", "openYear": "2016", "openMonth": "08", "openDay": "27", "expiryYear": "2024", "expiryMonth": "12", "expiryDay": "27", "reissueYear": "2024", "reissueMonth": "12", "reissueDay": "27", "currentCycleCredit": "0.00", "currentCycleDebit": "0.00", "groupId": "", "customerId": "000000009", "ssnPart1": "842", "ssnPart2": "03", "ssnPart3": "5847", "dobYear": "1975", "dobMonth": "11", "dobDay": "07", "ficoScore": "699", "firstName": "Melvin", "middleName": "Regan", "lastName": "Ondricka", "addressLine1": "87893 Samson Flats", "addressLine2": "Apt. 135", "city": "New Braden", "state": "VI", "zip": "21113", "country": "USA", "phone1Area": "035", "phone1Prefix": "456", "phone1Line": "1404", "phone2Area": "412", "phone2Prefix": "440", "phone2Line": "3130", "governmentIssuedId": "00000000000568299451", "eftAccountId": "0039446039", "primaryCardHolder": "Y"}, "updated": {"accountId": "00000000009", "activeStatus": "Y", "currentBalance": "560.00", "creditLimit": "6000.00", "cashCreditLimit": "2065.00", "openYear": "2016", "openMonth": "08", "openDay": "27", "expiryYear": "2024", "expiryMonth": "12", "expiryDay": "27", "reissueYear": "2024", "reissueMonth": "12", "reissueDay": "27", "currentCycleCredit": "0.00", "currentCycleDebit": "0.00", "groupId": "", "customerId": "000000009", "ssnPart1": "123", "ssnPart2": "45", "ssnPart3": "6789", "dobYear": "1975", "dobMonth": "11", "dobDay": "07", "ficoScore": "700", "firstName": "Melvin", "middleName": "Regan", "lastName": "Ondricka", "addressLine1": "87893 Samson Flats", "addressLine2": "Apt. 135", "city": "New Braden", "state": "NC", "zip": "27610", "country": "USA", "phone1Area": "201", "phone1Prefix": "456", "phone1Line": "1404", "phone2Area": "201", "phone2Prefix": "440", "phone2Line": "3130", "governmentIssuedId": "00000000000568299451", "eftAccountId": "0039446039", "primaryCardHolder": "Y"}} http://127.0.0.1:8090/api/accounts/00000000009/update/validate
+HTTP 200
+{
+    "status": "CHANGES_VALIDATED",
+    "infoMessage": "Changes validated.Press F5 to save",
+    "errorMessage": null,
+    "original": {
+        "accountId": "00000000009",
+        "activeStatus": "Y",
+        "currentBalance": "560.00",
+        "creditLimit": "8201.00",
+        "cashCreditLimit": "2065.00",
+        "openYear": "2016",
+        "openMonth": "08",
+        "openDay": "27",
+        "expiryYear": "2024",
+        "expiryMonth": "12",
+        "expiryDay": "27",
+        "reissueYear": "2024",
+        "reissueMonth": "12",
+        "reissueDay": "27",
+        "currentCycleCredit": "0.00",
+        "currentCycleDebit": "0.00",
+        "groupId": "",
+        "customerId": "000000009",
+        "ssnPart1": "842",
+        "ssnPart2": "03",
+        "ssnPart3": "5847",
+        "dobYear": "1975",
+        "dobMonth": "11",
+        "dobDay": "07",
+        "ficoScore": "699",
+        "firstName": "Melvin",
+        "middleName": "Regan",
+        "lastName": "Ondricka",
+        "addressLine1": "87893 Samson Flats",
+        "addressLine2": "Apt. 135",
+        "city": "New Braden",
+        "state": "VI",
+        "zip": "21113",
+        "country": "USA",
+        "phone1Area": "035",
+        "phone1Prefix": "456",
+        "phone1Line": "1404",
+        "phone2Area": "412",
+        "phone2Prefix": "440",
+        "phone2Line": "3130",
+        "governmentIssuedId": "00000000000568299451",
+        "eftAccountId": "0039446039",
+        "primaryCardHolder": "Y"
+    },
+    "updated": {
+        "accountId": "00000000009",
+        "activeStatus": "Y",
+        "currentBalance": "560.00",
+        "creditLimit": "6000.00",
+        "cashCreditLimit": "2065.00",
+        "openYear": "2016",
+        "openMonth": "08",
+        "openDay": "27",
+        "expiryYear": "2024",
+        "expiryMonth": "12",
+        "expiryDay": "27",
+        "reissueYear": "2024",
+        "reissueMonth": "12",
+        "reissueDay": "27",
+        "currentCycleCredit": "0.00",
+        "currentCycleDebit": "0.00",
+        "groupId": "",
+        "customerId": "000000009",
+        "ssnPart1": "123",
+        "ssnPart2": "45",
+        "ssnPart3": "6789",
+        "dobYear": "1975",
+        "dobMonth": "11",
+        "dobDay": "07",
+        "ficoScore": "700",
+        "firstName": "Melvin",
+        "middleName": "Regan",
+        "lastName": "Ondricka",
+        "addressLine1": "87893 Samson Flats",
+        "addressLine2": "Apt. 135",
+        "city": "New Braden",
+        "state": "NC",
+        "zip": "27610",
+        "country": "USA",
+        "phone1Area": "201",
+        "phone1Prefix": "456",
+        "phone1Line": "1404",
+        "phone2Area": "201",
+        "phone2Prefix": "440",
+        "phone2Line": "3130",
+        "governmentIssuedId": "00000000000568299451",
+        "eftAccountId": "0039446039",
+        "primaryCardHolder": "Y"
+    },
+    "details": null,
+    "fieldFlags": {}
+}
+
+### account update - confirm (F5) rewrites account then customer
+$ curl -X POST -H Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJjYXJkZGVtby1pZGVudGl0eS1zZXJ2aWNlIiwic3ViIjoiVVNFUjAwMDEiLCJ1c2VyVHlwZSI6IlUiLCJleHAiOjE3ODk2MzI4NDYsImlhdCI6MTc4OTYzMTA0Niwicm9sZXMiOiJST0xFX1VTRVIifQ.Fg3JZHD86OGtQH4JszqrhgL42SBhonE0cocONwqqcho -H Content-Type: application/json -d {"original": {"accountId": "00000000009", "activeStatus": "Y", "currentBalance": "560.00", "creditLimit": "8201.00", "cashCreditLimit": "2065.00", "openYear": "2016", "openMonth": "08", "openDay": "27", "expiryYear": "2024", "expiryMonth": "12", "expiryDay": "27", "reissueYear": "2024", "reissueMonth": "12", "reissueDay": "27", "currentCycleCredit": "0.00", "currentCycleDebit": "0.00", "groupId": "", "customerId": "000000009", "ssnPart1": "842", "ssnPart2": "03", "ssnPart3": "5847", "dobYear": "1975", "dobMonth": "11", "dobDay": "07", "ficoScore": "699", "firstName": "Melvin", "middleName": "Regan", "lastName": "Ondricka", "addressLine1": "87893 Samson Flats", "addressLine2": "Apt. 135", "city": "New Braden", "state": "VI", "zip": "21113", "country": "USA", "phone1Area": "035", "phone1Prefix": "456", "phone1Line": "1404", "phone2Area": "412", "phone2Prefix": "440", "phone2Line": "3130", "governmentIssuedId": "00000000000568299451", "eftAccountId": "0039446039", "primaryCardHolder": "Y"}, "updated": {"accountId": "00000000009", "activeStatus": "Y", "currentBalance": "560.00", "creditLimit": "6000.00", "cashCreditLimit": "2065.00", "openYear": "2016", "openMonth": "08", "openDay": "27", "expiryYear": "2024", "expiryMonth": "12", "expiryDay": "27", "reissueYear": "2024", "reissueMonth": "12", "reissueDay": "27", "currentCycleCredit": "0.00", "currentCycleDebit": "0.00", "groupId": "", "customerId": "000000009", "ssnPart1": "123", "ssnPart2": "45", "ssnPart3": "6789", "dobYear": "1975", "dobMonth": "11", "dobDay": "07", "ficoScore": "700", "firstName": "Melvin", "middleName": "Regan", "lastName": "Ondricka", "addressLine1": "87893 Samson Flats", "addressLine2": "Apt. 135", "city": "New Braden", "state": "NC", "zip": "27610", "country": "USA", "phone1Area": "201", "phone1Prefix": "456", "phone1Line": "1404", "phone2Area": "201", "phone2Prefix": "440", "phone2Line": "3130", "governmentIssuedId": "00000000000568299451", "eftAccountId": "0039446039", "primaryCardHolder": "Y"}} http://127.0.0.1:8090/api/accounts/00000000009/update/confirm
+HTTP 200
+{
+    "status": "CHANGES_COMMITTED",
+    "infoMessage": "Changes committed to database",
+    "errorMessage": null,
+    "original": {
+        "accountId": "00000000009",
+        "activeStatus": "Y",
+        "currentBalance": "560.00",
+        "creditLimit": "6000.00",
+        "cashCreditLimit": "2065.00",
+        "openYear": "2016",
+        "openMonth": "08",
+        "openDay": "27",
+        "expiryYear": "2024",
+        "expiryMonth": "12",
+        "expiryDay": "27",
+        "reissueYear": "2024",
+        "reissueMonth": "12",
+        "reissueDay": "27",
+        "currentCycleCredit": "0.00",
+        "currentCycleDebit": "0.00",
+        "groupId": "",
+        "customerId": "000000009",
+        "ssnPart1": "123",
+        "ssnPart2": "45",
+        "ssnPart3": "6789",
+        "dobYear": "1975",
+        "dobMonth": "11",
+        "dobDay": "07",
+        "ficoScore": "700",
+        "firstName": "Melvin",
+        "middleName": "Regan",
+        "lastName": "Ondricka",
+        "addressLine1": "87893 Samson Flats",
+        "addressLine2": "Apt. 135",
+        "city": "New Braden",
+        "state": "NC",
+        "zip": "27610",
+        "country": "USA",
+        "phone1Area": "201",
+        "phone1Prefix": "456",
+        "phone1Line": "1404",
+        "phone2Area": "201",
+        "phone2Prefix": "440",
+        "phone2Line": "3130",
+        "governmentIssuedId": "00000000000568299451",
+        "eftAccountId": "0039446039",
+        "primaryCardHolder": "Y"
+    },
+    "updated": {
+        "accountId": "00000000009",
+        "activeStatus": "Y",
+        "currentBalance": "560.00",
+        "creditLimit": "6000.00",
+        "cashCreditLimit": "2065.00",
+        "openYear": "2016",
+        "openMonth": "08",
+        "openDay": "27",
+        "expiryYear": "2024",
+        "expiryMonth": "12",
+        "expiryDay": "27",
+        "reissueYear": "2024",
+        "reissueMonth": "12",
+        "reissueDay": "27",
+        "currentCycleCredit": "0.00",
+        "currentCycleDebit": "0.00",
+        "groupId": "",
+        "customerId": "000000009",
+        "ssnPart1": "123",
+        "ssnPart2": "45",
+        "ssnPart3": "6789",
+        "dobYear": "1975",
+        "dobMonth": "11",
+        "dobDay": "07",
+        "ficoScore": "700",
+        "firstName": "Melvin",
+        "middleName": "Regan",
+        "lastName": "Ondricka",
+        "addressLine1": "87893 Samson Flats",
+        "addressLine2": "Apt. 135",
+        "city": "New Braden",
+        "state": "NC",
+        "zip": "27610",
+        "country": "USA",
+        "phone1Area": "201",
+        "phone1Prefix": "456",
+        "phone1Line": "1404",
+        "phone2Area": "201",
+        "phone2Prefix": "440",
+        "phone2Line": "3130",
+        "governmentIssuedId": "00000000000568299451",
+        "eftAccountId": "0039446039",
+        "primaryCardHolder": "Y"
+    },
+    "details": {
+        "accountId": "00000000009",
+        "activeStatus": "Y",
+        "currentBalance": {
+            "amount": 560.0,
+            "display": "+        560.00"
+        },
+        "creditLimit": {
+            "amount": 6000.0,
+            "display": "+      6,000.00"
+        },
+        "cashCreditLimit": {
+            "amount": 2065.0,
+            "display": "+      2,065.00"
+        },
+        "currentCycleCredit": {
+            "amount": 0.0,
+            "display": "+          0.00"
+        },
+        "currentCycleDebit": {
+            "amount": 0.0,
+            "display": "+          0.00"
+        },
+        "openDate": "2016-08-27",
+        "expirationDate": "2024-12-27",
+        "reissueDate": "2024-12-27",
+        "groupId": "",
+        "customerId": "000000009",
+        "cardNumber": "9501733721429893",
+        "ssn": "123456789",
+        "ssnFormatted": "123-45-6789",
+        "ficoScore": 700,
+        "dateOfBirth": "1975-11-07",
+        "firstName": "Melvin",
+        "middleName": "Regan",
+        "lastName": "Ondricka",
+        "addressLine1": "87893 Samson Flats",
+        "addressLine2": "Apt. 135",
+        "city": "New Braden",
+        "state": "NC",
+        "zip": "27610",
+        "country": "USA",
+        "phone1": "(201)456-1404",
+        "phone2": "(201)440-3130",
+        "governmentIssuedId": "00000000000568299451",
+        "eftAccountId": "0039446039",
+        "primaryCardHolder": "Y"
+    },
+    "fieldFlags": {}
+}
+
+### account update - stale snapshot is rejected
+$ curl -X POST -H Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJjYXJkZGVtby1pZGVudGl0eS1zZXJ2aWNlIiwic3ViIjoiVVNFUjAwMDEiLCJ1c2VyVHlwZSI6IlUiLCJleHAiOjE3ODk2MzI4NDYsImlhdCI6MTc4OTYzMTA0Niwicm9sZXMiOiJST0xFX1VTRVIifQ.Fg3JZHD86OGtQH4JszqrhgL42SBhonE0cocONwqqcho -H Content-Type: application/json -d {"original": {"accountId": "00000000009", "activeStatus": "Y", "currentBalance": "560.00", "creditLimit": "8201.00", "cashCreditLimit": "2065.00", "openYear": "2016", "openMonth": "08", "openDay": "27", "expiryYear": "2024", "expiryMonth": "12", "expiryDay": "27", "reissueYear": "2024", "reissueMonth": "12", "reissueDay": "27", "currentCycleCredit": "0.00", "currentCycleDebit": "0.00", "groupId": "", "customerId": "000000009", "ssnPart1": "842", "ssnPart2": "03", "ssnPart3": "5847", "dobYear": "1975", "dobMonth": "11", "dobDay": "07", "ficoScore": "699", "firstName": "Melvin", "middleName": "Regan", "lastName": "Ondricka", "addressLine1": "87893 Samson Flats", "addressLine2": "Apt. 135", "city": "New Braden", "state": "VI", "zip": "21113", "country": "USA", "phone1Area": "035", "phone1Prefix": "456", "phone1Line": "1404", "phone2Area": "412", "phone2Prefix": "440", "phone2Line": "3130", "governmentIssuedId": "00000000000568299451", "eftAccountId": "0039446039", "primaryCardHolder": "Y"}, "updated": {"accountId": "00000000009", "activeStatus": "Y", "currentBalance": "560.00", "creditLimit": "6000.00", "cashCreditLimit": "2065.00", "openYear": "2016", "openMonth": "08", "openDay": "27", "expiryYear": "2024", "expiryMonth": "12", "expiryDay": "27", "reissueYear": "2024", "reissueMonth": "12", "reissueDay": "27", "currentCycleCredit": "0.00", "currentCycleDebit": "0.00", "groupId": "", "customerId": "000000009", "ssnPart1": "123", "ssnPart2": "45", "ssnPart3": "6789", "dobYear": "1975", "dobMonth": "11", "dobDay": "07", "ficoScore": "700", "firstName": "Melvin", "middleName": "Regan", "lastName": "Ondricka", "addressLine1": "87893 Samson Flats", "addressLine2": "Apt. 135", "city": "New Braden", "state": "NC", "zip": "27610", "country": "USA", "phone1Area": "201", "phone1Prefix": "456", "phone1Line": "1404", "phone2Area": "201", "phone2Prefix": "440", "phone2Line": "3130", "governmentIssuedId": "00000000000568299451", "eftAccountId": "0039446039", "primaryCardHolder": "Y"}} http://127.0.0.1:8090/api/accounts/00000000009/update/confirm
+HTTP 200
+{
+    "status": "RECORD_CHANGED",
+    "infoMessage": "Update account details presented above.",
+    "errorMessage": "Record changed by some one else. Please review",
+    "original": {
+        "accountId": "00000000009",
+        "activeStatus": "Y",
+        "currentBalance": "560.00",
+        "creditLimit": "6000.00",
+        "cashCreditLimit": "2065.00",
+        "openYear": "2016",
+        "openMonth": "08",
+        "openDay": "27",
+        "expiryYear": "2024",
+        "expiryMonth": "12",
+        "expiryDay": "27",
+        "reissueYear": "2024",
+        "reissueMonth": "12",
+        "reissueDay": "27",
+        "currentCycleCredit": "0.00",
+        "currentCycleDebit": "0.00",
+        "groupId": "",
+        "customerId": "000000009",
+        "ssnPart1": "123",
+        "ssnPart2": "45",
+        "ssnPart3": "6789",
+        "dobYear": "1975",
+        "dobMonth": "11",
+        "dobDay": "07",
+        "ficoScore": "700",
+        "firstName": "Melvin",
+        "middleName": "Regan",
+        "lastName": "Ondricka",
+        "addressLine1": "87893 Samson Flats",
+        "addressLine2": "Apt. 135",
+        "city": "New Braden",
+        "state": "NC",
+        "zip": "27610",
+        "country": "USA",
+        "phone1Area": "201",
+        "phone1Prefix": "456",
+        "phone1Line": "1404",
+        "phone2Area": "201",
+        "phone2Prefix": "440",
+        "phone2Line": "3130",
+        "governmentIssuedId": "00000000000568299451",
+        "eftAccountId": "0039446039",
+        "primaryCardHolder": "Y"
+    },
+    "updated": {
+        "accountId": "00000000009",
+        "activeStatus": "Y",
+        "currentBalance": "560.00",
+        "creditLimit": "6000.00",
+        "cashCreditLimit": "2065.00",
+        "openYear": "2016",
+        "openMonth": "08",
+        "openDay": "27",
+        "expiryYear": "2024",
+        "expiryMonth": "12",
+        "expiryDay": "27",
+        "reissueYear": "2024",
+        "reissueMonth": "12",
+        "reissueDay": "27",
+        "currentCycleCredit": "0.00",
+        "currentCycleDebit": "0.00",
+        "groupId": "",
+        "customerId": "000000009",
+        "ssnPart1": "123",
+        "ssnPart2": "45",
+        "ssnPart3": "6789",
+        "dobYear": "1975",
+        "dobMonth": "11",
+        "dobDay": "07",
+        "ficoScore": "700",
+        "firstName": "Melvin",
+        "middleName": "Regan",
+        "lastName": "Ondricka",
+        "addressLine1": "87893 Samson Flats",
+        "addressLine2": "Apt. 135",
+        "city": "New Braden",
+        "state": "NC",
+        "zip": "27610",
+        "country": "USA",
+        "phone1Area": "201",
+        "phone1Prefix": "456",
+        "phone1Line": "1404",
+        "phone2Area": "201",
+        "phone2Prefix": "440",
+        "phone2Line": "3130",
+        "governmentIssuedId": "00000000000568299451",
+        "eftAccountId": "0039446039",
+        "primaryCardHolder": "Y"
+    },
+    "details": null,
+    "fieldFlags": {}
+}
+
+### account view - committed values
+$ curl -H Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJjYXJkZGVtby1pZGVudGl0eS1zZXJ2aWNlIiwic3ViIjoiVVNFUjAwMDEiLCJ1c2VyVHlwZSI6IlUiLCJleHAiOjE3ODk2MzI4NDYsImlhdCI6MTc4OTYzMTA0Niwicm9sZXMiOiJST0xFX1VTRVIifQ.Fg3JZHD86OGtQH4JszqrhgL42SBhonE0cocONwqqcho http://127.0.0.1:8090/api/accounts/00000000009
+HTTP 200
+{
+    "details": {
+        "accountId": "00000000009",
+        "activeStatus": "Y",
+        "currentBalance": {
+            "amount": 560.0,
+            "display": "+        560.00"
+        },
+        "creditLimit": {
+            "amount": 6000.0,
+            "display": "+      6,000.00"
+        },
+        "cashCreditLimit": {
+            "amount": 2065.0,
+            "display": "+      2,065.00"
+        },
+        "currentCycleCredit": {
+            "amount": 0.0,
+            "display": "+          0.00"
+        },
+        "currentCycleDebit": {
+            "amount": 0.0,
+            "display": "+          0.00"
+        },
+        "openDate": "2016-08-27",
+        "expirationDate": "2024-12-27",
+        "reissueDate": "2024-12-27",
+        "groupId": "",
+        "customerId": "000000009",
+        "cardNumber": "9501733721429893",
+        "ssn": "123456789",
+        "ssnFormatted": "123-45-6789",
+        "ficoScore": 700,
+        "dateOfBirth": "1975-11-07",
+        "firstName": "Melvin",
+        "middleName": "Regan",
+        "lastName": "Ondricka",
+        "addressLine1": "87893 Samson Flats",
+        "addressLine2": "Apt. 135",
+        "city": "New Braden",
+        "state": "NC",
+        "zip": "27610",
+        "country": "USA",
+        "phone1": "(201)456-1404",
+        "phone2": "(201)440-3130",
+        "governmentIssuedId": "00000000000568299451",
+        "eftAccountId": "0039446039",
+        "primaryCardHolder": "Y"
+    },
+    "infoMessage": "Displaying details of given Account"
+}
+

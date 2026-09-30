@@ -1,0 +1,477 @@
+name: carddemo-modernization
+services:
+  account-db:
+    environment:
+      POSTGRES_DB: carddemo
+      POSTGRES_PASSWORD: placeholder
+      POSTGRES_USER: carddemo
+    healthcheck:
+      test:
+        - CMD-SHELL
+        - pg_isready -U carddemo -d carddemo
+      timeout: 3s
+      interval: 5s
+      retries: 20
+    image: postgres:16
+    networks:
+      default: null
+    ports:
+      - mode: ingress
+        host_ip: 127.0.0.1
+        target: 5432
+        published: "5433"
+        protocol: tcp
+    volumes:
+      - type: volume
+        source: carddemo-account-pgdata
+        target: /var/lib/postgresql/data
+        volume: {}
+  account-service:
+    build:
+      context: /home/ubuntu/repos/Aws-Card-Demo2/modernization
+      dockerfile: account-service/Dockerfile
+      args:
+        MAVEN_MIRROR_URL: ""
+    depends_on:
+      account-db:
+        condition: service_healthy
+        required: true
+      keycloak-bootstrap:
+        condition: service_completed_successfully
+        required: true
+    environment:
+      CARDDEMO_ACCOUNT_DB_PASSWORD: placeholder
+      CARDDEMO_ACCOUNT_DB_USER: carddemo
+      CARDDEMO_ACCOUNT_JDBC_URL: jdbc:postgresql://account-db:5432/carddemo
+      KEYCLOAK_ISSUER_URI: http://127.0.0.1:8088/realms/carddemo
+      KEYCLOAK_REALM: carddemo
+      KEYCLOAK_URL: http://keycloak:8080
+      SERVER_ADDRESS: 0.0.0.0
+    healthcheck:
+      test:
+        - CMD-SHELL
+        - wget -q -O - http://127.0.0.1:8080/actuator/health | grep -q UP
+      timeout: 3s
+      interval: 5s
+      retries: 20
+    networks:
+      default: null
+    ports:
+      - mode: ingress
+        host_ip: 127.0.0.1
+        target: 8080
+        published: "8080"
+        protocol: tcp
+  authorization-db:
+    environment:
+      POSTGRES_DB: carddemo_authorization
+      POSTGRES_PASSWORD: placeholder
+      POSTGRES_USER: carddemo
+    healthcheck:
+      test:
+        - CMD-SHELL
+        - pg_isready -U carddemo -d carddemo_authorization
+      timeout: 3s
+      interval: 5s
+      retries: 20
+    image: postgres:16
+    networks:
+      default: null
+    ports:
+      - mode: ingress
+        host_ip: 127.0.0.1
+        target: 5432
+        published: "5435"
+        protocol: tcp
+    volumes:
+      - type: volume
+        source: carddemo-authorization-pgdata
+        target: /var/lib/postgresql/data
+        volume: {}
+  authorization-service:
+    build:
+      context: /home/ubuntu/repos/Aws-Card-Demo2/modernization
+      dockerfile: authorization-service/Dockerfile
+      args:
+        MAVEN_MIRROR_URL: ""
+    depends_on:
+      account-service:
+        condition: service_healthy
+        required: true
+      authorization-db:
+        condition: service_healthy
+        required: true
+      kafka:
+        condition: service_healthy
+        required: true
+      keycloak-bootstrap:
+        condition: service_completed_successfully
+        required: true
+    environment:
+      CARDDEMO_ACCOUNT_SERVICE_URL: http://account-service:8080
+      CARDDEMO_AUTHORIZATION_DB_PASSWORD: placeholder
+      CARDDEMO_AUTHORIZATION_DB_USER: carddemo
+      CARDDEMO_AUTHORIZATION_JDBC_URL: jdbc:postgresql://authorization-db:5432/carddemo_authorization
+      CARDDEMO_KAFKA_BOOTSTRAP: kafka:9092
+      KEYCLOAK_CLIENT_ID: carddemo-authorization-svc
+      KEYCLOAK_CLIENT_SECRET: placeholder
+      KEYCLOAK_ISSUER_URI: http://127.0.0.1:8088/realms/carddemo
+      KEYCLOAK_REALM: carddemo
+      KEYCLOAK_URL: http://keycloak:8080
+      SERVER_ADDRESS: 0.0.0.0
+    healthcheck:
+      test:
+        - CMD-SHELL
+        - wget -q -O - http://127.0.0.1:8082/actuator/health | grep -q UP
+      timeout: 3s
+      interval: 5s
+      retries: 20
+    networks:
+      default: null
+    ports:
+      - mode: ingress
+        host_ip: 127.0.0.1
+        target: 8082
+        published: "8082"
+        protocol: tcp
+  frontend:
+    build:
+      context: /home/ubuntu/repos/Aws-Card-Demo2/modernization/frontend
+      dockerfile: Dockerfile
+      args:
+        VITE_KEYCLOAK_CLIENT_ID: carddemo-ui
+        VITE_KEYCLOAK_POST_LOGOUT_REDIRECT_URI: http://127.0.0.1:5173/
+        VITE_KEYCLOAK_REALM: carddemo
+        VITE_KEYCLOAK_REDIRECT_URI: http://127.0.0.1:5173/callback
+        VITE_KEYCLOAK_URL: http://127.0.0.1:8088
+    depends_on:
+      gateway:
+        condition: service_healthy
+        required: true
+    networks:
+      default: null
+    ports:
+      - mode: ingress
+        host_ip: 127.0.0.1
+        target: 80
+        published: "5173"
+        protocol: tcp
+  gateway:
+    build:
+      context: /home/ubuntu/repos/Aws-Card-Demo2/modernization
+      dockerfile: gateway/Dockerfile
+      args:
+        MAVEN_MIRROR_URL: ""
+    depends_on:
+      account-service:
+        condition: service_healthy
+        required: true
+      authorization-service:
+        condition: service_healthy
+        required: true
+      identity-service:
+        condition: service_healthy
+        required: true
+      transaction-service:
+        condition: service_healthy
+        required: true
+    environment:
+      CARDDEMO_ACCOUNT_URI: http://account-service:8080
+      CARDDEMO_AUTHORIZATION_URI: http://authorization-service:8082
+      CARDDEMO_IDENTITY_URI: http://identity-service:8081
+      CARDDEMO_TRANSACTION_URI: http://transaction-service:8083
+      KEYCLOAK_ISSUER_URI: http://127.0.0.1:8088/realms/carddemo
+      KEYCLOAK_REALM: carddemo
+      KEYCLOAK_URL: http://keycloak:8080
+      SERVER_ADDRESS: 0.0.0.0
+    healthcheck:
+      test:
+        - CMD-SHELL
+        - wget -q -O - http://127.0.0.1:8090/actuator/health | grep -q UP
+      timeout: 3s
+      interval: 5s
+      retries: 20
+    networks:
+      default: null
+    ports:
+      - mode: ingress
+        host_ip: 127.0.0.1
+        target: 8090
+        published: "8090"
+        protocol: tcp
+  identity-db:
+    environment:
+      POSTGRES_DB: carddemo_identity
+      POSTGRES_PASSWORD: placeholder
+      POSTGRES_USER: carddemo
+    healthcheck:
+      test:
+        - CMD-SHELL
+        - pg_isready -U carddemo -d carddemo_identity
+      timeout: 3s
+      interval: 5s
+      retries: 20
+    image: postgres:16
+    networks:
+      default: null
+    ports:
+      - mode: ingress
+        host_ip: 127.0.0.1
+        target: 5432
+        published: "5434"
+        protocol: tcp
+    volumes:
+      - type: volume
+        source: carddemo-identity-pgdata
+        target: /var/lib/postgresql/data
+        volume: {}
+  identity-service:
+    build:
+      context: /home/ubuntu/repos/Aws-Card-Demo2/modernization
+      dockerfile: identity-service/Dockerfile
+      args:
+        MAVEN_MIRROR_URL: ""
+    depends_on:
+      identity-db:
+        condition: service_healthy
+        required: true
+      keycloak-bootstrap:
+        condition: service_completed_successfully
+        required: true
+    environment:
+      CARDDEMO_IDENTITY_DB_PASSWORD: placeholder
+      CARDDEMO_IDENTITY_DB_USER: carddemo
+      CARDDEMO_IDENTITY_JDBC_URL: jdbc:postgresql://identity-db:5432/carddemo_identity
+      KEYCLOAK_CLIENT_ID: carddemo-identity-admin
+      KEYCLOAK_CLIENT_SECRET: placeholder
+      KEYCLOAK_ISSUER_URI: http://127.0.0.1:8088/realms/carddemo
+      KEYCLOAK_REALM: carddemo
+      KEYCLOAK_URL: http://keycloak:8080
+      SERVER_ADDRESS: 0.0.0.0
+    healthcheck:
+      test:
+        - CMD-SHELL
+        - wget -q -O - http://127.0.0.1:8081/actuator/health | grep -q UP
+      timeout: 3s
+      interval: 5s
+      retries: 20
+    networks:
+      default: null
+    ports:
+      - mode: ingress
+        host_ip: 127.0.0.1
+        target: 8081
+        published: "8081"
+        protocol: tcp
+  kafka:
+    environment:
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092
+      KAFKA_CONTROLLER_LISTENER_NAMES: CONTROLLER
+      KAFKA_CONTROLLER_QUORUM_VOTERS: 1@kafka:9093
+      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,CONTROLLER:PLAINTEXT
+      KAFKA_LISTENERS: PLAINTEXT://0.0.0.0:9092,CONTROLLER://0.0.0.0:9093
+      KAFKA_NODE_ID: "1"
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: "1"
+      KAFKA_PROCESS_ROLES: broker,controller
+      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: "1"
+      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: "1"
+    healthcheck:
+      test:
+        - CMD-SHELL
+        - /opt/kafka/bin/kafka-broker-api-versions.sh --bootstrap-server 127.0.0.1:9092
+          >/dev/null
+      timeout: 5s
+      interval: 10s
+      retries: 20
+    image: apache/kafka:3.8.0
+    networks:
+      default: null
+  keycloak:
+    command:
+      - start-dev
+      - --import-realm
+      - --http-port=8080
+    depends_on:
+      keycloak-db:
+        condition: service_healthy
+        required: true
+    environment:
+      KC_BOOTSTRAP_ADMIN_PASSWORD: placeholder
+      KC_BOOTSTRAP_ADMIN_USERNAME: admin
+      KC_DB: postgres
+      KC_DB_PASSWORD: placeholder
+      KC_DB_URL: jdbc:postgresql://keycloak-db:5432/keycloak
+      KC_DB_USERNAME: keycloak
+      KC_HEALTH_ENABLED: "true"
+      KC_HOSTNAME: http://127.0.0.1:8088
+      KC_HOSTNAME_BACKCHANNEL_DYNAMIC: "true"
+    healthcheck:
+      test:
+        - CMD-SHELL
+        - 'exec 3<>/dev/tcp/127.0.0.1/9000 && printf ''GET /health/ready HTTP/1.1\r\nHost:
+          localhost\r\nConnection: close\r\n\r\n'' >&3 && grep -q ''"status": "UP"''
+          <&3'
+      timeout: 5s
+      interval: 5s
+      retries: 40
+      start_period: 20s
+    image: quay.io/keycloak/keycloak:26.0
+    networks:
+      default: null
+    ports:
+      - mode: ingress
+        host_ip: 127.0.0.1
+        target: 8080
+        published: "8088"
+        protocol: tcp
+    volumes:
+      - type: bind
+        source: /home/ubuntu/repos/Aws-Card-Demo2/modernization/keycloak/realm-carddemo.json
+        target: /opt/keycloak/data/import/realm-carddemo.json
+        read_only: true
+        bind: {}
+  keycloak-bootstrap:
+    depends_on:
+      keycloak:
+        condition: service_healthy
+        required: true
+    entrypoint:
+      - /bin/bash
+      - /bootstrap/bootstrap.sh
+    environment:
+      E2E_ADMIN_TOTP_SECRET: REPLACEMEWITHABASE32SECRET
+      E2E_LOCKOUT_TOTP_SECRET: REPLACEMEWITHABASE32SECRET
+      E2E_PASSWORD: placeholder
+      E2E_USER_TOTP_SECRET: REPLACEMEWITHABASE32SECRET
+      KEYCLOAK_ADMIN: admin
+      KEYCLOAK_ADMIN_PASSWORD: placeholder
+      KEYCLOAK_AUTHORIZATION_CLIENT_SECRET: placeholder
+      KEYCLOAK_IDENTITY_CLIENT_SECRET: placeholder
+      KEYCLOAK_REALM: carddemo
+      KEYCLOAK_TRANSACTION_CLIENT_SECRET: placeholder
+      KEYCLOAK_URL: http://keycloak:8080
+    image: quay.io/keycloak/keycloak:26.0
+    networks:
+      default: null
+    restart: 'no'
+    volumes:
+      - type: bind
+        source: /home/ubuntu/repos/Aws-Card-Demo2/modernization/keycloak
+        target: /bootstrap
+        read_only: true
+        bind: {}
+  keycloak-db:
+    environment:
+      POSTGRES_DB: keycloak
+      POSTGRES_PASSWORD: placeholder
+      POSTGRES_USER: keycloak
+    healthcheck:
+      test:
+        - CMD-SHELL
+        - pg_isready -U keycloak -d keycloak
+      timeout: 3s
+      interval: 5s
+      retries: 20
+    image: postgres:16
+    networks:
+      default: null
+    volumes:
+      - type: volume
+        source: carddemo-keycloak-pgdata
+        target: /var/lib/postgresql/data
+        volume: {}
+  transaction-db:
+    environment:
+      POSTGRES_DB: carddemo_transaction
+      POSTGRES_PASSWORD: placeholder
+      POSTGRES_USER: carddemo
+    healthcheck:
+      test:
+        - CMD-SHELL
+        - pg_isready -U carddemo -d carddemo_transaction
+      timeout: 3s
+      interval: 5s
+      retries: 20
+    image: postgres:16
+    networks:
+      default: null
+    ports:
+      - mode: ingress
+        host_ip: 127.0.0.1
+        target: 5432
+        published: "5436"
+        protocol: tcp
+    volumes:
+      - type: volume
+        source: carddemo-transaction-pgdata
+        target: /var/lib/postgresql/data
+        volume: {}
+  transaction-service:
+    build:
+      context: /home/ubuntu/repos/Aws-Card-Demo2/modernization
+      dockerfile: transaction-service/Dockerfile
+      args:
+        MAVEN_MIRROR_URL: ""
+    depends_on:
+      account-service:
+        condition: service_healthy
+        required: true
+      keycloak-bootstrap:
+        condition: service_completed_successfully
+        required: true
+      transaction-db:
+        condition: service_healthy
+        required: true
+    environment:
+      CARDDEMO_ACCOUNT_SERVICE_URL: http://account-service:8080
+      CARDDEMO_TRANSACTION_DB_PASSWORD: placeholder
+      CARDDEMO_TRANSACTION_DB_USER: carddemo
+      CARDDEMO_TRANSACTION_JDBC_URL: jdbc:postgresql://transaction-db:5432/carddemo_transaction
+      KEYCLOAK_CLIENT_ID: carddemo-transaction-svc
+      KEYCLOAK_CLIENT_SECRET: placeholder
+      KEYCLOAK_ISSUER_URI: http://127.0.0.1:8088/realms/carddemo
+      KEYCLOAK_REALM: carddemo
+      KEYCLOAK_URL: http://keycloak:8080
+      SERVER_ADDRESS: 0.0.0.0
+    healthcheck:
+      test:
+        - CMD-SHELL
+        - wget -q -O - http://127.0.0.1:8083/actuator/health | grep -q UP
+      timeout: 3s
+      interval: 5s
+      retries: 20
+    networks:
+      default: null
+    ports:
+      - mode: ingress
+        host_ip: 127.0.0.1
+        target: 8083
+        published: "8083"
+        protocol: tcp
+networks:
+  default:
+    name: carddemo-modernization_default
+volumes:
+  carddemo-account-pgdata:
+    name: carddemo-modernization_carddemo-account-pgdata
+  carddemo-authorization-pgdata:
+    name: carddemo-modernization_carddemo-authorization-pgdata
+  carddemo-identity-pgdata:
+    name: carddemo-modernization_carddemo-identity-pgdata
+  carddemo-keycloak-pgdata:
+    name: carddemo-modernization_carddemo-keycloak-pgdata
+  carddemo-transaction-pgdata:
+    name: carddemo-modernization_carddemo-transaction-pgdata
+x-maven-build:
+  args:
+    MAVEN_MIRROR_URL: ""
+  context: .
+x-postgres-healthcheck:
+  interval: 5s
+  retries: 20
+  timeout: 3s
+x-realm-env:
+  KEYCLOAK_ISSUER_URI: http://127.0.0.1:8088/realms/carddemo
+  KEYCLOAK_REALM: carddemo
+  KEYCLOAK_URL: http://keycloak:8080

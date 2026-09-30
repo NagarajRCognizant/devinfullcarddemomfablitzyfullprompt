@@ -1,0 +1,57 @@
+{{- if .Values.authPurge.enabled }}
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: {{ include "carddemo.fullname" . }}-auth-purge
+  labels:
+    {{- include "carddemo.labels" . | nindent 4 }}
+    app.kubernetes.io/component: auth-purge
+spec:
+  # CBPAUP0C, run by CBPAUP0J: the expired-authorization purge, so a CronJob that runs to completion.
+  # Forbidden concurrency keeps the single-threaded IMS scan semantics, and backoffLimit 0 leaves a
+  # failed run for an operator to restart from its last checkpoint rather than silently re-running.
+  schedule: {{ .Values.authPurge.schedule | quote }}
+  concurrencyPolicy: Forbid
+  successfulJobsHistoryLimit: 3
+  failedJobsHistoryLimit: 3
+  jobTemplate:
+    spec:
+      backoffLimit: 0
+      template:
+        metadata:
+          labels:
+            {{- include "carddemo.labels" . | nindent 12 }}
+            app.kubernetes.io/component: auth-purge
+        spec:
+          restartPolicy: Never
+          containers:
+            - name: auth-purge
+              image: {{ include "carddemo.image" (dict "root" . "component" .Values.authPurge) }}
+              imagePullPolicy: {{ .Values.image.pullPolicy }}
+              args:
+                - --spring.batch.job.enabled=true
+                - --spring.batch.job.name=purgeExpiredAuthorizationsJob
+              env:
+                - name: {{ .Values.authorizationService.datasource.urlVariable }}
+                  value: {{ .Values.authorizationService.datasource.url | quote }}
+                - name: {{ .Values.authorizationService.datasource.userVariable }}
+                  valueFrom:
+                    secretKeyRef:
+                      name: {{ .Values.authorizationService.datasource.existingSecret }}
+                      key: {{ .Values.authorizationService.datasource.usernameKey }}
+                - name: {{ .Values.authorizationService.datasource.passwordVariable }}
+                  valueFrom:
+                    secretKeyRef:
+                      name: {{ .Values.authorizationService.datasource.existingSecret }}
+                      key: {{ .Values.authorizationService.datasource.passwordKey }}
+                # The SYSIN card of CBPAUP0J: expiry days, checkpoint frequency, checkpoint display
+                # frequency and the debug flag.
+                - name: CARDDEMO_BATCH_AUTHPURGE_EXPIRYDAYS
+                  value: {{ .Values.authPurge.expiryDays | quote }}
+                - name: CARDDEMO_BATCH_AUTHPURGE_CHECKPOINTFREQUENCY
+                  value: {{ .Values.authPurge.checkpointFrequency | quote }}
+                - name: CARDDEMO_BATCH_AUTHPURGE_CHECKPOINTDISPLAYFREQUENCY
+                  value: {{ .Values.authPurge.checkpointDisplayFrequency | quote }}
+                - name: CARDDEMO_BATCH_AUTHPURGE_DEBUG
+                  value: {{ .Values.authPurge.debug | quote }}
+{{- end }}

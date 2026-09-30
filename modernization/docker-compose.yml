@@ -1,0 +1,380 @@
+# Local-only stack for the converted CardDemo account management, user administration and credit
+# card authorization capabilities.
+#
+# Every port is published on the loopback interface only. This stack is for functional-equivalence
+# testing and demonstration; it is not a production deployment and carries no TLS.
+#
+# Authentication is the realm's: Keycloak owns the password and the second factor, mints the RS256
+# tokens, and the four services only verify them against its JWKS, so no signing key appears here.
+# The values marked ${VAR:?} have no default on purpose - the stack refuses to start rather than come
+# up with a well-known secret. Copy .env.example to .env and fill it in.
+#
+# Each service owns its data: the account service reads ACCTDAT, CARDXREF and CUSTDAT from the
+# carddemo database, the identity service reads USRSEC from carddemo_identity, the authorization
+# service owns carddemo_authorization and Keycloak owns its own, on separate PostgreSQL instances, so
+# none can reach another's tables.
+#
+# Everything is built from this checkout: the service images build their jar and the frontend image
+# builds its bundle inside the image, so no local mvn or npm run is needed first.
+name: carddemo-modernization
+
+x-postgres-healthcheck: &postgres-healthcheck
+  interval: 5s
+  timeout: 3s
+  retries: 20
+
+# Optional mirror of Maven Central for the service image builds; see .env.example.
+x-maven-build: &maven-build
+  context: .
+  args:
+    MAVEN_MIRROR_URL: ${MAVEN_MIRROR_URL:-}
+
+# One realm for every service. The issuer the browser is redirected to and the issuer the services
+# validate against must be the same string, or the "iss" claim of the token will not match, so both
+# use the host-published address rather than the container name.
+x-realm-env: &realm-env
+  KEYCLOAK_URL: http://keycloak:8080
+  KEYCLOAK_ISSUER_URI: http://127.0.0.1:8088/realms/carddemo
+  KEYCLOAK_REALM: carddemo
+
+services:
+  account-db:
+    image: postgres:16
+    environment:
+      POSTGRES_DB: carddemo
+      POSTGRES_USER: ${CARDDEMO_DB_USER:-carddemo}
+      POSTGRES_PASSWORD: ${CARDDEMO_DB_PASSWORD:?set CARDDEMO_DB_PASSWORD in .env}
+    ports:
+      - "127.0.0.1:5433:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${CARDDEMO_DB_USER:-carddemo} -d carddemo"]
+      <<: *postgres-healthcheck
+    volumes:
+      - carddemo-account-pgdata:/var/lib/postgresql/data
+
+  identity-db:
+    image: postgres:16
+    environment:
+      POSTGRES_DB: carddemo_identity
+      POSTGRES_USER: ${CARDDEMO_DB_USER:-carddemo}
+      POSTGRES_PASSWORD: ${CARDDEMO_DB_PASSWORD:?set CARDDEMO_DB_PASSWORD in .env}
+    ports:
+      - "127.0.0.1:5434:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${CARDDEMO_DB_USER:-carddemo} -d carddemo_identity"]
+      <<: *postgres-healthcheck
+    volumes:
+      - carddemo-identity-pgdata:/var/lib/postgresql/data
+
+  authorization-db:
+    image: postgres:16
+    environment:
+      POSTGRES_DB: carddemo_authorization
+      POSTGRES_USER: ${CARDDEMO_DB_USER:-carddemo}
+      POSTGRES_PASSWORD: ${CARDDEMO_DB_PASSWORD:?set CARDDEMO_DB_PASSWORD in .env}
+    ports:
+      - "127.0.0.1:5435:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${CARDDEMO_DB_USER:-carddemo} -d carddemo_authorization"]
+      <<: *postgres-healthcheck
+    volumes:
+      - carddemo-authorization-pgdata:/var/lib/postgresql/data
+
+  transaction-db:
+    image: postgres:16
+    environment:
+      POSTGRES_DB: carddemo_transaction
+      POSTGRES_USER: ${CARDDEMO_DB_USER:-carddemo}
+      POSTGRES_PASSWORD: ${CARDDEMO_DB_PASSWORD:?set CARDDEMO_DB_PASSWORD in .env}
+    ports:
+      - "127.0.0.1:5436:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${CARDDEMO_DB_USER:-carddemo} -d carddemo_transaction"]
+      <<: *postgres-healthcheck
+    volumes:
+      - carddemo-transaction-pgdata:/var/lib/postgresql/data
+
+  # The realm's own store, separate from the business databases: user credentials and the TOTP
+  # secrets live here and nowhere else.
+  keycloak-db:
+    image: postgres:16
+    environment:
+      POSTGRES_DB: keycloak
+      POSTGRES_USER: ${KEYCLOAK_DB_USER:-keycloak}
+      POSTGRES_PASSWORD: ${KEYCLOAK_DB_PASSWORD:?set KEYCLOAK_DB_PASSWORD in .env}
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${KEYCLOAK_DB_USER:-keycloak} -d keycloak"]
+      <<: *postgres-healthcheck
+    volumes:
+      - carddemo-keycloak-pgdata:/var/lib/postgresql/data
+
+  # COSGN00C's password check, replaced by an OpenID Connect provider: the realm authenticates with a
+  # password and a TOTP code and issues the token the services verify.
+  #
+  # start-dev is a development-mode server: HTTP only and no hostname strictness, which is what a
+  # loopback stack needs and what a real deployment must not use. The realm is imported from
+  # keycloak/realm-carddemo.json; the secrets it deliberately omits are set afterwards by
+  # keycloak-bootstrap.
+  keycloak:
+    image: quay.io/keycloak/keycloak:26.0
+    command:
+      - start-dev
+      - --import-realm
+      - --http-port=8080
+    environment:
+      KC_DB: postgres
+      KC_DB_URL: jdbc:postgresql://keycloak-db:5432/keycloak
+      KC_DB_USERNAME: ${KEYCLOAK_DB_USER:-keycloak}
+      KC_DB_PASSWORD: ${KEYCLOAK_DB_PASSWORD:?set KEYCLOAK_DB_PASSWORD in .env}
+      KC_BOOTSTRAP_ADMIN_USERNAME: ${KEYCLOAK_ADMIN:-admin}
+      KC_BOOTSTRAP_ADMIN_PASSWORD: ${KEYCLOAK_ADMIN_PASSWORD:?set KEYCLOAK_ADMIN_PASSWORD in .env}
+      KC_HEALTH_ENABLED: "true"
+      # The tokens must say what the browser can reach, since that is the issuer the services and the
+      # SPA both validate.
+      KC_HOSTNAME: http://127.0.0.1:8088
+      KC_HOSTNAME_BACKCHANNEL_DYNAMIC: "true"
+    depends_on:
+      keycloak-db:
+        condition: service_healthy
+    ports:
+      - "127.0.0.1:8088:8080"
+    volumes:
+      - ./keycloak/realm-carddemo.json:/opt/keycloak/data/import/realm-carddemo.json:ro
+    # The image carries neither curl nor wget, so readiness is a bash connect to the management port
+    # rather than an HTTP probe of it.
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "exec 3<>/dev/tcp/127.0.0.1/9000 && printf 'GET /health/ready HTTP/1.1\\r\\nHost: localhost\\r\\nConnection: close\\r\\n\\r\\n' >&3 && grep -q '\"status\": \"UP\"' <&3",
+        ]
+      interval: 5s
+      timeout: 5s
+      retries: 40
+      start_period: 20s
+
+  # The half of the realm configuration that carries secrets: client secrets, the realm-management
+  # roles of the provisioning client, and the two pre-enrolled E2E users. Runs once, in the Keycloak
+  # image because kcadm.sh lives there, and the services wait for it to succeed.
+  keycloak-bootstrap:
+    image: quay.io/keycloak/keycloak:26.0
+    entrypoint: ["/bin/bash", "/bootstrap/bootstrap.sh"]
+    depends_on:
+      keycloak:
+        condition: service_healthy
+    environment:
+      KEYCLOAK_URL: http://keycloak:8080
+      KEYCLOAK_REALM: carddemo
+      KEYCLOAK_ADMIN: ${KEYCLOAK_ADMIN:-admin}
+      KEYCLOAK_ADMIN_PASSWORD: ${KEYCLOAK_ADMIN_PASSWORD:?set KEYCLOAK_ADMIN_PASSWORD in .env}
+      KEYCLOAK_IDENTITY_CLIENT_SECRET: ${KEYCLOAK_IDENTITY_CLIENT_SECRET:?set KEYCLOAK_IDENTITY_CLIENT_SECRET in .env}
+      KEYCLOAK_AUTHORIZATION_CLIENT_SECRET: ${KEYCLOAK_AUTHORIZATION_CLIENT_SECRET:?set KEYCLOAK_AUTHORIZATION_CLIENT_SECRET in .env}
+      KEYCLOAK_TRANSACTION_CLIENT_SECRET: ${KEYCLOAK_TRANSACTION_CLIENT_SECRET:?set KEYCLOAK_TRANSACTION_CLIENT_SECRET in .env}
+      E2E_PASSWORD: ${E2E_PASSWORD:?set E2E_PASSWORD in .env}
+      E2E_ADMIN_TOTP_SECRET: ${E2E_ADMIN_TOTP_SECRET:?set E2E_ADMIN_TOTP_SECRET in .env}
+      E2E_USER_TOTP_SECRET: ${E2E_USER_TOTP_SECRET:?set E2E_USER_TOTP_SECRET in .env}
+      E2E_LOCKOUT_TOTP_SECRET: ${E2E_LOCKOUT_TOTP_SECRET:?set E2E_LOCKOUT_TOTP_SECRET in .env}
+    volumes:
+      - ./keycloak:/bootstrap:ro
+    restart: "no"
+
+  identity-service:
+    build:
+      <<: *maven-build
+      dockerfile: identity-service/Dockerfile
+    depends_on:
+      identity-db:
+        condition: service_healthy
+      keycloak-bootstrap:
+        condition: service_completed_successfully
+    environment:
+      <<: *realm-env
+      # Flyway creates the schema (V1), loads the decoded USRSEC records (V2) and adds the realm link
+      # column (V3) on startup, which is the modernized equivalent of the USRSEC IDCAMS define/REPRO
+      # job.
+      CARDDEMO_IDENTITY_JDBC_URL: jdbc:postgresql://identity-db:5432/carddemo_identity
+      CARDDEMO_IDENTITY_DB_USER: ${CARDDEMO_DB_USER:-carddemo}
+      CARDDEMO_IDENTITY_DB_PASSWORD: ${CARDDEMO_DB_PASSWORD:?set CARDDEMO_DB_PASSWORD in .env}
+      SERVER_ADDRESS: 0.0.0.0
+      # Provisioning only: this service creates realm users, it no longer authenticates anyone.
+      KEYCLOAK_CLIENT_ID: carddemo-identity-admin
+      KEYCLOAK_CLIENT_SECRET: ${KEYCLOAK_IDENTITY_CLIENT_SECRET:?set KEYCLOAK_IDENTITY_CLIENT_SECRET in .env}
+    ports:
+      - "127.0.0.1:8081:8081"
+    healthcheck:
+      test: ["CMD-SHELL", "wget -q -O - http://127.0.0.1:8081/actuator/health | grep -q UP"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+
+  account-service:
+    build:
+      <<: *maven-build
+      dockerfile: account-service/Dockerfile
+    depends_on:
+      account-db:
+        condition: service_healthy
+      keycloak-bootstrap:
+        condition: service_completed_successfully
+    environment:
+      <<: *realm-env
+      # Flyway creates the schema (V1) and loads the converted sample data (V2) on startup, which is
+      # the modernized equivalent of the ACCTFILE IDCAMS delete/define/REPRO job.
+      CARDDEMO_ACCOUNT_JDBC_URL: jdbc:postgresql://account-db:5432/carddemo
+      CARDDEMO_ACCOUNT_DB_USER: ${CARDDEMO_DB_USER:-carddemo}
+      CARDDEMO_ACCOUNT_DB_PASSWORD: ${CARDDEMO_DB_PASSWORD:?set CARDDEMO_DB_PASSWORD in .env}
+      SERVER_ADDRESS: 0.0.0.0
+    ports:
+      - "127.0.0.1:8080:8080"
+    healthcheck:
+      test: ["CMD-SHELL", "wget -q -O - http://127.0.0.1:8080/actuator/health | grep -q UP"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+
+  # COPAUA0C, CPVS, CPVD and CPVDTRAN: its own database, and card, account and customer data read
+  # from the account service rather than from the carddemo database.
+  authorization-service:
+    build:
+      <<: *maven-build
+      dockerfile: authorization-service/Dockerfile
+    depends_on:
+      authorization-db:
+        condition: service_healthy
+      kafka:
+        condition: service_healthy
+      account-service:
+        condition: service_healthy
+      keycloak-bootstrap:
+        condition: service_completed_successfully
+    environment:
+      <<: *realm-env
+      CARDDEMO_AUTHORIZATION_JDBC_URL: jdbc:postgresql://authorization-db:5432/carddemo_authorization
+      CARDDEMO_AUTHORIZATION_DB_USER: ${CARDDEMO_DB_USER:-carddemo}
+      CARDDEMO_AUTHORIZATION_DB_PASSWORD: ${CARDDEMO_DB_PASSWORD:?set CARDDEMO_DB_PASSWORD in .env}
+      CARDDEMO_KAFKA_BOOTSTRAP: kafka:9092
+      CARDDEMO_ACCOUNT_SERVICE_URL: http://account-service:8080
+      SERVER_ADDRESS: 0.0.0.0
+      # The Kafka-driven authorization flow has no signed-on user to borrow a token from, so it asks
+      # the realm for its own with client_credentials.
+      KEYCLOAK_CLIENT_ID: carddemo-authorization-svc
+      KEYCLOAK_CLIENT_SECRET: ${KEYCLOAK_AUTHORIZATION_CLIENT_SECRET:?set KEYCLOAK_AUTHORIZATION_CLIENT_SECRET in .env}
+    ports:
+      - "127.0.0.1:8082:8082"
+    healthcheck:
+      test: ["CMD-SHELL", "wget -q -O - http://127.0.0.1:8082/actuator/health | grep -q UP"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+
+  # COTRN00C, COTRN01C, COTRN02C, COBIL00C and CORPT00C: the transaction database is its own, and
+  # the balance the bill payment adjusts is reached through the account service, as the split of
+  # the two contexts requires.
+  transaction-service:
+    build:
+      <<: *maven-build
+      dockerfile: transaction-service/Dockerfile
+    depends_on:
+      transaction-db:
+        condition: service_healthy
+      account-service:
+        condition: service_healthy
+      keycloak-bootstrap:
+        condition: service_completed_successfully
+    environment:
+      <<: *realm-env
+      # Flyway creates the transaction schema and loads the converted TRANSACT sample data on
+      # startup, the modernized equivalent of the TRANSACT IDCAMS delete/define/REPRO job.
+      CARDDEMO_TRANSACTION_JDBC_URL: jdbc:postgresql://transaction-db:5432/carddemo_transaction
+      CARDDEMO_TRANSACTION_DB_USER: ${CARDDEMO_DB_USER:-carddemo}
+      CARDDEMO_TRANSACTION_DB_PASSWORD: ${CARDDEMO_DB_PASSWORD:?set CARDDEMO_DB_PASSWORD in .env}
+      CARDDEMO_ACCOUNT_SERVICE_URL: http://account-service:8080
+      SERVER_ADDRESS: 0.0.0.0
+      # The bill payment adjusts the balance in the account service as itself, not as the operator.
+      KEYCLOAK_CLIENT_ID: carddemo-transaction-svc
+      KEYCLOAK_CLIENT_SECRET: ${KEYCLOAK_TRANSACTION_CLIENT_SECRET:?set KEYCLOAK_TRANSACTION_CLIENT_SECRET in .env}
+    ports:
+      - "127.0.0.1:8083:8083"
+    healthcheck:
+      test: ["CMD-SHELL", "wget -q -O - http://127.0.0.1:8083/actuator/health | grep -q UP"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+
+  # Replaces the MQ queue manager that triggered COPAUA0C: one broker in KRaft mode, enough for the
+  # request and reply topics of a local functional run.
+  kafka:
+    image: apache/kafka:3.8.0
+    environment:
+      KAFKA_NODE_ID: 1
+      KAFKA_PROCESS_ROLES: broker,controller
+      KAFKA_CONTROLLER_QUORUM_VOTERS: 1@kafka:9093
+      KAFKA_CONTROLLER_LISTENER_NAMES: CONTROLLER
+      KAFKA_LISTENERS: PLAINTEXT://0.0.0.0:9092,CONTROLLER://0.0.0.0:9093
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,CONTROLLER:PLAINTEXT
+      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "/opt/kafka/bin/kafka-broker-api-versions.sh --bootstrap-server 127.0.0.1:9092 >/dev/null",
+        ]
+      interval: 10s
+      timeout: 5s
+      retries: 20
+
+  gateway:
+    build:
+      <<: *maven-build
+      dockerfile: gateway/Dockerfile
+    depends_on:
+      account-service:
+        condition: service_healthy
+      identity-service:
+        condition: service_healthy
+      authorization-service:
+        condition: service_healthy
+      transaction-service:
+        condition: service_healthy
+    environment:
+      <<: *realm-env
+      SERVER_ADDRESS: 0.0.0.0
+      CARDDEMO_ACCOUNT_URI: http://account-service:8080
+      CARDDEMO_IDENTITY_URI: http://identity-service:8081
+      CARDDEMO_AUTHORIZATION_URI: http://authorization-service:8082
+      CARDDEMO_TRANSACTION_URI: http://transaction-service:8083
+    ports:
+      - "127.0.0.1:8090:8090"
+    healthcheck:
+      test: ["CMD-SHELL", "wget -q -O - http://127.0.0.1:8090/actuator/health | grep -q UP"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+
+  frontend:
+    build:
+      context: ./frontend
+      # Public configuration of a public client, so it is baked into the bundle; the SPA has no
+      # secret to bake in and must not be given one.
+      args:
+        VITE_KEYCLOAK_URL: http://127.0.0.1:8088
+        VITE_KEYCLOAK_REALM: carddemo
+        VITE_KEYCLOAK_CLIENT_ID: carddemo-ui
+        VITE_KEYCLOAK_REDIRECT_URI: http://127.0.0.1:5173/callback
+        VITE_KEYCLOAK_POST_LOGOUT_REDIRECT_URI: http://127.0.0.1:5173/
+    depends_on:
+      gateway:
+        condition: service_healthy
+    ports:
+      - "127.0.0.1:5173:80"
+
+volumes:
+  carddemo-account-pgdata:
+  carddemo-identity-pgdata:
+  carddemo-authorization-pgdata:
+  carddemo-transaction-pgdata:
+  carddemo-keycloak-pgdata:

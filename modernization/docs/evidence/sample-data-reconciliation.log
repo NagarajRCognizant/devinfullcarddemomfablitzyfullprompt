@@ -1,0 +1,15 @@
+== EBCDIC (cp037) to ASCII equivalence ==
+account    acctdata.txt   ascii= 50 ebcdic= 50 differing=  1 unexpected=  0 OK
+           record 48: ACCT-ADDR-ZIP/ACCT-GROUP-ID differ: 'A000000000'+zeroes in ASCII, 'ZEROAPR' in EBCDIC
+customer   custdata.txt   ascii= 50 ebcdic= 50 differing=  0 unexpected=  0 OK
+card_xref  cardxref.txt   ascii= 50 ebcdic= 50 differing=  0 unexpected=  0 OK
+
+== record counts loaded into PostgreSQL ==
+account    sample_file= 50 database= 50 OK
+customer   sample_file= 50 database= 50 OK
+card_xref  sample_file= 50 database= 50 OK
+
+== account master field level reconciliation ==
+50 accounts, 550 field comparisons, all matched
+
+RECONCILIATION PASSED

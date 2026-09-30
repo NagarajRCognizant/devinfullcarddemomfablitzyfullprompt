@@ -1,0 +1,63 @@
+# Overlay for driving the stack from a browser that is not on the Docker host.
+#
+# The loopback stack only works in a browser running on the host: the issuer of the realm, the
+# redirect URIs of carddemo-ui and the "iss" claim of every token all say 127.0.0.1, which a remote
+# browser cannot reach. This overlay puts the realm on the same public address as the page, under
+# /auth, so the sign-on, the TOTP prompt and the enrolment pages all resolve and the SPA can read the
+# discovery document from its own origin.
+#
+#   CARDDEMO_PUBLIC_UI_URL  the address the browser opens the SPA on, no trailing slash
+#
+# Usage, from modernization/ with .env in place:
+#   export CARDDEMO_PUBLIC_UI_URL=https://ui.example.test
+#   docker compose -f docker-compose.yml -f docker-compose.public.yml up -d --build
+#   docker compose exec -T -e CARDDEMO_PUBLIC_UI_URL keycloak bash /bootstrap/public-redirects.sh
+#
+# The issuer moves with the address, so every service that validates a token is told the new one; they
+# still fetch the JWKS over the container network, now under the same /auth prefix.
+x-public-realm-env: &public-realm-env
+  KEYCLOAK_URL: http://keycloak:8080/auth
+  KEYCLOAK_ISSUER_URI: ${CARDDEMO_PUBLIC_UI_URL:?set CARDDEMO_PUBLIC_UI_URL}/auth/realms/${KEYCLOAK_REALM:-carddemo}
+  KEYCLOAK_REALM: ${KEYCLOAK_REALM:-carddemo}
+
+services:
+  keycloak:
+    environment:
+      KC_HTTP_RELATIVE_PATH: /auth
+      # The management port carries the readiness probe and is not proxied, so it keeps its own path
+      # rather than following the public one.
+      KC_HTTP_MANAGEMENT_RELATIVE_PATH: /
+      KC_HOSTNAME: ${CARDDEMO_PUBLIC_UI_URL:?set CARDDEMO_PUBLIC_UI_URL}/auth
+      # The public address is terminated by a proxy, so the scheme and host of a request come from its
+      # forwarded headers rather than from the connection.
+      KC_PROXY_HEADERS: xforwarded
+      # Every address the realm publishes is the public one, including the token and JWKS endpoints the
+      # page fetches: derived from the request they would come back as http through the proxy, which a
+      # page served over https is not allowed to call.
+      KC_HOSTNAME_BACKCHANNEL_DYNAMIC: "false"
+
+  keycloak-bootstrap:
+    environment:
+      KEYCLOAK_URL: http://keycloak:8080/auth
+
+  identity-service:
+    environment: *public-realm-env
+
+  account-service:
+    environment: *public-realm-env
+
+  authorization-service:
+    environment: *public-realm-env
+
+  gateway:
+    environment: *public-realm-env
+
+  frontend:
+    build:
+      args:
+        VITE_KEYCLOAK_URL: ${CARDDEMO_PUBLIC_UI_URL:?set CARDDEMO_PUBLIC_UI_URL}/auth
+        VITE_KEYCLOAK_REDIRECT_URI: ${CARDDEMO_PUBLIC_UI_URL:?set CARDDEMO_PUBLIC_UI_URL}/callback
+        VITE_KEYCLOAK_POST_LOGOUT_REDIRECT_URI: ${CARDDEMO_PUBLIC_UI_URL:?set CARDDEMO_PUBLIC_UI_URL}/
+    depends_on:
+      keycloak:
+        condition: service_healthy

@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>com.carddemo</groupId>
+    <artifactId>carddemo-modernization</artifactId>
+    <version>1.0.0-SNAPSHOT</version>
+  </parent>
+
+  <artifactId>carddemo-batch-auth-purge</artifactId>
+  <name>CardDemo Expired Authorization Purge Batch</name>
+  <description>Job CBPAUP0J (program CBPAUP0C): purge expired pending authorizations and adjust the
+    authorization summary counters, as a Spring Batch application</description>
+
+  <dependencies>
+    <dependency>
+      <groupId>com.carddemo</groupId>
+      <artifactId>carddemo-common</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.carddemo</groupId>
+      <artifactId>carddemo-authorization-domain</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-batch</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.postgresql</groupId>
+      <artifactId>postgresql</artifactId>
+      <scope>runtime</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>com.carddemo</groupId>
+      <artifactId>carddemo-authorization-domain</artifactId>
+      <type>test-jar</type>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.batch</groupId>
+      <artifactId>spring-batch-test</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.flywaydb</groupId>
+      <artifactId>flyway-core</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.flywaydb</groupId>
+      <artifactId>flyway-database-postgresql</artifactId>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+
+  <build>
+    <finalName>carddemo-batch-auth-purge</finalName>
+    <testResources>
+      <testResource>
+        <directory>src/test/resources</directory>
+      </testResource>
+      <!-- The purge works on the schema the authorization service owns; its integration test
+           applies that service's migrations rather than keeping a second copy of them. -->
+      <testResource>
+        <directory>../authorization-service/src/main/resources</directory>
+        <includes>
+          <include>db/migration/**</include>
+        </includes>
+      </testResource>
+    </testResources>
+    <plugins>
+      <plugin>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-maven-plugin</artifactId>
+      </plugin>
+    </plugins>
+  </build>
+</project>

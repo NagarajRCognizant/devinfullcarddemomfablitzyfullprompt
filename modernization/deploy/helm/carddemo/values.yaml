@@ -1,0 +1,203 @@
+# Values for a non-production cluster. The database URLs and the realm address must be supplied per
+# environment; the defaults below name the local development databases and carry no secret.
+nameOverride: ""
+
+image:
+  registry: ""
+  pullPolicy: IfNotPresent
+  tag: 1.0.0
+
+# The realm that authenticates the users and signs the tokens. Nothing secret is set here: the
+# services fetch the realm's public keys from its JWKS, so the chart holds no signing key, and the
+# two confidential client secrets are read from secrets managed outside this chart.
+#
+# issuerUri must be the address in the "iss" claim of the tokens, which is the address the browser is
+# redirected to, not an in-cluster service name. url is where the services themselves reach Keycloak,
+# for its JWKS and its token endpoint, and is an in-cluster name; the two are the same string only in a
+# deployment that publishes Keycloak on one address.
+keycloak:
+  url: http://carddemo-keycloak:8080
+  realm: carddemo
+  issuerUri: https://sso.example.internal/realms/carddemo
+  clockSkewSeconds: 60
+  requireSecondFactor: true
+
+accountService:
+  enabled: true
+  replicas: 2
+  repository: carddemo/account-service
+  port: 8080
+  datasource:
+    url: jdbc:postgresql://carddemo-account-db:5432/carddemo
+    urlVariable: CARDDEMO_ACCOUNT_JDBC_URL
+    userVariable: CARDDEMO_ACCOUNT_DB_USER
+    passwordVariable: CARDDEMO_ACCOUNT_DB_PASSWORD
+    existingSecret: carddemo-account-db
+    usernameKey: username
+    passwordKey: password
+  resources:
+    requests:
+      cpu: 250m
+      memory: 512Mi
+    limits:
+      memory: 1Gi
+
+identityService:
+  enabled: true
+  replicas: 2
+  repository: carddemo/identity-service
+  port: 8081
+  # Provisioning only: this service creates and updates realm users, it no longer authenticates them.
+  keycloakClient:
+    clientId: carddemo-identity-admin
+    existingSecret: carddemo-identity-keycloak-client
+    secretKey: client-secret
+  datasource:
+    url: jdbc:postgresql://carddemo-identity-db:5432/carddemo_identity
+    urlVariable: CARDDEMO_IDENTITY_JDBC_URL
+    userVariable: CARDDEMO_IDENTITY_DB_USER
+    passwordVariable: CARDDEMO_IDENTITY_DB_PASSWORD
+    existingSecret: carddemo-identity-db
+    usernameKey: username
+    passwordKey: password
+  resources:
+    requests:
+      cpu: 250m
+      memory: 512Mi
+    limits:
+      memory: 1Gi
+
+authorizationService:
+  enabled: true
+  replicas: 2
+  repository: carddemo/authorization-service
+  port: 8082
+  # The Kafka-driven authorization flow has no signed-on user to borrow a token from, so it asks the
+  # realm for its own with client_credentials.
+  keycloakClient:
+    clientId: carddemo-authorization-svc
+    existingSecret: carddemo-authorization-keycloak-client
+    secretKey: client-secret
+  datasource:
+    url: jdbc:postgresql://carddemo-authorization-db:5432/carddemo_authorization
+    urlVariable: CARDDEMO_AUTHORIZATION_JDBC_URL
+    userVariable: CARDDEMO_AUTHORIZATION_DB_USER
+    passwordVariable: CARDDEMO_AUTHORIZATION_DB_PASSWORD
+    existingSecret: carddemo-authorization-db
+    usernameKey: username
+    passwordKey: password
+  resources:
+    requests:
+      cpu: 250m
+      memory: 512Mi
+    limits:
+      memory: 1Gi
+
+transactionService:
+  enabled: true
+  replicas: 2
+  repository: carddemo/transaction-service
+  port: 8083
+  # The bill payment adjusts the balance in the account service as itself, since the two contexts no
+  # longer share the single unit of recovery COBIL00C had.
+  keycloakClient:
+    clientId: carddemo-transaction-svc
+    existingSecret: carddemo-transaction-keycloak-client
+    secretKey: client-secret
+  datasource:
+    url: jdbc:postgresql://carddemo-transaction-db:5432/carddemo_transaction
+    urlVariable: CARDDEMO_TRANSACTION_JDBC_URL
+    userVariable: CARDDEMO_TRANSACTION_DB_USER
+    passwordVariable: CARDDEMO_TRANSACTION_DB_PASSWORD
+    existingSecret: carddemo-transaction-db
+    usernameKey: username
+    passwordKey: password
+  resources:
+    requests:
+      cpu: 250m
+      memory: 512Mi
+    limits:
+      memory: 1Gi
+
+# The converted transaction batch steps, one CronJob each, in the order the nightly JCL ran them.
+transactionBatch:
+  enabled: true
+  repository: carddemo/batch-transaction
+  inputDirectory: /batch/in
+  outputDirectory: /batch/out
+  persistence:
+    existingClaim: ""
+  jobs:
+    # CBTRN01C: reads the daily transaction file and reports the ones without a card cross-reference.
+    verifyDailyTransactions:
+      enabled: true
+      jobName: verifyDailyTransactionsJob
+      schedule: "0 1 * * *"
+    # CBTRN02C: posts the daily transactions and writes the rejects.
+    postTransactions:
+      enabled: true
+      jobName: postTransactionsJob
+      schedule: "30 1 * * *"
+    # CBTRN03C: the transaction detail report between two dates.
+    transactionReport:
+      enabled: true
+      jobName: transactionReportJob
+      schedule: "0 3 * * *"
+    # CBACT04C: the monthly interest accrual.
+    interestCalculation:
+      enabled: true
+      jobName: interestCalculationJob
+      schedule: "0 4 1 * *"
+    # CBSTM03A: the account statements, plain text and HTML.
+    accountStatement:
+      enabled: true
+      jobName: accountStatementJob
+      schedule: "0 5 1 * *"
+    # CBEXPORT, transaction half: the branch migration extract.
+    migrationExport:
+      enabled: false
+      jobName: exportBranchMigrationTransactionsJob
+      schedule: "0 6 * * *"
+
+# The broker that replaced the MQ queue manager of the authorization request flow. The topics
+# themselves are created by the service, which knows the partition count that preserves per-card
+# ordering.
+kafka:
+  bootstrapServers: carddemo-kafka-bootstrap:9092
+
+# CBPAUP0C / CBPAUP0J: the expired-authorization purge, with the SYSIN card as values.
+authPurge:
+  enabled: true
+  repository: carddemo/batch-auth-purge
+  schedule: "30 2 * * *"
+  expiryDays: 5
+  checkpointFrequency: 5
+  checkpointDisplayFrequency: 10
+  debug: false
+
+gateway:
+  enabled: true
+  replicas: 2
+  repository: carddemo/gateway
+  port: 8090
+  resources:
+    requests:
+      cpu: 100m
+      memory: 256Mi
+    limits:
+      memory: 512Mi
+
+# CBACT01C / READACCT: a scheduled job rather than a deployment, as it was a batch step.
+accountExtract:
+  enabled: true
+  repository: carddemo/batch-account-extract
+  schedule: "0 2 * * *"
+  outputDirectory: /extracts
+  persistence:
+    existingClaim: ""
+
+ingress:
+  enabled: false
+  className: nginx
+  host: carddemo.example.internal
+  annotations: {}

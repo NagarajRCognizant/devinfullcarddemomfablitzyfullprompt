@@ -1,0 +1,49 @@
+# Local-only configuration. The credentials below are dummy values for a locally started PostgreSQL
+# container and must never be reused.
+spring:
+  application:
+    name: carddemo-batch-account-extract
+  datasource:
+    url: ${CARDDEMO_ACCOUNT_JDBC_URL:jdbc:postgresql://localhost:5432/carddemo}
+    username: ${CARDDEMO_ACCOUNT_DB_USER:carddemo}
+    password: ${CARDDEMO_ACCOUNT_DB_PASSWORD:carddemo}
+  jpa:
+    open-in-view: false
+    hibernate:
+      ddl-auto: validate
+  flyway:
+    # The account schema is owned by the account service; the extract only reads it.
+    enabled: false
+  batch:
+    jdbc:
+      # The Spring Batch metadata tables are framework infrastructure, not converted business
+      # schema, so they are created by the framework rather than by a Flyway migration.
+      initialize-schema: always
+    job:
+      # The job is submitted explicitly, as the JCL job was, with
+      # --spring.batch.job.enabled=true --spring.batch.job.name=readAcctJob.
+      enabled: false
+
+carddemo:
+  batch:
+    readacct:
+      output-directory: ${CARDDEMO_READACCT_OUTPUT_DIR:target/readacct}
+      record-charset: ISO-8859-1
+      chunk-size: 100
+    migration:
+      # The EXPFILE and the master files CBEXPORT and CBIMPORT read and write.
+      directory: ${CARDDEMO_MIGRATION_DIR:target/migration}
+      export-file: expfile.acct
+      import-files: expfile.acct,expfile.tran
+      customer-file: custfile.dat
+      account-file: acctfile.dat
+      xref-file: xreffile.dat
+      transaction-file: transact.dat
+      card-file: cardfile.dat
+      error-file: errfile.dat
+      record-charset: ISO-8859-1
+      chunk-size: 100
+
+logging:
+  level:
+    com.carddemo: INFO

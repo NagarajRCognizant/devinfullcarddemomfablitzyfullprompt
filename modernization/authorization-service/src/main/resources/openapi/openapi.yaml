@@ -1,0 +1,337 @@
+openapi: 3.1.0
+info:
+  title: CardDemo Credit Card Authorizations
+  version: 1.0.0
+  description: >-
+    REST contract of the authorization service, the bounded context the credit card authorization
+    application (app/app-authorization-ims-db2-mq) was converted into. The operations replace CICS
+    transactions CPVS (program COPAUS0C, map COPAU00), CPVD (program COPAUS1C, map COPAU01) and the
+    fraud marking path CPVDTRAN (program COPAUS2C, DB2 table AUTHFRDS); the IMS hierarchy PAUTSUM0 /
+    PAUTDTL1 became a parent/child relational model this service owns alone.
+
+
+    The asynchronous authorization request processor COPAUA0C is NOT part of this contract: it was
+    triggered by a message on AWS.M2.CARDDEMO.PAUTH.REQUEST and replied on MQMD-REPLYTOQ, so it is a
+    Kafka consumer/producer pair whose message contracts are documented in
+    modernization/docs/18-messaging-modernization.md rather than as HTTP operations.
+
+
+    The terminal interaction patterns are retired per Section 8.4.5: PF7/PF8 paging becomes an
+    explicit page cursor, the selection character becomes a request for a named authorization, and
+    PF5 becomes a POST that toggles the fraud flag. The edits, the read sequences, the decline reason
+    table and the screen messages are preserved unchanged.
+
+
+    Every operation requires the bearer token POST /api/signon of the identity service issues. This
+    service never opens a connection to the carddemo or carddemo_identity databases: card, account
+    and customer data is read from the account service's cardholder lookup API.
+  license:
+    name: Apache-2.0
+    identifier: Apache-2.0
+servers:
+  - url: http://localhost:8090
+    description: API gateway
+  - url: http://localhost:8082
+    description: Authorization service, addressed directly
+security:
+  - bearerAuth: []
+tags:
+  - name: Authorization Summary
+    description: CICS transaction CPVS - program COPAUS0C, map COPAU00
+  - name: Authorization Detail
+    description: CICS transaction CPVD - program COPAUS1C, map COPAU01
+  - name: Fraud Marking
+    description: Program COPAUS2C - the DB2 fraud report table AUTHFRDS
+paths:
+  /api/authorizations:
+    get:
+      tags: [Authorization Summary]
+      operationId: authorizationSummary
+      summary: Pending authorization summary and one page of authorizations
+      description: >-
+        COPAUS0C paragraphs PROCESS-ENTER-KEY, READ-PAUTH-SUMMARY and POPULATE-AUTH-LIST. The
+        account id is edited exactly as the map edited it: a blank value returns the source's
+        "Account number must be entered..." message and a non numeric value its numeric message. A
+        page holds five rows, as the map had five detail lines, and afterAuthKey replaces the
+        COMMAREA page key array. When no PAUTSUM0 root exists the header totals are returned as
+        zeroes, which is what the map displayed.
+      parameters:
+        - name: accountId
+          in: query
+          required: false
+          description: The account id exactly as keyed, so blank and non numeric values reach the edits.
+          schema:
+            type: string
+            default: ''
+            maxLength: 11
+        - name: afterAuthKey
+          in: query
+          required: false
+          description: >-
+            The complemented authorization key of the last row of the previous page; absent for the
+            first page. Replaces the CDEMO-CPVS-PAGE-KEYS array of the COMMAREA.
+          schema:
+            type: string
+            maxLength: 26
+      responses:
+        '200':
+          description: The header, the totals and up to five authorizations
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationSummaryResponse'
+        '400':
+          $ref: '#/components/responses/ValidationError'
+        '401':
+          $ref: '#/components/responses/Unauthenticated'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalError'
+  /api/authorizations/{accountId}/{authKey}:
+    get:
+      tags: [Authorization Detail]
+      operationId: authorizationDetail
+      summary: One pending authorization in full
+      description: >-
+        COPAUS1C paragraphs PROCESS-ENTER-KEY and POPULATE-AUTH-DETAILS, reading the PAUTDTL1 child
+        under its PAUTSUM0 root. The response carries the edited forms the map showed - the decline
+        reason from the CCPAUERY table with the 9999-ERROR fallback for an unknown code, the dates
+        as MM/DD/YY, the time as HH:MM:SS, the card expiry as MM/YY and the fraud field as
+        F-MM/DD/YY, R-MM/DD/YY or a hyphen - and nextAuthKey, which is what PF8 read.
+      parameters:
+        - $ref: '#/components/parameters/AccountIdPath'
+        - $ref: '#/components/parameters/AuthKeyPath'
+        - name: selection
+          in: query
+          required: false
+          description: >-
+            The selection character of map COPAU0A. When present it must be S or s, which is the
+            edit of COPAUS0C; any other value returns that paragraph's message.
+          schema:
+            type: string
+            maxLength: 1
+      responses:
+        '200':
+          description: The authorization detail, with the end of chain message when it is the last one
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationDetailResponse'
+        '400':
+          $ref: '#/components/responses/ValidationError'
+        '401':
+          $ref: '#/components/responses/Unauthenticated'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalError'
+  /api/authorizations/{accountId}/{authKey}/fraud:
+    post:
+      tags: [Fraud Marking]
+      operationId: toggleAuthorizationFraud
+      summary: Mark the authorization as fraud, or remove an existing fraud report
+      description: >-
+        The PF5 branch of COPAUS1C, which linked to COPAUS2C. The rule is unchanged: an
+        authorization whose fraud report is confirmed has the report removed and returns
+        "AUTH FRAUD REMOVED...", anything else is marked and returns "AUTH MARKED FRAUD...". The
+        PAUTDTL1 fraud fields and the AUTHFRDS row are written in one local transaction, which is
+        the syncpoint COPAUS1C took across IMS and DB2 and the reason both tables stayed in this
+        service.
+      parameters:
+        - $ref: '#/components/parameters/AccountIdPath'
+        - $ref: '#/components/parameters/AuthKeyPath'
+      responses:
+        '200':
+          description: The authorization as it now stands, with the source's confirmation message
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationDetailResponse'
+        '400':
+          $ref: '#/components/responses/ValidationError'
+        '401':
+          $ref: '#/components/responses/Unauthenticated'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalError'
+components:
+  parameters:
+    AccountIdPath:
+      name: accountId
+      in: path
+      required: true
+      description: PA-ACCT-ID, the key of the PAUTSUM0 root segment.
+      schema:
+        type: integer
+        format: int64
+    AuthKeyPath:
+      name: authKey
+      in: path
+      required: true
+      description: >-
+        The PAUTDTL1 key: the complemented authorization date and time (99999 - YYDDD and
+        999999999 - HHMMSSmm) followed by the authorization type, exactly as the segment holds it.
+      schema:
+        type: string
+        maxLength: 26
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: >-
+        The token POST /api/signon of the identity service returns. Its subject is SEC-USR-ID and
+        its userType claim is SEC-USR-TYPE, the values COSGN00C left in the COMMAREA.
+  responses:
+    Unauthenticated:
+      description: No token was presented, or the token is expired or not valid
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    ValidationError:
+      description: An edit failed; the message is the WS-MESSAGE text of the source map
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    NotFound:
+      description: >-
+        A keyed read returned nothing where the source program treated that as an error, such as an
+        account absent from the cross reference or an authorization key that holds no segment
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    InternalError:
+      description: An IMS or DB2 status the source program treated as fatal and abended on
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+  schemas:
+    ErrorResponse:
+      type: object
+      description: A status token for the client and the message text the 3270 map showed
+      properties:
+        status:
+          type: string
+          examples: ['NOT_FOUND']
+        message:
+          type: string
+          examples: ['Account number must be entered...']
+    MoneyValue:
+      type: object
+      description: An S9(10)V99 amount with the edited text of the PIC +ZZZ,ZZZ,ZZZ.99 map field
+      properties:
+        amount:
+          type: string
+          description: Exact decimal value, two decimal places
+          examples: ['5000.00']
+        display:
+          type: string
+          examples: ['+      5,000.00']
+    AuthorizationListRow:
+      type: object
+      description: One of the five detail lines of map COPAU0A, as POPULATE-AUTH-LIST filled it
+      properties:
+        authKey:
+          type: string
+          description: The PAUTDTL1 key, which replaces the CDEMO-CPVS-AUTH-KEYS array of the COMMAREA
+        transactionId: { type: string }
+        authorizationDate:
+          type: string
+          description: MM/DD/YY, decoded from the complemented date key
+        authorizationTime:
+          type: string
+          description: HH:MM:SS
+        authorizationType: { type: string }
+        approvalStatus:
+          type: string
+          description: A or D, as PA-AUTH-RESP-CODE produced
+        matchStatus:
+          type: string
+          description: P for an approved authorization, D for a declined one
+        approvedAmount:
+          $ref: '#/components/schemas/MoneyValue'
+    AuthorizationSummaryResponse:
+      type: object
+      description: Map COPAU0A - the account and customer header, the totals and one page of five rows
+      properties:
+        accountId: { type: integer, format: int64 }
+        customerId: { type: [integer, 'null'], format: int64 }
+        customerName: { type: string }
+        addressLine1: { type: string }
+        addressLine2: { type: string }
+        phone: { type: string }
+        creditLimit:
+          $ref: '#/components/schemas/MoneyValue'
+        cashCreditLimit:
+          $ref: '#/components/schemas/MoneyValue'
+        approvedCount: { type: integer }
+        declinedCount: { type: integer }
+        creditBalance:
+          $ref: '#/components/schemas/MoneyValue'
+        cashBalance:
+          $ref: '#/components/schemas/MoneyValue'
+        approvedAmount:
+          $ref: '#/components/schemas/MoneyValue'
+        declinedAmount:
+          $ref: '#/components/schemas/MoneyValue'
+        summaryFound:
+          type: boolean
+          description: False when no PAUTSUM0 root exists, in which case the totals are zeroes
+        authorizations:
+          type: array
+          maxItems: 5
+          items:
+            $ref: '#/components/schemas/AuthorizationListRow'
+        pageStartAuthKey: { type: [string, 'null'] }
+        lastAuthKey:
+          type: [string, 'null']
+          description: The cursor to send as afterAuthKey for the next page
+        morePages:
+          type: boolean
+          description: False at the end of the chain, where PF8 showed the bottom of page message
+        message: { type: [string, 'null'] }
+    AuthorizationDetailResponse:
+      type: object
+      description: Map COPAU1A, as POPULATE-AUTH-DETAILS filled it
+      properties:
+        accountId: { type: integer, format: int64 }
+        authKey: { type: string }
+        cardNumber: { type: string }
+        authorizationDate: { type: string, description: MM/DD/YY }
+        authorizationTime: { type: string, description: 'HH:MM:SS' }
+        approvedAmount:
+          $ref: '#/components/schemas/MoneyValue'
+        transactionAmount:
+          $ref: '#/components/schemas/MoneyValue'
+        approvalStatus: { type: string }
+        responseCode: { type: string, examples: ['00'] }
+        responseReason:
+          type: string
+          description: The CCPAUERY table entry, or 9999-ERROR for a code the table does not hold
+          examples: ['0000-APPROVED']
+        processingCode: { type: string }
+        posEntryMode: { type: string }
+        messageSource: { type: string }
+        merchantCategoryCode: { type: string }
+        cardExpiryDate: { type: string, description: MM/YY }
+        authorizationType: { type: string }
+        transactionId: { type: string }
+        matchStatus: { type: string }
+        fraudStatus:
+          type: string
+          description: F-MM/DD/YY when marked, R-MM/DD/YY when removed, otherwise a hyphen
+        merchantName: { type: string }
+        merchantId: { type: string }
+        merchantCity: { type: string }
+        merchantState: { type: string }
+        merchantZip: { type: string }
+        nextAuthKey:
+          type: [string, 'null']
+          description: What PF8 read; null at the end of the chain
+        message: { type: [string, 'null'] }

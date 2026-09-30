@@ -1,0 +1,499 @@
+openapi: 3.1.0
+info:
+  title: CardDemo Transactions
+  version: 1.0.0
+  description: >-
+    REST contract of the transaction service, the bounded context the transaction screens and the
+    bill payment of CardDemo were decomposed into. Operations replace CICS transactions CT00
+    (program COTRN00C), CT01 (COTRN01C), CT02 (COTRN02C), CB00 (COBIL00C) and CR00 (CORPT00C); the
+    terminal transport, the COMMAREA and the PF keys are modernized away while the field edits, the
+    browse order, the messages and the two step confirmations are preserved.
+
+
+    The account balance the bill payment adjusts belongs to the account service, so the payment is
+    made idempotent by a key supplied with the confirmed request: the source had one unit of
+    recovery for the transaction write and the account rewrite, and here they are two services.
+
+
+    Every operation requires the bearer token the identity service issues at POST /api/signon.
+  license:
+    name: Apache-2.0
+    identifier: Apache-2.0
+servers:
+  - url: http://localhost:8090
+    description: API gateway
+  - url: http://localhost:8083
+    description: Transaction service, addressed directly
+security:
+  - bearerAuth: []
+tags:
+  - name: Transaction List
+    description: CICS transaction CT00 - program COTRN00C
+  - name: Transaction View
+    description: CICS transaction CT01 - program COTRN01C
+  - name: Transaction Add
+    description: CICS transaction CT02 - program COTRN02C
+  - name: Bill Payment
+    description: CICS transaction CB00 - program COBIL00C
+  - name: Transaction Reports
+    description: CICS transaction CR00 - program CORPT00C, which submitted the TRANREPT job
+paths:
+  /api/transactions:
+    get:
+      tags: [Transaction List]
+      operationId: listTransactions
+      summary: One screenful of the transaction list
+      description: >-
+        COTRN00C. The direction replaces the PF7 and PF8 keys and the two boundary identifiers
+        replace the browse position CDEMO-CT00-TRNID-FIRST and CDEMO-CT00-TRNID-LAST carried in the
+        commarea between pseudo-conversational turns, so paging stays positional rather than
+        counting rows.
+      parameters:
+        - name: tranId
+          in: query
+          description: TRNIDINI, the identifier the browse starts at
+          schema:
+            type: string
+        - name: direction
+          in: query
+          description: FIRST for the opening page, NEXT for PF8 and PREVIOUS for PF7
+          schema:
+            type: string
+            enum: [FIRST, NEXT, PREVIOUS]
+            default: FIRST
+        - name: firstTranId
+          in: query
+          description: CDEMO-CT00-TRNID-FIRST of the page being left, used by PREVIOUS
+          schema:
+            type: string
+        - name: lastTranId
+          in: query
+          description: CDEMO-CT00-TRNID-LAST of the page being left, used by NEXT
+          schema:
+            type: string
+        - name: pageNumber
+          in: query
+          description: CDEMO-CT00-PAGE-NUM
+          schema:
+            type: integer
+            format: int32
+            default: 1
+      responses:
+        '200':
+          description: The page and the message the screen would have shown
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TransactionListResponse'
+        '400':
+          $ref: '#/components/responses/ValidationError'
+        '401':
+          $ref: '#/components/responses/Unauthenticated'
+    post:
+      tags: [Transaction Add]
+      operationId: addTransaction
+      summary: Add a transaction
+      description: >-
+        COTRN02C. The first request validates the keyed map and returns the confirmation message;
+        the request that carries CONFIRMI = 'Y' writes the record and returns the identifier
+        computed from the last key on file.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TransactionAddRequest'
+      responses:
+        '200':
+          description: The keyed values were accepted and the screen is asking for a confirmation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TransactionAddResponse'
+        '201':
+          description: The transaction was written
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TransactionAddResponse'
+        '400':
+          $ref: '#/components/responses/ValidationError'
+        '401':
+          $ref: '#/components/responses/Unauthenticated'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /api/transactions/last:
+    get:
+      tags: [Transaction Add]
+      operationId: copyLastTransaction
+      summary: The last transaction on file, prefilled into the add screen
+      description: The PF5 key of COTRN02C, which copied the last transaction into the map.
+      parameters:
+        - name: accountId
+          in: query
+          schema:
+            type: string
+        - name: cardNumber
+          in: query
+          schema:
+            type: string
+      responses:
+        '200':
+          description: The map as PF5 filled it
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TransactionAddRequest'
+        '401':
+          $ref: '#/components/responses/Unauthenticated'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /api/transactions/{tranId}:
+    get:
+      tags: [Transaction View]
+      operationId: viewTransaction
+      summary: One transaction, as the view screen shows it
+      description: >-
+        COTRN01C, reached either directly or through the selection column of the list, where only
+        'S' opens the detail screen.
+      parameters:
+        - name: tranId
+          in: path
+          required: true
+          description: TRAN-ID, the sixteen character key of the TRANSACT record
+          schema:
+            type: string
+        - name: selection
+          in: query
+          description: The selection character keyed on the list line
+          schema:
+            type: string
+      responses:
+        '200':
+          description: The transaction as the map presents it
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TransactionDetailResponse'
+        '400':
+          $ref: '#/components/responses/ValidationError'
+        '401':
+          $ref: '#/components/responses/Unauthenticated'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /api/bill-payments/{accountId}:
+    get:
+      tags: [Bill Payment]
+      operationId: billPaymentBalance
+      summary: The balance that would be paid
+      description: The balance enquiry COBIL00C makes before it asks for the confirmation.
+      parameters:
+        - name: accountId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: The balance and the message line
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BillPaymentResponse'
+        '400':
+          $ref: '#/components/responses/ValidationError'
+        '401':
+          $ref: '#/components/responses/Unauthenticated'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /api/bill-payments:
+    post:
+      tags: [Bill Payment]
+      operationId: payBill
+      summary: Pay the current balance
+      description: >-
+        The confirmed payment of COBIL00C: the transaction is written and the account balance is
+        adjusted through the account service. A repeated request that carries the same
+        idempotencyKey returns the first outcome instead of paying twice.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BillPaymentRequest'
+      responses:
+        '200':
+          description: The payment outcome and the message line
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BillPaymentResponse'
+        '400':
+          $ref: '#/components/responses/ValidationError'
+        '401':
+          $ref: '#/components/responses/Unauthenticated'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '502':
+          description: The account service could not be reached or refused the adjustment
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /api/transaction-reports:
+    post:
+      tags: [Transaction Reports]
+      operationId: requestTransactionReport
+      summary: Request a transaction report
+      description: >-
+        CORPT00C PROCESS-ENTER-KEY. The request that the source submitted to the internal reader as
+        the TRANREPT job is recorded here for the batch job to pick up, and the signed-on user
+        replaces the terminal operator the JCL recorded.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ReportRequestForm'
+      responses:
+        '200':
+          description: The recorded request and the message the screen showed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReportRequestResponse'
+        '400':
+          $ref: '#/components/responses/ValidationError'
+        '401':
+          $ref: '#/components/responses/Unauthenticated'
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: >-
+        The token POST /api/signon returns. Its subject is SEC-USR-ID and its userType claim is
+        SEC-USR-TYPE, the two values COSGN00C left in the COMMAREA for every following screen.
+  responses:
+    Unauthenticated:
+      description: No token was presented, or the token is expired or not valid
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    ValidationError:
+      description: A keyed value failed one of the field edits of the source program
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    NotFound:
+      description: The record the screen asked for was not on file
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+  schemas:
+    ErrorResponse:
+      type: object
+      description: The message line the source program wrote to the map
+      properties:
+        status:
+          type: string
+        message:
+          type: string
+      required: [status, message]
+    MoneyValue:
+      type: object
+      description: >-
+        An S9(09)V99 amount: the exact value and the text its PIC +99999999.99 output field
+        produced
+      properties:
+        amount:
+          type: number
+        display:
+          type: string
+      required: [amount, display]
+    TransactionListRow:
+      type: object
+      description: One of the ten lines POPULATE-TRAN-DATA filled
+      properties:
+        tranId:
+          type: string
+        date:
+          type: string
+        description:
+          type: string
+        amount:
+          $ref: '#/components/schemas/MoneyValue'
+      required: [tranId, date, description, amount]
+    TransactionListResponse:
+      type: object
+      properties:
+        rows:
+          type: array
+          items:
+            $ref: '#/components/schemas/TransactionListRow'
+        pageNumber:
+          type: integer
+          format: int32
+        firstTranId:
+          type: string
+        lastTranId:
+          type: string
+        nextPageAvailable:
+          type: boolean
+        message:
+          type: string
+      required: [rows, pageNumber, nextPageAvailable]
+    TransactionDetailResponse:
+      type: object
+      description: Every field of the TRANSACT record as the COTRN01C map shows it
+      properties:
+        tranId:
+          type: string
+        cardNumber:
+          type: string
+        typeCode:
+          type: string
+        categoryCode:
+          type: string
+        source:
+          type: string
+        description:
+          type: string
+        amount:
+          $ref: '#/components/schemas/MoneyValue'
+        originalTimestamp:
+          type: string
+        processedTimestamp:
+          type: string
+        merchantId:
+          type: string
+        merchantName:
+          type: string
+        merchantCity:
+          type: string
+        merchantZip:
+          type: string
+      required: [tranId, cardNumber, amount]
+    TransactionAddRequest:
+      type: object
+      description: >-
+        The COTRN2A map as it is keyed. Every field is a string because the source edits the keyed
+        characters before it converts them.
+      properties:
+        accountId:
+          type: string
+        cardNumber:
+          type: string
+        typeCode:
+          type: string
+        categoryCode:
+          type: string
+        source:
+          type: string
+        description:
+          type: string
+        amount:
+          type: string
+        originalDate:
+          type: string
+        processedDate:
+          type: string
+        merchantId:
+          type: string
+        merchantName:
+          type: string
+        merchantCity:
+          type: string
+        merchantZip:
+          type: string
+        confirm:
+          type: string
+          description: CONFIRMI, 'Y' on the request that writes the record
+      required: [accountId, cardNumber]
+    TransactionAddResponse:
+      type: object
+      properties:
+        tranId:
+          type: string
+          description: The computed key, absent while the screen is still asking to confirm
+        accountId:
+          type: string
+        cardNumber:
+          type: string
+        message:
+          type: string
+      required: [message]
+    BillPaymentRequest:
+      type: object
+      properties:
+        accountId:
+          type: string
+        confirm:
+          type: string
+          description: The confirmation byte of the map, 'Y' on the request that pays
+        idempotencyKey:
+          type: string
+          description: >-
+            Supplied by the screen for the confirmed submission; it is what prevents a resubmission
+            from paying the balance twice now that the write and the balance adjustment are two
+            services
+      required: [accountId]
+    BillPaymentResponse:
+      type: object
+      properties:
+        accountId:
+          type: string
+        currentBalance:
+          $ref: '#/components/schemas/MoneyValue'
+        tranId:
+          type: string
+        paid:
+          type: boolean
+        message:
+          type: string
+      required: [accountId, paid, message]
+    ReportRequestForm:
+      type: object
+      description: >-
+        The CORPT0A map as it is keyed. The report type is one value because the map allowed only
+        one of its three selection fields to be set, and the date parts stay separate because each
+        has its own message.
+      properties:
+        reportType:
+          type: string
+        startMonth:
+          type: string
+        startDay:
+          type: string
+        startYear:
+          type: string
+        endMonth:
+          type: string
+        endDay:
+          type: string
+        endYear:
+          type: string
+        confirm:
+          type: string
+      required: [reportType]
+    ReportRequestResponse:
+      type: object
+      properties:
+        requestId:
+          type: integer
+          format: int64
+        reportName:
+          type: string
+        startDate:
+          type: string
+        endDate:
+          type: string
+        submitted:
+          type: boolean
+        message:
+          type: string
+      required: [submitted, message]

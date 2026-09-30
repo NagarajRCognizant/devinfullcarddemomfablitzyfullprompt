@@ -1,0 +1,30 @@
+
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+
+ :: Spring Boot ::                (v3.3.4)
+
+2026-09-24T07:46:40.338Z  INFO 134814 --- [carddemo-gateway] [           main] com.carddemo.GatewayApplication          : Starting GatewayApplication v1.0.0-SNAPSHOT using Java 21.0.12.1 with PID 134814 (/home/ubuntu/repos/Aws-Card-Demo2/modernization/gateway/target/carddemo-gateway.jar started by ubuntu in /home/ubuntu)
+2026-09-24T07:46:40.340Z  INFO 134814 --- [carddemo-gateway] [           main] com.carddemo.GatewayApplication          : No active profile set, falling back to 1 default profile: "default"
+2026-09-24T07:46:41.216Z  INFO 134814 --- [carddemo-gateway] [           main] o.s.cloud.context.scope.GenericScope     : BeanFactory id=1412b273-5cd1-3e9f-89c4-8b5267c3e171
+2026-09-24T07:46:42.019Z  INFO 134814 --- [carddemo-gateway] [           main] o.s.c.g.r.RouteDefinitionRouteLocator    : Loaded RoutePredicateFactory [After]
+2026-09-24T07:46:42.019Z  INFO 134814 --- [carddemo-gateway] [           main] o.s.c.g.r.RouteDefinitionRouteLocator    : Loaded RoutePredicateFactory [Before]
+2026-09-24T07:46:42.019Z  INFO 134814 --- [carddemo-gateway] [           main] o.s.c.g.r.RouteDefinitionRouteLocator    : Loaded RoutePredicateFactory [Between]
+2026-09-24T07:46:42.019Z  INFO 134814 --- [carddemo-gateway] [           main] o.s.c.g.r.RouteDefinitionRouteLocator    : Loaded RoutePredicateFactory [Cookie]
+2026-09-24T07:46:42.019Z  INFO 134814 --- [carddemo-gateway] [           main] o.s.c.g.r.RouteDefinitionRouteLocator    : Loaded RoutePredicateFactory [Header]
+2026-09-24T07:46:42.019Z  INFO 134814 --- [carddemo-gateway] [           main] o.s.c.g.r.RouteDefinitionRouteLocator    : Loaded RoutePredicateFactory [Host]
+2026-09-24T07:46:42.019Z  INFO 134814 --- [carddemo-gateway] [           main] o.s.c.g.r.RouteDefinitionRouteLocator    : Loaded RoutePredicateFactory [Method]
+2026-09-24T07:46:42.019Z  INFO 134814 --- [carddemo-gateway] [           main] o.s.c.g.r.RouteDefinitionRouteLocator    : Loaded RoutePredicateFactory [Path]
+2026-09-24T07:46:42.019Z  INFO 134814 --- [carddemo-gateway] [           main] o.s.c.g.r.RouteDefinitionRouteLocator    : Loaded RoutePredicateFactory [Query]
+2026-09-24T07:46:42.019Z  INFO 134814 --- [carddemo-gateway] [           main] o.s.c.g.r.RouteDefinitionRouteLocator    : Loaded RoutePredicateFactory [ReadBody]
+2026-09-24T07:46:42.019Z  INFO 134814 --- [carddemo-gateway] [           main] o.s.c.g.r.RouteDefinitionRouteLocator    : Loaded RoutePredicateFactory [RemoteAddr]
+2026-09-24T07:46:42.019Z  INFO 134814 --- [carddemo-gateway] [           main] o.s.c.g.r.RouteDefinitionRouteLocator    : Loaded RoutePredicateFactory [XForwardedRemoteAddr]
+2026-09-24T07:46:42.019Z  INFO 134814 --- [carddemo-gateway] [           main] o.s.c.g.r.RouteDefinitionRouteLocator    : Loaded RoutePredicateFactory [Weight]
+2026-09-24T07:46:42.019Z  INFO 134814 --- [carddemo-gateway] [           main] o.s.c.g.r.RouteDefinitionRouteLocator    : Loaded RoutePredicateFactory [CloudFoundryRouteService]
+2026-09-24T07:46:42.174Z  INFO 134814 --- [carddemo-gateway] [           main] o.s.b.a.e.web.EndpointLinksResolver      : Exposing 2 endpoints beneath base path '/actuator'
+2026-09-24T07:46:42.399Z  INFO 134814 --- [carddemo-gateway] [           main] o.s.b.web.embedded.netty.NettyWebServer  : Netty started on port 8090 (http)
+2026-09-24T07:46:42.449Z  INFO 134814 --- [carddemo-gateway] [           main] com.carddemo.GatewayApplication          : Started GatewayApplication in 2.42 seconds (process running for 2.719)

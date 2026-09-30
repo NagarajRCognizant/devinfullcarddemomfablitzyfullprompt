@@ -1,0 +1,89 @@
+# Gateway: one address in front of the identity and account services.
+spring:
+  application:
+    name: carddemo-gateway
+  cloud:
+    gateway:
+      routes:
+        # The signed-on user of COSGN00C (/api/me, resolved from the realm's token) and the four
+        # COUSR* screens plus the COADM01C menu. /api/signon is routed for the legacy parity mode
+        # only; in the realm mode the identity service does not publish it.
+        - id: identity
+          uri: ${CARDDEMO_IDENTITY_URI:http://localhost:8081}
+          predicates:
+            - Path=/api/me,/api/signon,/api/users/**,/api/admin-menu/**
+          filters:
+            - name: CircuitBreaker
+              args:
+                name: identity
+        # COACTVWC, COACTUPC, the COCRDLIC, COCRDSLC and COCRDUPC card screens, the cardholder
+        # lookup of COBIL00C and COTRN02C, the statement parties of CBSTM03A and the COMEN01C menu.
+        - id: account
+          uri: ${CARDDEMO_ACCOUNT_URI:http://localhost:8080}
+          predicates:
+            - Path=/api/accounts/**,/api/menu,/api/cards,/api/cards/**,/api/cardholders/**,/api/statement-parties/**
+          filters:
+            - name: CircuitBreaker
+              args:
+                name: account
+        # CPVS and CPVD: the authorization summary, detail and fraud marking transactions. The
+        # authorization service is a separate bounded context behind the same edge, so the browser
+        # keeps one origin and one token while the service keeps its own database.
+        - id: authorization
+          uri: ${CARDDEMO_AUTHORIZATION_URI:http://localhost:8082}
+          predicates:
+            - Path=/api/authorizations/**
+          filters:
+            - name: CircuitBreaker
+              args:
+                name: authorization
+        # COTRN00C, COTRN01C, COTRN02C, COBIL00C and CORPT00C. The transaction context keeps its own
+        # database behind the same edge, so the browser still sees one origin and one token.
+        - id: transaction
+          uri: ${CARDDEMO_TRANSACTION_URI:http://localhost:8083}
+          predicates:
+            - Path=/api/transactions/**,/api/transactions,/api/bill-payments/**,/api/bill-payments,/api/transaction-reports
+          filters:
+            - name: CircuitBreaker
+              args:
+                name: transaction
+      httpclient:
+        connect-timeout: 2000
+        response-timeout: 10s
+
+resilience4j:
+  circuitbreaker:
+    configs:
+      default:
+        slidingWindowSize: 20
+        failureRateThreshold: 50
+        waitDurationInOpenState: 10s
+  timelimiter:
+    configs:
+      default:
+        timeoutDuration: 10s
+
+server:
+  port: ${CARDDEMO_GATEWAY_PORT:8090}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,gateway
+  endpoint:
+    health:
+      probes:
+        enabled: true
+
+carddemo:
+  security:
+    token:
+      # One realm for every service; the signing keys come from its JWKS, so no service holds a key.
+      issuer-uri: ${KEYCLOAK_ISSUER_URI:${KEYCLOAK_URL:http://localhost:8088}/realms/${KEYCLOAK_REALM:carddemo}}
+      # The issuer is what the tokens say and the browser reached; the keys are fetched on the address
+      # this service can reach, which is the same thing wherever Keycloak has one address only.
+      jwk-set-uri: ${KEYCLOAK_URL:http://localhost:8088}/realms/${KEYCLOAK_REALM:carddemo}/protocol/openid-connect/certs
+      clock-skew: ${CARDDEMO_TOKEN_CLOCK_SKEW_SECONDS:60}
+      require-second-factor: ${CARDDEMO_TOKEN_REQUIRE_SECOND_FACTOR:true}
+      audience: carddemo-gateway

@@ -1,0 +1,1315 @@
+
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+
+ :: Spring Boot ::                (v3.3.4)
+
+2026-09-24T07:32:36.554Z  INFO 74316 --- [carddemo-authorization-service] [           main] c.c.a.AuthorizationServiceApplication    : Starting AuthorizationServiceApplication v1.0.0-SNAPSHOT using Java 21.0.12.1 with PID 74316 (/home/ubuntu/repos/Aws-Card-Demo2/modernization/authorization-service/target/carddemo-authorization-service.jar started by ubuntu in /home/ubuntu/repos/Aws-Card-Demo2/modernization)
+2026-09-24T07:32:36.561Z  INFO 74316 --- [carddemo-authorization-service] [           main] c.c.a.AuthorizationServiceApplication    : No active profile set, falling back to 1 default profile: "default"
+2026-09-24T07:32:39.684Z  INFO 74316 --- [carddemo-authorization-service] [           main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2026-09-24T07:32:39.884Z  INFO 74316 --- [carddemo-authorization-service] [           main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 181 ms. Found 5 JPA repository interfaces.
+2026-09-24T07:32:44.206Z  INFO 74316 --- [carddemo-authorization-service] [           main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 8082 (http)
+2026-09-24T07:32:44.268Z  INFO 74316 --- [carddemo-authorization-service] [           main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2026-09-24T07:32:44.269Z  INFO 74316 --- [carddemo-authorization-service] [           main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.30]
+2026-09-24T07:32:44.332Z  INFO 74316 --- [carddemo-authorization-service] [           main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2026-09-24T07:32:44.344Z  INFO 74316 --- [carddemo-authorization-service] [           main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 7559 ms
+2026-09-24T07:32:45.480Z  INFO 74316 --- [carddemo-authorization-service] [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2026-09-24T07:32:45.766Z  INFO 74316 --- [carddemo-authorization-service] [           main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection org.postgresql.jdbc.PgConnection@4cf230bf
+2026-09-24T07:32:45.767Z  INFO 74316 --- [carddemo-authorization-service] [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2026-09-24T07:32:45.800Z  INFO 74316 --- [carddemo-authorization-service] [           main] org.flywaydb.core.FlywayExecutor         : Database: jdbc:postgresql://127.0.0.1:5435/carddemo_authorization (PostgreSQL 16.15)
+2026-09-24T07:32:45.828Z  INFO 74316 --- [carddemo-authorization-service] [           main] o.f.c.i.s.JdbcTableSchemaHistory         : Schema history table "public"."flyway_schema_history" does not exist yet
+2026-09-24T07:32:45.830Z  INFO 74316 --- [carddemo-authorization-service] [           main] o.f.core.internal.command.DbValidate     : Successfully validated 2 migrations (execution time 00:00.012s)
+2026-09-24T07:32:45.841Z  INFO 74316 --- [carddemo-authorization-service] [           main] o.f.c.i.s.JdbcTableSchemaHistory         : Creating Schema History table "public"."flyway_schema_history" ...
+2026-09-24T07:32:45.917Z  INFO 74316 --- [carddemo-authorization-service] [           main] o.f.core.internal.command.DbMigrate      : Current version of schema "public": << Empty Schema >>
+2026-09-24T07:32:45.934Z  INFO 74316 --- [carddemo-authorization-service] [           main] o.f.core.internal.command.DbMigrate      : Migrating schema "public" to version "1 - create authorization schema"
+2026-09-24T07:32:46.054Z  INFO 74316 --- [carddemo-authorization-service] [           main] o.f.core.internal.command.DbMigrate      : Migrating schema "public" to version "2 - load authorization sample data"
+2026-09-24T07:32:46.101Z  INFO 74316 --- [carddemo-authorization-service] [           main] o.f.core.internal.command.DbMigrate      : Successfully applied 2 migrations to schema "public", now at version v2 (execution time 00:00.093s)
+2026-09-24T07:32:46.334Z  INFO 74316 --- [carddemo-authorization-service] [           main] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2026-09-24T07:32:46.417Z  INFO 74316 --- [carddemo-authorization-service] [           main] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.5.3.Final
+2026-09-24T07:32:46.487Z  INFO 74316 --- [carddemo-authorization-service] [           main] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
+2026-09-24T07:32:46.902Z  INFO 74316 --- [carddemo-authorization-service] [           main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2026-09-24T07:32:49.089Z  INFO 74316 --- [carddemo-authorization-service] [           main] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2026-09-24T07:32:49.141Z  INFO 74316 --- [carddemo-authorization-service] [           main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2026-09-24T07:32:50.152Z  INFO 74316 --- [carddemo-authorization-service] [           main] o.s.d.j.r.query.QueryEnhancerFactory     : Hibernate is in classpath; If applicable, HQL parser will be used.
+2026-09-24T07:32:52.828Z  INFO 74316 --- [carddemo-authorization-service] [           main] o.s.b.a.e.web.EndpointLinksResolver      : Exposing 3 endpoints beneath base path '/actuator'
+2026-09-24T07:32:53.758Z  INFO 74316 --- [carddemo-authorization-service] [           main] o.a.k.clients.admin.AdminClientConfig    : AdminClientConfig values: 
+	auto.include.jmx.reporter = true
+	bootstrap.controllers = []
+	bootstrap.servers = [172.18.0.6:9092]
+	client.dns.lookup = use_all_dns_ips
+	client.id = carddemo-authorization-service-admin-0
+	connections.max.idle.ms = 300000
+	default.api.timeout.ms = 60000
+	enable.metrics.push = true
+	metadata.max.age.ms = 300000
+	metric.reporters = []
+	metrics.num.samples = 2
+	metrics.recording.level = INFO
+	metrics.sample.window.ms = 30000
+	receive.buffer.bytes = 65536
+	reconnect.backoff.max.ms = 1000
+	reconnect.backoff.ms = 50
+	request.timeout.ms = 30000
+	retries = 2147483647
+	retry.backoff.max.ms = 1000
+	retry.backoff.ms = 100
+	sasl.client.callback.handler.class = null
+	sasl.jaas.config = null
+	sasl.kerberos.kinit.cmd = /usr/bin/kinit
+	sasl.kerberos.min.time.before.relogin = 60000
+	sasl.kerberos.service.name = null
+	sasl.kerberos.ticket.renew.jitter = 0.05
+	sasl.kerberos.ticket.renew.window.factor = 0.8
+	sasl.login.callback.handler.class = null
+	sasl.login.class = null
+	sasl.login.connect.timeout.ms = null
+	sasl.login.read.timeout.ms = null
+	sasl.login.refresh.buffer.seconds = 300
+	sasl.login.refresh.min.period.seconds = 60
+	sasl.login.refresh.window.factor = 0.8
+	sasl.login.refresh.window.jitter = 0.05
+	sasl.login.retry.backoff.max.ms = 10000
+	sasl.login.retry.backoff.ms = 100
+	sasl.mechanism = GSSAPI
+	sasl.oauthbearer.clock.skew.seconds = 30
+	sasl.oauthbearer.expected.audience = null
+	sasl.oauthbearer.expected.issuer = null
+	sasl.oauthbearer.jwks.endpoint.refresh.ms = 3600000
+	sasl.oauthbearer.jwks.endpoint.retry.backoff.max.ms = 10000
+	sasl.oauthbearer.jwks.endpoint.retry.backoff.ms = 100
+	sasl.oauthbearer.jwks.endpoint.url = null
+	sasl.oauthbearer.scope.claim.name = scope
+	sasl.oauthbearer.sub.claim.name = sub
+	sasl.oauthbearer.token.endpoint.url = null
+	security.protocol = PLAINTEXT
+	security.providers = null
+	send.buffer.bytes = 131072
+	socket.connection.setup.timeout.max.ms = 30000
+	socket.connection.setup.timeout.ms = 10000
+	ssl.cipher.suites = null
+	ssl.enabled.protocols = [TLSv1.2, TLSv1.3]
+	ssl.endpoint.identification.algorithm = https
+	ssl.engine.factory.class = null
+	ssl.key.password = null
+	ssl.keymanager.algorithm = SunX509
+	ssl.keystore.certificate.chain = null
+	ssl.keystore.key = null
+	ssl.keystore.location = null
+	ssl.keystore.password = null
+	ssl.keystore.type = JKS
+	ssl.protocol = TLSv1.3
+	ssl.provider = null
+	ssl.secure.random.implementation = null
+	ssl.trustmanager.algorithm = PKIX
+	ssl.truststore.certificates = null
+	ssl.truststore.location = null
+	ssl.truststore.password = null
+	ssl.truststore.type = JKS
+
+2026-09-24T07:32:53.841Z  INFO 74316 --- [carddemo-authorization-service] [           main] o.a.kafka.common.utils.AppInfoParser     : Kafka version: 3.7.1
+2026-09-24T07:32:53.841Z  INFO 74316 --- [carddemo-authorization-service] [           main] o.a.kafka.common.utils.AppInfoParser     : Kafka commitId: e2494e6ffb89f828
+2026-09-24T07:32:53.841Z  INFO 74316 --- [carddemo-authorization-service] [           main] o.a.kafka.common.utils.AppInfoParser     : Kafka startTimeMs: 1790235173840
+2026-09-24T07:32:54.070Z  WARN 74316 --- [carddemo-authorization-service] [service-admin-0] org.apache.kafka.clients.NetworkClient   : [AdminClient clientId=carddemo-authorization-service-admin-0] Error connecting to node kafka:9092 (id: 1 rack: null)
+
+java.net.UnknownHostException: kafka: Temporary failure in name resolution
+	at java.base/java.net.Inet6AddressImpl.lookupAllHostAddr(Native Method) ~[na:na]
+	at java.base/java.net.Inet6AddressImpl.lookupAllHostAddr(Inet6AddressImpl.java:52) ~[na:na]
+	at java.base/java.net.InetAddress$PlatformResolver.lookupByName(InetAddress.java:1211) ~[na:na]
+	at java.base/java.net.InetAddress.getAddressesFromNameService(InetAddress.java:1828) ~[na:na]
+	at java.base/java.net.InetAddress$NameServiceAddresses.get(InetAddress.java:1139) ~[na:na]
+	at java.base/java.net.InetAddress.getAllByName0(InetAddress.java:1818) ~[na:na]
+	at java.base/java.net.InetAddress.getAllByName(InetAddress.java:1688) ~[na:na]
+	at org.apache.kafka.clients.DefaultHostResolver.resolve(DefaultHostResolver.java:27) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.ClientUtils.resolve(ClientUtils.java:124) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.ClusterConnectionStates$NodeConnectionState.resolveAddresses(ClusterConnectionStates.java:536) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.ClusterConnectionStates$NodeConnectionState.currentAddress(ClusterConnectionStates.java:511) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.ClusterConnectionStates$NodeConnectionState.access$200(ClusterConnectionStates.java:466) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.ClusterConnectionStates.currentAddress(ClusterConnectionStates.java:173) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.NetworkClient.initiateConnect(NetworkClient.java:1050) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.NetworkClient.ready(NetworkClient.java:310) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.admin.KafkaAdminClient$AdminClientRunnable.sendEligibleCalls(KafkaAdminClient.java:1232) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.admin.KafkaAdminClient$AdminClientRunnable.processRequests(KafkaAdminClient.java:1492) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.admin.KafkaAdminClient$AdminClientRunnable.run(KafkaAdminClient.java:1435) ~[kafka-clients-3.7.1.jar!/:na]
+	at java.base/java.lang.Thread.run(Thread.java:1583) ~[na:na]
+
+2026-09-24T07:32:54.113Z  WARN 74316 --- [carddemo-authorization-service] [service-admin-0] org.apache.kafka.clients.NetworkClient   : [AdminClient clientId=carddemo-authorization-service-admin-0] Error connecting to node kafka:9092 (id: 1 rack: null)
+
+java.net.UnknownHostException: kafka
+	at java.base/java.net.InetAddress$CachedLookup.get(InetAddress.java:988) ~[na:na]
+	at java.base/java.net.InetAddress.getAllByName0(InetAddress.java:1818) ~[na:na]
+	at java.base/java.net.InetAddress.getAllByName(InetAddress.java:1688) ~[na:na]
+	at org.apache.kafka.clients.DefaultHostResolver.resolve(DefaultHostResolver.java:27) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.ClientUtils.resolve(ClientUtils.java:124) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.ClusterConnectionStates$NodeConnectionState.resolveAddresses(ClusterConnectionStates.java:536) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.ClusterConnectionStates$NodeConnectionState.currentAddress(ClusterConnectionStates.java:511) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.ClusterConnectionStates$NodeConnectionState.access$200(ClusterConnectionStates.java:466) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.ClusterConnectionStates.currentAddress(ClusterConnectionStates.java:173) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.NetworkClient.initiateConnect(NetworkClient.java:1050) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.NetworkClient.ready(NetworkClient.java:310) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.admin.KafkaAdminClient$AdminClientRunnable.sendEligibleCalls(KafkaAdminClient.java:1232) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.admin.KafkaAdminClient$AdminClientRunnable.processRequests(KafkaAdminClient.java:1492) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.admin.KafkaAdminClient$AdminClientRunnable.run(KafkaAdminClient.java:1435) ~[kafka-clients-3.7.1.jar!/:na]
+	at java.base/java.lang.Thread.run(Thread.java:1583) ~[na:na]
+
+2026-09-24T07:32:54.214Z  WARN 74316 --- [carddemo-authorization-service] [service-admin-0] org.apache.kafka.clients.NetworkClient   : [AdminClient clientId=carddemo-authorization-service-admin-0] Error connecting to node kafka:9092 (id: 1 rack: null)
+
+java.net.UnknownHostException: kafka
+	at java.base/java.net.InetAddress$CachedLookup.get(InetAddress.java:988) ~[na:na]
+	at java.base/java.net.InetAddress.getAllByName0(InetAddress.java:1818) ~[na:na]
+	at java.base/java.net.InetAddress.getAllByName(InetAddress.java:1688) ~[na:na]
+	at org.apache.kafka.clients.DefaultHostResolver.resolve(DefaultHostResolver.java:27) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.ClientUtils.resolve(ClientUtils.java:124) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.ClusterConnectionStates$NodeConnectionState.resolveAddresses(ClusterConnectionStates.java:536) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.ClusterConnectionStates$NodeConnectionState.currentAddress(ClusterConnectionStates.java:511) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.ClusterConnectionStates$NodeConnectionState.access$200(ClusterConnectionStates.java:466) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.ClusterConnectionStates.currentAddress(ClusterConnectionStates.java:173) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.NetworkClient.initiateConnect(NetworkClient.java:1050) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.NetworkClient.ready(NetworkClient.java:310) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.admin.KafkaAdminClient$AdminClientRunnable.sendEligibleCalls(KafkaAdminClient.java:1232) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.admin.KafkaAdminClient$AdminClientRunnable.processRequests(KafkaAdminClient.java:1492) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.admin.KafkaAdminClient$AdminClientRunnable.run(KafkaAdminClient.java:1435) ~[kafka-clients-3.7.1.jar!/:na]
+	at java.base/java.lang.Thread.run(Thread.java:1583) ~[na:na]
+
+2026-09-24T07:32:54.422Z  WARN 74316 --- [carddemo-authorization-service] [service-admin-0] org.apache.kafka.clients.NetworkClient   : [AdminClient clientId=carddemo-authorization-service-admin-0] Error connecting to node kafka:9092 (id: 1 rack: null)
+
+java.net.UnknownHostException: kafka
+	at java.base/java.net.InetAddress$CachedLookup.get(InetAddress.java:988) ~[na:na]
+	at java.base/java.net.InetAddress.getAllByName0(InetAddress.java:1818) ~[na:na]
+	at java.base/java.net.InetAddress.getAllByName(InetAddress.java:1688) ~[na:na]
+	at org.apache.kafka.clients.DefaultHostResolver.resolve(DefaultHostResolver.java:27) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.ClientUtils.resolve(ClientUtils.java:124) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.ClusterConnectionStates$NodeConnectionState.resolveAddresses(ClusterConnectionStates.java:536) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.ClusterConnectionStates$NodeConnectionState.currentAddress(ClusterConnectionStates.java:511) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.ClusterConnectionStates$NodeConnectionState.access$200(ClusterConnectionStates.java:466) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.ClusterConnectionStates.currentAddress(ClusterConnectionStates.java:173) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.NetworkClient.initiateConnect(NetworkClient.java:1050) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.NetworkClient.ready(NetworkClient.java:310) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.admin.KafkaAdminClient$AdminClientRunnable.sendEligibleCalls(KafkaAdminClient.java:1232) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.admin.KafkaAdminClient$AdminClientRunnable.processRequests(KafkaAdminClient.java:1492) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.admin.KafkaAdminClient$AdminClientRunnable.run(KafkaAdminClient.java:1435) ~[kafka-clients-3.7.1.jar!/:na]
+	at java.base/java.lang.Thread.run(Thread.java:1583) ~[na:na]
+
+2026-09-24T07:32:54.831Z  WARN 74316 --- [carddemo-authorization-service] [service-admin-0] org.apache.kafka.clients.NetworkClient   : [AdminClient clientId=carddemo-authorization-service-admin-0] Error connecting to node kafka:9092 (id: 1 rack: null)
+
+java.net.UnknownHostException: kafka
+	at java.base/java.net.InetAddress$CachedLookup.get(InetAddress.java:988) ~[na:na]
+	at java.base/java.net.InetAddress.getAllByName0(InetAddress.java:1818) ~[na:na]
+	at java.base/java.net.InetAddress.getAllByName(InetAddress.java:1688) ~[na:na]
+	at org.apache.kafka.clients.DefaultHostResolver.resolve(DefaultHostResolver.java:27) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.ClientUtils.resolve(ClientUtils.java:124) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.ClusterConnectionStates$NodeConnectionState.resolveAddresses(ClusterConnectionStates.java:536) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.ClusterConnectionStates$NodeConnectionState.currentAddress(ClusterConnectionStates.java:511) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.ClusterConnectionStates$NodeConnectionState.access$200(ClusterConnectionStates.java:466) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.ClusterConnectionStates.currentAddress(ClusterConnectionStates.java:173) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.NetworkClient.initiateConnect(NetworkClient.java:1050) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.NetworkClient.ready(NetworkClient.java:310) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.admin.KafkaAdminClient$AdminClientRunnable.sendEligibleCalls(KafkaAdminClient.java:1232) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.admin.KafkaAdminClient$AdminClientRunnable.processRequests(KafkaAdminClient.java:1492) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.admin.KafkaAdminClient$AdminClientRunnable.run(KafkaAdminClient.java:1435) ~[kafka-clients-3.7.1.jar!/:na]
+	at java.base/java.lang.Thread.run(Thread.java:1583) ~[na:na]
+
+2026-09-24T07:32:55.675Z  WARN 74316 --- [carddemo-authorization-service] [service-admin-0] org.apache.kafka.clients.NetworkClient   : [AdminClient clientId=carddemo-authorization-service-admin-0] Error connecting to node kafka:9092 (id: 1 rack: null)
+
+java.net.UnknownHostException: kafka
+	at java.base/java.net.InetAddress$CachedLookup.get(InetAddress.java:988) ~[na:na]
+	at java.base/java.net.InetAddress.getAllByName0(InetAddress.java:1818) ~[na:na]
+	at java.base/java.net.InetAddress.getAllByName(InetAddress.java:1688) ~[na:na]
+	at org.apache.kafka.clients.DefaultHostResolver.resolve(DefaultHostResolver.java:27) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.ClientUtils.resolve(ClientUtils.java:124) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.ClusterConnectionStates$NodeConnectionState.resolveAddresses(ClusterConnectionStates.java:536) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.ClusterConnectionStates$NodeConnectionState.currentAddress(ClusterConnectionStates.java:511) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.ClusterConnectionStates$NodeConnectionState.access$200(ClusterConnectionStates.java:466) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.ClusterConnectionStates.currentAddress(ClusterConnectionStates.java:173) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.NetworkClient.initiateConnect(NetworkClient.java:1050) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.NetworkClient.ready(NetworkClient.java:310) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.admin.KafkaAdminClient$AdminClientRunnable.sendEligibleCalls(KafkaAdminClient.java:1232) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.admin.KafkaAdminClient$AdminClientRunnable.processRequests(KafkaAdminClient.java:1492) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.admin.KafkaAdminClient$AdminClientRunnable.run(KafkaAdminClient.java:1435) ~[kafka-clients-3.7.1.jar!/:na]
+	at java.base/java.lang.Thread.run(Thread.java:1583) ~[na:na]
+
+2026-09-24T07:32:56.514Z  WARN 74316 --- [carddemo-authorization-service] [service-admin-0] org.apache.kafka.clients.NetworkClient   : [AdminClient clientId=carddemo-authorization-service-admin-0] Error connecting to node kafka:9092 (id: 1 rack: null)
+
+java.net.UnknownHostException: kafka
+	at java.base/java.net.InetAddress$CachedLookup.get(InetAddress.java:988) ~[na:na]
+	at java.base/java.net.InetAddress.getAllByName0(InetAddress.java:1818) ~[na:na]
+	at java.base/java.net.InetAddress.getAllByName(InetAddress.java:1688) ~[na:na]
+	at org.apache.kafka.clients.DefaultHostResolver.resolve(DefaultHostResolver.java:27) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.ClientUtils.resolve(ClientUtils.java:124) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.ClusterConnectionStates$NodeConnectionState.resolveAddresses(ClusterConnectionStates.java:536) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.ClusterConnectionStates$NodeConnectionState.currentAddress(ClusterConnectionStates.java:511) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.ClusterConnectionStates$NodeConnectionState.access$200(ClusterConnectionStates.java:466) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.ClusterConnectionStates.currentAddress(ClusterConnectionStates.java:173) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.NetworkClient.initiateConnect(NetworkClient.java:1050) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.NetworkClient.ready(NetworkClient.java:310) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.admin.KafkaAdminClient$AdminClientRunnable.sendEligibleCalls(KafkaAdminClient.java:1232) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.admin.KafkaAdminClient$AdminClientRunnable.processRequests(KafkaAdminClient.java:1492) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.admin.KafkaAdminClient$AdminClientRunnable.run(KafkaAdminClient.java:1435) ~[kafka-clients-3.7.1.jar!/:na]
+	at java.base/java.lang.Thread.run(Thread.java:1583) ~[na:na]
+
+2026-09-24T07:32:57.520Z  WARN 74316 --- [carddemo-authorization-service] [service-admin-0] org.apache.kafka.clients.NetworkClient   : [AdminClient clientId=carddemo-authorization-service-admin-0] Error connecting to node kafka:9092 (id: 1 rack: null)
+
+java.net.UnknownHostException: kafka
+	at java.base/java.net.InetAddress$CachedLookup.get(InetAddress.java:988) ~[na:na]
+	at java.base/java.net.InetAddress.getAllByName0(InetAddress.java:1818) ~[na:na]
+	at java.base/java.net.InetAddress.getAllByName(InetAddress.java:1688) ~[na:na]
+	at org.apache.kafka.clients.DefaultHostResolver.resolve(DefaultHostResolver.java:27) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.ClientUtils.resolve(ClientUtils.java:124) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.ClusterConnectionStates$NodeConnectionState.resolveAddresses(ClusterConnectionStates.java:536) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.ClusterConnectionStates$NodeConnectionState.currentAddress(ClusterConnectionStates.java:511) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.ClusterConnectionStates$NodeConnectionState.access$200(ClusterConnectionStates.java:466) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.ClusterConnectionStates.currentAddress(ClusterConnectionStates.java:173) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.NetworkClient.initiateConnect(NetworkClient.java:1050) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.NetworkClient.ready(NetworkClient.java:310) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.admin.KafkaAdminClient$AdminClientRunnable.sendEligibleCalls(KafkaAdminClient.java:1232) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.admin.KafkaAdminClient$AdminClientRunnable.processRequests(KafkaAdminClient.java:1492) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.admin.KafkaAdminClient$AdminClientRunnable.run(KafkaAdminClient.java:1435) ~[kafka-clients-3.7.1.jar!/:na]
+	at java.base/java.lang.Thread.run(Thread.java:1583) ~[na:na]
+
+2026-09-24T07:32:58.440Z  WARN 74316 --- [carddemo-authorization-service] [service-admin-0] org.apache.kafka.clients.NetworkClient   : [AdminClient clientId=carddemo-authorization-service-admin-0] Error connecting to node kafka:9092 (id: 1 rack: null)
+
+java.net.UnknownHostException: kafka
+	at java.base/java.net.InetAddress$CachedLookup.get(InetAddress.java:988) ~[na:na]
+	at java.base/java.net.InetAddress.getAllByName0(InetAddress.java:1818) ~[na:na]
+	at java.base/java.net.InetAddress.getAllByName(InetAddress.java:1688) ~[na:na]
+	at org.apache.kafka.clients.DefaultHostResolver.resolve(DefaultHostResolver.java:27) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.ClientUtils.resolve(ClientUtils.java:124) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.ClusterConnectionStates$NodeConnectionState.resolveAddresses(ClusterConnectionStates.java:536) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.ClusterConnectionStates$NodeConnectionState.currentAddress(ClusterConnectionStates.java:511) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.ClusterConnectionStates$NodeConnectionState.access$200(ClusterConnectionStates.java:466) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.ClusterConnectionStates.currentAddress(ClusterConnectionStates.java:173) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.NetworkClient.initiateConnect(NetworkClient.java:1050) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.NetworkClient.ready(NetworkClient.java:310) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.admin.KafkaAdminClient$AdminClientRunnable.sendEligibleCalls(KafkaAdminClient.java:1232) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.admin.KafkaAdminClient$AdminClientRunnable.processRequests(KafkaAdminClient.java:1492) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.admin.KafkaAdminClient$AdminClientRunnable.run(KafkaAdminClient.java:1435) ~[kafka-clients-3.7.1.jar!/:na]
+	at java.base/java.lang.Thread.run(Thread.java:1583) ~[na:na]
+
+2026-09-24T07:32:59.246Z  WARN 74316 --- [carddemo-authorization-service] [service-admin-0] org.apache.kafka.clients.NetworkClient   : [AdminClient clientId=carddemo-authorization-service-admin-0] Error connecting to node kafka:9092 (id: 1 rack: null)
+
+java.net.UnknownHostException: kafka
+	at java.base/java.net.InetAddress$CachedLookup.get(InetAddress.java:988) ~[na:na]
+	at java.base/java.net.InetAddress.getAllByName0(InetAddress.java:1818) ~[na:na]
+	at java.base/java.net.InetAddress.getAllByName(InetAddress.java:1688) ~[na:na]
+	at org.apache.kafka.clients.DefaultHostResolver.resolve(DefaultHostResolver.java:27) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.ClientUtils.resolve(ClientUtils.java:124) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.ClusterConnectionStates$NodeConnectionState.resolveAddresses(ClusterConnectionStates.java:536) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.ClusterConnectionStates$NodeConnectionState.currentAddress(ClusterConnectionStates.java:511) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.ClusterConnectionStates$NodeConnectionState.access$200(ClusterConnectionStates.java:466) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.ClusterConnectionStates.currentAddress(ClusterConnectionStates.java:173) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.NetworkClient.initiateConnect(NetworkClient.java:1050) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.NetworkClient.ready(NetworkClient.java:310) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.admin.KafkaAdminClient$AdminClientRunnable.sendEligibleCalls(KafkaAdminClient.java:1232) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.admin.KafkaAdminClient$AdminClientRunnable.processRequests(KafkaAdminClient.java:1492) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.admin.KafkaAdminClient$AdminClientRunnable.run(KafkaAdminClient.java:1435) ~[kafka-clients-3.7.1.jar!/:na]
+	at java.base/java.lang.Thread.run(Thread.java:1583) ~[na:na]
+
+2026-09-24T07:33:00.251Z  WARN 74316 --- [carddemo-authorization-service] [service-admin-0] org.apache.kafka.clients.NetworkClient   : [AdminClient clientId=carddemo-authorization-service-admin-0] Error connecting to node kafka:9092 (id: 1 rack: null)
+
+java.net.UnknownHostException: kafka
+	at java.base/java.net.InetAddress$CachedLookup.get(InetAddress.java:988) ~[na:na]
+	at java.base/java.net.InetAddress.getAllByName0(InetAddress.java:1818) ~[na:na]
+	at java.base/java.net.InetAddress.getAllByName(InetAddress.java:1688) ~[na:na]
+	at org.apache.kafka.clients.DefaultHostResolver.resolve(DefaultHostResolver.java:27) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.ClientUtils.resolve(ClientUtils.java:124) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.ClusterConnectionStates$NodeConnectionState.resolveAddresses(ClusterConnectionStates.java:536) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.ClusterConnectionStates$NodeConnectionState.currentAddress(ClusterConnectionStates.java:511) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.ClusterConnectionStates$NodeConnectionState.access$200(ClusterConnectionStates.java:466) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.ClusterConnectionStates.currentAddress(ClusterConnectionStates.java:173) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.NetworkClient.initiateConnect(NetworkClient.java:1050) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.NetworkClient.ready(NetworkClient.java:310) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.admin.KafkaAdminClient$AdminClientRunnable.sendEligibleCalls(KafkaAdminClient.java:1232) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.admin.KafkaAdminClient$AdminClientRunnable.processRequests(KafkaAdminClient.java:1492) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.admin.KafkaAdminClient$AdminClientRunnable.run(KafkaAdminClient.java:1435) ~[kafka-clients-3.7.1.jar!/:na]
+	at java.base/java.lang.Thread.run(Thread.java:1583) ~[na:na]
+
+2026-09-24T07:33:01.260Z  WARN 74316 --- [carddemo-authorization-service] [service-admin-0] org.apache.kafka.clients.NetworkClient   : [AdminClient clientId=carddemo-authorization-service-admin-0] Error connecting to node kafka:9092 (id: 1 rack: null)
+
+java.net.UnknownHostException: kafka
+	at java.base/java.net.InetAddress$CachedLookup.get(InetAddress.java:988) ~[na:na]
+	at java.base/java.net.InetAddress.getAllByName0(InetAddress.java:1818) ~[na:na]
+	at java.base/java.net.InetAddress.getAllByName(InetAddress.java:1688) ~[na:na]
+	at org.apache.kafka.clients.DefaultHostResolver.resolve(DefaultHostResolver.java:27) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.ClientUtils.resolve(ClientUtils.java:124) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.ClusterConnectionStates$NodeConnectionState.resolveAddresses(ClusterConnectionStates.java:536) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.ClusterConnectionStates$NodeConnectionState.currentAddress(ClusterConnectionStates.java:511) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.ClusterConnectionStates$NodeConnectionState.access$200(ClusterConnectionStates.java:466) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.ClusterConnectionStates.currentAddress(ClusterConnectionStates.java:173) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.NetworkClient.initiateConnect(NetworkClient.java:1050) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.NetworkClient.ready(NetworkClient.java:310) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.admin.KafkaAdminClient$AdminClientRunnable.sendEligibleCalls(KafkaAdminClient.java:1232) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.admin.KafkaAdminClient$AdminClientRunnable.processRequests(KafkaAdminClient.java:1492) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.admin.KafkaAdminClient$AdminClientRunnable.run(KafkaAdminClient.java:1435) ~[kafka-clients-3.7.1.jar!/:na]
+	at java.base/java.lang.Thread.run(Thread.java:1583) ~[na:na]
+
+2026-09-24T07:33:02.173Z  WARN 74316 --- [carddemo-authorization-service] [service-admin-0] org.apache.kafka.clients.NetworkClient   : [AdminClient clientId=carddemo-authorization-service-admin-0] Error connecting to node kafka:9092 (id: 1 rack: null)
+
+java.net.UnknownHostException: kafka
+	at java.base/java.net.InetAddress$CachedLookup.get(InetAddress.java:988) ~[na:na]
+	at java.base/java.net.InetAddress.getAllByName0(InetAddress.java:1818) ~[na:na]
+	at java.base/java.net.InetAddress.getAllByName(InetAddress.java:1688) ~[na:na]
+	at org.apache.kafka.clients.DefaultHostResolver.resolve(DefaultHostResolver.java:27) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.ClientUtils.resolve(ClientUtils.java:124) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.ClusterConnectionStates$NodeConnectionState.resolveAddresses(ClusterConnectionStates.java:536) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.ClusterConnectionStates$NodeConnectionState.currentAddress(ClusterConnectionStates.java:511) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.ClusterConnectionStates$NodeConnectionState.access$200(ClusterConnectionStates.java:466) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.ClusterConnectionStates.currentAddress(ClusterConnectionStates.java:173) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.NetworkClient.initiateConnect(NetworkClient.java:1050) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.NetworkClient.ready(NetworkClient.java:310) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.admin.KafkaAdminClient$AdminClientRunnable.sendEligibleCalls(KafkaAdminClient.java:1232) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.admin.KafkaAdminClient$AdminClientRunnable.processRequests(KafkaAdminClient.java:1492) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.admin.KafkaAdminClient$AdminClientRunnable.run(KafkaAdminClient.java:1435) ~[kafka-clients-3.7.1.jar!/:na]
+	at java.base/java.lang.Thread.run(Thread.java:1583) ~[na:na]
+
+2026-09-24T07:33:03.130Z  WARN 74316 --- [carddemo-authorization-service] [service-admin-0] org.apache.kafka.clients.NetworkClient   : [AdminClient clientId=carddemo-authorization-service-admin-0] Error connecting to node kafka:9092 (id: 1 rack: null)
+
+java.net.UnknownHostException: kafka
+	at java.base/java.net.InetAddress$CachedLookup.get(InetAddress.java:988) ~[na:na]
+	at java.base/java.net.InetAddress.getAllByName0(InetAddress.java:1818) ~[na:na]
+	at java.base/java.net.InetAddress.getAllByName(InetAddress.java:1688) ~[na:na]
+	at org.apache.kafka.clients.DefaultHostResolver.resolve(DefaultHostResolver.java:27) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.ClientUtils.resolve(ClientUtils.java:124) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.ClusterConnectionStates$NodeConnectionState.resolveAddresses(ClusterConnectionStates.java:536) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.ClusterConnectionStates$NodeConnectionState.currentAddress(ClusterConnectionStates.java:511) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.ClusterConnectionStates$NodeConnectionState.access$200(ClusterConnectionStates.java:466) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.ClusterConnectionStates.currentAddress(ClusterConnectionStates.java:173) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.NetworkClient.initiateConnect(NetworkClient.java:1050) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.NetworkClient.ready(NetworkClient.java:310) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.admin.KafkaAdminClient$AdminClientRunnable.sendEligibleCalls(KafkaAdminClient.java:1232) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.admin.KafkaAdminClient$AdminClientRunnable.processRequests(KafkaAdminClient.java:1492) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.admin.KafkaAdminClient$AdminClientRunnable.run(KafkaAdminClient.java:1435) ~[kafka-clients-3.7.1.jar!/:na]
+	at java.base/java.lang.Thread.run(Thread.java:1583) ~[na:na]
+
+2026-09-24T07:33:04.136Z  WARN 74316 --- [carddemo-authorization-service] [service-admin-0] org.apache.kafka.clients.NetworkClient   : [AdminClient clientId=carddemo-authorization-service-admin-0] Error connecting to node kafka:9092 (id: 1 rack: null)
+
+java.net.UnknownHostException: kafka: Temporary failure in name resolution
+	at java.base/java.net.Inet6AddressImpl.lookupAllHostAddr(Native Method) ~[na:na]
+	at java.base/java.net.Inet6AddressImpl.lookupAllHostAddr(Inet6AddressImpl.java:52) ~[na:na]
+	at java.base/java.net.InetAddress$PlatformResolver.lookupByName(InetAddress.java:1211) ~[na:na]
+	at java.base/java.net.InetAddress.getAddressesFromNameService(InetAddress.java:1828) ~[na:na]
+	at java.base/java.net.InetAddress$NameServiceAddresses.get(InetAddress.java:1139) ~[na:na]
+	at java.base/java.net.InetAddress.getAllByName0(InetAddress.java:1818) ~[na:na]
+	at java.base/java.net.InetAddress.getAllByName(InetAddress.java:1688) ~[na:na]
+	at org.apache.kafka.clients.DefaultHostResolver.resolve(DefaultHostResolver.java:27) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.ClientUtils.resolve(ClientUtils.java:124) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.ClusterConnectionStates$NodeConnectionState.resolveAddresses(ClusterConnectionStates.java:536) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.ClusterConnectionStates$NodeConnectionState.currentAddress(ClusterConnectionStates.java:511) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.ClusterConnectionStates$NodeConnectionState.access$200(ClusterConnectionStates.java:466) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.ClusterConnectionStates.currentAddress(ClusterConnectionStates.java:173) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.NetworkClient.initiateConnect(NetworkClient.java:1050) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.NetworkClient.ready(NetworkClient.java:310) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.admin.KafkaAdminClient$AdminClientRunnable.sendEligibleCalls(KafkaAdminClient.java:1232) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.admin.KafkaAdminClient$AdminClientRunnable.processRequests(KafkaAdminClient.java:1492) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.admin.KafkaAdminClient$AdminClientRunnable.run(KafkaAdminClient.java:1435) ~[kafka-clients-3.7.1.jar!/:na]
+	at java.base/java.lang.Thread.run(Thread.java:1583) ~[na:na]
+
+2026-09-24T07:33:05.142Z  WARN 74316 --- [carddemo-authorization-service] [service-admin-0] org.apache.kafka.clients.NetworkClient   : [AdminClient clientId=carddemo-authorization-service-admin-0] Error connecting to node kafka:9092 (id: 1 rack: null)
+
+java.net.UnknownHostException: kafka
+	at java.base/java.net.InetAddress$CachedLookup.get(InetAddress.java:988) ~[na:na]
+	at java.base/java.net.InetAddress.getAllByName0(InetAddress.java:1818) ~[na:na]
+	at java.base/java.net.InetAddress.getAllByName(InetAddress.java:1688) ~[na:na]
+	at org.apache.kafka.clients.DefaultHostResolver.resolve(DefaultHostResolver.java:27) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.ClientUtils.resolve(ClientUtils.java:124) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.ClusterConnectionStates$NodeConnectionState.resolveAddresses(ClusterConnectionStates.java:536) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.ClusterConnectionStates$NodeConnectionState.currentAddress(ClusterConnectionStates.java:511) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.ClusterConnectionStates$NodeConnectionState.access$200(ClusterConnectionStates.java:466) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.ClusterConnectionStates.currentAddress(ClusterConnectionStates.java:173) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.NetworkClient.initiateConnect(NetworkClient.java:1050) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.NetworkClient.ready(NetworkClient.java:310) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.admin.KafkaAdminClient$AdminClientRunnable.sendEligibleCalls(KafkaAdminClient.java:1232) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.admin.KafkaAdminClient$AdminClientRunnable.processRequests(KafkaAdminClient.java:1492) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.admin.KafkaAdminClient$AdminClientRunnable.run(KafkaAdminClient.java:1435) ~[kafka-clients-3.7.1.jar!/:na]
+	at java.base/java.lang.Thread.run(Thread.java:1583) ~[na:na]
+
+2026-09-24T07:33:06.147Z  WARN 74316 --- [carddemo-authorization-service] [service-admin-0] org.apache.kafka.clients.NetworkClient   : [AdminClient clientId=carddemo-authorization-service-admin-0] Error connecting to node kafka:9092 (id: 1 rack: null)
+
+java.net.UnknownHostException: kafka
+	at java.base/java.net.InetAddress$CachedLookup.get(InetAddress.java:988) ~[na:na]
+	at java.base/java.net.InetAddress.getAllByName0(InetAddress.java:1818) ~[na:na]
+	at java.base/java.net.InetAddress.getAllByName(InetAddress.java:1688) ~[na:na]
+	at org.apache.kafka.clients.DefaultHostResolver.resolve(DefaultHostResolver.java:27) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.ClientUtils.resolve(ClientUtils.java:124) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.ClusterConnectionStates$NodeConnectionState.resolveAddresses(ClusterConnectionStates.java:536) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.ClusterConnectionStates$NodeConnectionState.currentAddress(ClusterConnectionStates.java:511) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.ClusterConnectionStates$NodeConnectionState.access$200(ClusterConnectionStates.java:466) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.ClusterConnectionStates.currentAddress(ClusterConnectionStates.java:173) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.NetworkClient.initiateConnect(NetworkClient.java:1050) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.NetworkClient.ready(NetworkClient.java:310) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.admin.KafkaAdminClient$AdminClientRunnable.sendEligibleCalls(KafkaAdminClient.java:1232) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.admin.KafkaAdminClient$AdminClientRunnable.processRequests(KafkaAdminClient.java:1492) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.admin.KafkaAdminClient$AdminClientRunnable.run(KafkaAdminClient.java:1435) ~[kafka-clients-3.7.1.jar!/:na]
+	at java.base/java.lang.Thread.run(Thread.java:1583) ~[na:na]
+
+2026-09-24T07:33:06.989Z  WARN 74316 --- [carddemo-authorization-service] [service-admin-0] org.apache.kafka.clients.NetworkClient   : [AdminClient clientId=carddemo-authorization-service-admin-0] Error connecting to node kafka:9092 (id: 1 rack: null)
+
+java.net.UnknownHostException: kafka
+	at java.base/java.net.InetAddress$CachedLookup.get(InetAddress.java:988) ~[na:na]
+	at java.base/java.net.InetAddress.getAllByName0(InetAddress.java:1818) ~[na:na]
+	at java.base/java.net.InetAddress.getAllByName(InetAddress.java:1688) ~[na:na]
+	at org.apache.kafka.clients.DefaultHostResolver.resolve(DefaultHostResolver.java:27) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.ClientUtils.resolve(ClientUtils.java:124) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.ClusterConnectionStates$NodeConnectionState.resolveAddresses(ClusterConnectionStates.java:536) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.ClusterConnectionStates$NodeConnectionState.currentAddress(ClusterConnectionStates.java:511) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.ClusterConnectionStates$NodeConnectionState.access$200(ClusterConnectionStates.java:466) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.ClusterConnectionStates.currentAddress(ClusterConnectionStates.java:173) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.NetworkClient.initiateConnect(NetworkClient.java:1050) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.NetworkClient.ready(NetworkClient.java:310) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.admin.KafkaAdminClient$AdminClientRunnable.sendEligibleCalls(KafkaAdminClient.java:1232) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.admin.KafkaAdminClient$AdminClientRunnable.processRequests(KafkaAdminClient.java:1492) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.admin.KafkaAdminClient$AdminClientRunnable.run(KafkaAdminClient.java:1435) ~[kafka-clients-3.7.1.jar!/:na]
+	at java.base/java.lang.Thread.run(Thread.java:1583) ~[na:na]
+
+2026-09-24T07:33:07.995Z  WARN 74316 --- [carddemo-authorization-service] [service-admin-0] org.apache.kafka.clients.NetworkClient   : [AdminClient clientId=carddemo-authorization-service-admin-0] Error connecting to node kafka:9092 (id: 1 rack: null)
+
+java.net.UnknownHostException: kafka
+	at java.base/java.net.InetAddress$CachedLookup.get(InetAddress.java:988) ~[na:na]
+	at java.base/java.net.InetAddress.getAllByName0(InetAddress.java:1818) ~[na:na]
+	at java.base/java.net.InetAddress.getAllByName(InetAddress.java:1688) ~[na:na]
+	at org.apache.kafka.clients.DefaultHostResolver.resolve(DefaultHostResolver.java:27) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.ClientUtils.resolve(ClientUtils.java:124) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.ClusterConnectionStates$NodeConnectionState.resolveAddresses(ClusterConnectionStates.java:536) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.ClusterConnectionStates$NodeConnectionState.currentAddress(ClusterConnectionStates.java:511) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.ClusterConnectionStates$NodeConnectionState.access$200(ClusterConnectionStates.java:466) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.ClusterConnectionStates.currentAddress(ClusterConnectionStates.java:173) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.NetworkClient.initiateConnect(NetworkClient.java:1050) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.NetworkClient.ready(NetworkClient.java:310) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.admin.KafkaAdminClient$AdminClientRunnable.sendEligibleCalls(KafkaAdminClient.java:1232) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.admin.KafkaAdminClient$AdminClientRunnable.processRequests(KafkaAdminClient.java:1492) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.admin.KafkaAdminClient$AdminClientRunnable.run(KafkaAdminClient.java:1435) ~[kafka-clients-3.7.1.jar!/:na]
+	at java.base/java.lang.Thread.run(Thread.java:1583) ~[na:na]
+
+2026-09-24T07:33:08.864Z  WARN 74316 --- [carddemo-authorization-service] [service-admin-0] org.apache.kafka.clients.NetworkClient   : [AdminClient clientId=carddemo-authorization-service-admin-0] Error connecting to node kafka:9092 (id: 1 rack: null)
+
+java.net.UnknownHostException: kafka
+	at java.base/java.net.InetAddress$CachedLookup.get(InetAddress.java:988) ~[na:na]
+	at java.base/java.net.InetAddress.getAllByName0(InetAddress.java:1818) ~[na:na]
+	at java.base/java.net.InetAddress.getAllByName(InetAddress.java:1688) ~[na:na]
+	at org.apache.kafka.clients.DefaultHostResolver.resolve(DefaultHostResolver.java:27) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.ClientUtils.resolve(ClientUtils.java:124) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.ClusterConnectionStates$NodeConnectionState.resolveAddresses(ClusterConnectionStates.java:536) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.ClusterConnectionStates$NodeConnectionState.currentAddress(ClusterConnectionStates.java:511) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.ClusterConnectionStates$NodeConnectionState.access$200(ClusterConnectionStates.java:466) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.ClusterConnectionStates.currentAddress(ClusterConnectionStates.java:173) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.NetworkClient.initiateConnect(NetworkClient.java:1050) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.NetworkClient.ready(NetworkClient.java:310) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.admin.KafkaAdminClient$AdminClientRunnable.sendEligibleCalls(KafkaAdminClient.java:1232) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.admin.KafkaAdminClient$AdminClientRunnable.processRequests(KafkaAdminClient.java:1492) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.admin.KafkaAdminClient$AdminClientRunnable.run(KafkaAdminClient.java:1435) ~[kafka-clients-3.7.1.jar!/:na]
+	at java.base/java.lang.Thread.run(Thread.java:1583) ~[na:na]
+
+2026-09-24T07:33:09.862Z  WARN 74316 --- [carddemo-authorization-service] [service-admin-0] org.apache.kafka.clients.NetworkClient   : [AdminClient clientId=carddemo-authorization-service-admin-0] Error connecting to node kafka:9092 (id: 1 rack: null)
+
+java.net.UnknownHostException: kafka
+	at java.base/java.net.InetAddress$CachedLookup.get(InetAddress.java:988) ~[na:na]
+	at java.base/java.net.InetAddress.getAllByName0(InetAddress.java:1818) ~[na:na]
+	at java.base/java.net.InetAddress.getAllByName(InetAddress.java:1688) ~[na:na]
+	at org.apache.kafka.clients.DefaultHostResolver.resolve(DefaultHostResolver.java:27) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.ClientUtils.resolve(ClientUtils.java:124) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.ClusterConnectionStates$NodeConnectionState.resolveAddresses(ClusterConnectionStates.java:536) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.ClusterConnectionStates$NodeConnectionState.currentAddress(ClusterConnectionStates.java:511) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.ClusterConnectionStates$NodeConnectionState.access$200(ClusterConnectionStates.java:466) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.ClusterConnectionStates.currentAddress(ClusterConnectionStates.java:173) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.NetworkClient.initiateConnect(NetworkClient.java:1050) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.NetworkClient.ready(NetworkClient.java:310) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.admin.KafkaAdminClient$AdminClientRunnable.sendEligibleCalls(KafkaAdminClient.java:1232) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.admin.KafkaAdminClient$AdminClientRunnable.processRequests(KafkaAdminClient.java:1492) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.admin.KafkaAdminClient$AdminClientRunnable.run(KafkaAdminClient.java:1435) ~[kafka-clients-3.7.1.jar!/:na]
+	at java.base/java.lang.Thread.run(Thread.java:1583) ~[na:na]
+
+2026-09-24T07:33:10.867Z  WARN 74316 --- [carddemo-authorization-service] [service-admin-0] org.apache.kafka.clients.NetworkClient   : [AdminClient clientId=carddemo-authorization-service-admin-0] Error connecting to node kafka:9092 (id: 1 rack: null)
+
+java.net.UnknownHostException: kafka
+	at java.base/java.net.InetAddress$CachedLookup.get(InetAddress.java:988) ~[na:na]
+	at java.base/java.net.InetAddress.getAllByName0(InetAddress.java:1818) ~[na:na]
+	at java.base/java.net.InetAddress.getAllByName(InetAddress.java:1688) ~[na:na]
+	at org.apache.kafka.clients.DefaultHostResolver.resolve(DefaultHostResolver.java:27) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.ClientUtils.resolve(ClientUtils.java:124) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.ClusterConnectionStates$NodeConnectionState.resolveAddresses(ClusterConnectionStates.java:536) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.ClusterConnectionStates$NodeConnectionState.currentAddress(ClusterConnectionStates.java:511) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.ClusterConnectionStates$NodeConnectionState.access$200(ClusterConnectionStates.java:466) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.ClusterConnectionStates.currentAddress(ClusterConnectionStates.java:173) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.NetworkClient.initiateConnect(NetworkClient.java:1050) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.NetworkClient.ready(NetworkClient.java:310) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.admin.KafkaAdminClient$AdminClientRunnable.sendEligibleCalls(KafkaAdminClient.java:1232) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.admin.KafkaAdminClient$AdminClientRunnable.processRequests(KafkaAdminClient.java:1492) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.admin.KafkaAdminClient$AdminClientRunnable.run(KafkaAdminClient.java:1435) ~[kafka-clients-3.7.1.jar!/:na]
+	at java.base/java.lang.Thread.run(Thread.java:1583) ~[na:na]
+
+2026-09-24T07:33:11.676Z  WARN 74316 --- [carddemo-authorization-service] [service-admin-0] org.apache.kafka.clients.NetworkClient   : [AdminClient clientId=carddemo-authorization-service-admin-0] Error connecting to node kafka:9092 (id: 1 rack: null)
+
+java.net.UnknownHostException: kafka
+	at java.base/java.net.InetAddress$CachedLookup.get(InetAddress.java:988) ~[na:na]
+	at java.base/java.net.InetAddress.getAllByName0(InetAddress.java:1818) ~[na:na]
+	at java.base/java.net.InetAddress.getAllByName(InetAddress.java:1688) ~[na:na]
+	at org.apache.kafka.clients.DefaultHostResolver.resolve(DefaultHostResolver.java:27) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.ClientUtils.resolve(ClientUtils.java:124) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.ClusterConnectionStates$NodeConnectionState.resolveAddresses(ClusterConnectionStates.java:536) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.ClusterConnectionStates$NodeConnectionState.currentAddress(ClusterConnectionStates.java:511) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.ClusterConnectionStates$NodeConnectionState.access$200(ClusterConnectionStates.java:466) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.ClusterConnectionStates.currentAddress(ClusterConnectionStates.java:173) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.NetworkClient.initiateConnect(NetworkClient.java:1050) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.NetworkClient.ready(NetworkClient.java:310) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.admin.KafkaAdminClient$AdminClientRunnable.sendEligibleCalls(KafkaAdminClient.java:1232) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.admin.KafkaAdminClient$AdminClientRunnable.processRequests(KafkaAdminClient.java:1492) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.admin.KafkaAdminClient$AdminClientRunnable.run(KafkaAdminClient.java:1435) ~[kafka-clients-3.7.1.jar!/:na]
+	at java.base/java.lang.Thread.run(Thread.java:1583) ~[na:na]
+
+2026-09-24T07:33:12.683Z  WARN 74316 --- [carddemo-authorization-service] [service-admin-0] org.apache.kafka.clients.NetworkClient   : [AdminClient clientId=carddemo-authorization-service-admin-0] Error connecting to node kafka:9092 (id: 1 rack: null)
+
+java.net.UnknownHostException: kafka
+	at java.base/java.net.InetAddress$CachedLookup.get(InetAddress.java:988) ~[na:na]
+	at java.base/java.net.InetAddress.getAllByName0(InetAddress.java:1818) ~[na:na]
+	at java.base/java.net.InetAddress.getAllByName(InetAddress.java:1688) ~[na:na]
+	at org.apache.kafka.clients.DefaultHostResolver.resolve(DefaultHostResolver.java:27) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.ClientUtils.resolve(ClientUtils.java:124) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.ClusterConnectionStates$NodeConnectionState.resolveAddresses(ClusterConnectionStates.java:536) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.ClusterConnectionStates$NodeConnectionState.currentAddress(ClusterConnectionStates.java:511) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.ClusterConnectionStates$NodeConnectionState.access$200(ClusterConnectionStates.java:466) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.ClusterConnectionStates.currentAddress(ClusterConnectionStates.java:173) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.NetworkClient.initiateConnect(NetworkClient.java:1050) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.NetworkClient.ready(NetworkClient.java:310) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.admin.KafkaAdminClient$AdminClientRunnable.sendEligibleCalls(KafkaAdminClient.java:1232) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.admin.KafkaAdminClient$AdminClientRunnable.processRequests(KafkaAdminClient.java:1492) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.admin.KafkaAdminClient$AdminClientRunnable.run(KafkaAdminClient.java:1435) ~[kafka-clients-3.7.1.jar!/:na]
+	at java.base/java.lang.Thread.run(Thread.java:1583) ~[na:na]
+
+2026-09-24T07:33:13.618Z  WARN 74316 --- [carddemo-authorization-service] [service-admin-0] org.apache.kafka.clients.NetworkClient   : [AdminClient clientId=carddemo-authorization-service-admin-0] Error connecting to node kafka:9092 (id: 1 rack: null)
+
+java.net.UnknownHostException: kafka
+	at java.base/java.net.InetAddress$CachedLookup.get(InetAddress.java:988) ~[na:na]
+	at java.base/java.net.InetAddress.getAllByName0(InetAddress.java:1818) ~[na:na]
+	at java.base/java.net.InetAddress.getAllByName(InetAddress.java:1688) ~[na:na]
+	at org.apache.kafka.clients.DefaultHostResolver.resolve(DefaultHostResolver.java:27) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.ClientUtils.resolve(ClientUtils.java:124) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.ClusterConnectionStates$NodeConnectionState.resolveAddresses(ClusterConnectionStates.java:536) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.ClusterConnectionStates$NodeConnectionState.currentAddress(ClusterConnectionStates.java:511) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.ClusterConnectionStates$NodeConnectionState.access$200(ClusterConnectionStates.java:466) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.ClusterConnectionStates.currentAddress(ClusterConnectionStates.java:173) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.NetworkClient.initiateConnect(NetworkClient.java:1050) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.NetworkClient.ready(NetworkClient.java:310) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.admin.KafkaAdminClient$AdminClientRunnable.sendEligibleCalls(KafkaAdminClient.java:1232) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.admin.KafkaAdminClient$AdminClientRunnable.processRequests(KafkaAdminClient.java:1492) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.admin.KafkaAdminClient$AdminClientRunnable.run(KafkaAdminClient.java:1435) ~[kafka-clients-3.7.1.jar!/:na]
+	at java.base/java.lang.Thread.run(Thread.java:1583) ~[na:na]
+
+2026-09-24T07:33:14.442Z  WARN 74316 --- [carddemo-authorization-service] [service-admin-0] org.apache.kafka.clients.NetworkClient   : [AdminClient clientId=carddemo-authorization-service-admin-0] Error connecting to node kafka:9092 (id: 1 rack: null)
+
+java.net.UnknownHostException: kafka: Temporary failure in name resolution
+	at java.base/java.net.Inet6AddressImpl.lookupAllHostAddr(Native Method) ~[na:na]
+	at java.base/java.net.Inet6AddressImpl.lookupAllHostAddr(Inet6AddressImpl.java:52) ~[na:na]
+	at java.base/java.net.InetAddress$PlatformResolver.lookupByName(InetAddress.java:1211) ~[na:na]
+	at java.base/java.net.InetAddress.getAddressesFromNameService(InetAddress.java:1828) ~[na:na]
+	at java.base/java.net.InetAddress$NameServiceAddresses.get(InetAddress.java:1139) ~[na:na]
+	at java.base/java.net.InetAddress.getAllByName0(InetAddress.java:1818) ~[na:na]
+	at java.base/java.net.InetAddress.getAllByName(InetAddress.java:1688) ~[na:na]
+	at org.apache.kafka.clients.DefaultHostResolver.resolve(DefaultHostResolver.java:27) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.ClientUtils.resolve(ClientUtils.java:124) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.ClusterConnectionStates$NodeConnectionState.resolveAddresses(ClusterConnectionStates.java:536) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.ClusterConnectionStates$NodeConnectionState.currentAddress(ClusterConnectionStates.java:511) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.ClusterConnectionStates$NodeConnectionState.access$200(ClusterConnectionStates.java:466) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.ClusterConnectionStates.currentAddress(ClusterConnectionStates.java:173) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.NetworkClient.initiateConnect(NetworkClient.java:1050) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.NetworkClient.ready(NetworkClient.java:310) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.admin.KafkaAdminClient$AdminClientRunnable.sendEligibleCalls(KafkaAdminClient.java:1232) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.admin.KafkaAdminClient$AdminClientRunnable.processRequests(KafkaAdminClient.java:1492) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.admin.KafkaAdminClient$AdminClientRunnable.run(KafkaAdminClient.java:1435) ~[kafka-clients-3.7.1.jar!/:na]
+	at java.base/java.lang.Thread.run(Thread.java:1583) ~[na:na]
+
+2026-09-24T07:33:15.445Z  WARN 74316 --- [carddemo-authorization-service] [service-admin-0] org.apache.kafka.clients.NetworkClient   : [AdminClient clientId=carddemo-authorization-service-admin-0] Error connecting to node kafka:9092 (id: 1 rack: null)
+
+java.net.UnknownHostException: kafka
+	at java.base/java.net.InetAddress$CachedLookup.get(InetAddress.java:988) ~[na:na]
+	at java.base/java.net.InetAddress.getAllByName0(InetAddress.java:1818) ~[na:na]
+	at java.base/java.net.InetAddress.getAllByName(InetAddress.java:1688) ~[na:na]
+	at org.apache.kafka.clients.DefaultHostResolver.resolve(DefaultHostResolver.java:27) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.ClientUtils.resolve(ClientUtils.java:124) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.ClusterConnectionStates$NodeConnectionState.resolveAddresses(ClusterConnectionStates.java:536) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.ClusterConnectionStates$NodeConnectionState.currentAddress(ClusterConnectionStates.java:511) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.ClusterConnectionStates$NodeConnectionState.access$200(ClusterConnectionStates.java:466) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.ClusterConnectionStates.currentAddress(ClusterConnectionStates.java:173) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.NetworkClient.initiateConnect(NetworkClient.java:1050) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.NetworkClient.ready(NetworkClient.java:310) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.admin.KafkaAdminClient$AdminClientRunnable.sendEligibleCalls(KafkaAdminClient.java:1232) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.admin.KafkaAdminClient$AdminClientRunnable.processRequests(KafkaAdminClient.java:1492) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.admin.KafkaAdminClient$AdminClientRunnable.run(KafkaAdminClient.java:1435) ~[kafka-clients-3.7.1.jar!/:na]
+	at java.base/java.lang.Thread.run(Thread.java:1583) ~[na:na]
+
+2026-09-24T07:33:16.352Z  WARN 74316 --- [carddemo-authorization-service] [service-admin-0] org.apache.kafka.clients.NetworkClient   : [AdminClient clientId=carddemo-authorization-service-admin-0] Error connecting to node kafka:9092 (id: 1 rack: null)
+
+java.net.UnknownHostException: kafka
+	at java.base/java.net.InetAddress$CachedLookup.get(InetAddress.java:988) ~[na:na]
+	at java.base/java.net.InetAddress.getAllByName0(InetAddress.java:1818) ~[na:na]
+	at java.base/java.net.InetAddress.getAllByName(InetAddress.java:1688) ~[na:na]
+	at org.apache.kafka.clients.DefaultHostResolver.resolve(DefaultHostResolver.java:27) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.ClientUtils.resolve(ClientUtils.java:124) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.ClusterConnectionStates$NodeConnectionState.resolveAddresses(ClusterConnectionStates.java:536) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.ClusterConnectionStates$NodeConnectionState.currentAddress(ClusterConnectionStates.java:511) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.ClusterConnectionStates$NodeConnectionState.access$200(ClusterConnectionStates.java:466) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.ClusterConnectionStates.currentAddress(ClusterConnectionStates.java:173) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.NetworkClient.initiateConnect(NetworkClient.java:1050) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.NetworkClient.ready(NetworkClient.java:310) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.admin.KafkaAdminClient$AdminClientRunnable.sendEligibleCalls(KafkaAdminClient.java:1232) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.admin.KafkaAdminClient$AdminClientRunnable.processRequests(KafkaAdminClient.java:1492) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.admin.KafkaAdminClient$AdminClientRunnable.run(KafkaAdminClient.java:1435) ~[kafka-clients-3.7.1.jar!/:na]
+	at java.base/java.lang.Thread.run(Thread.java:1583) ~[na:na]
+
+2026-09-24T07:33:17.358Z  WARN 74316 --- [carddemo-authorization-service] [service-admin-0] org.apache.kafka.clients.NetworkClient   : [AdminClient clientId=carddemo-authorization-service-admin-0] Error connecting to node kafka:9092 (id: 1 rack: null)
+
+java.net.UnknownHostException: kafka
+	at java.base/java.net.InetAddress$CachedLookup.get(InetAddress.java:988) ~[na:na]
+	at java.base/java.net.InetAddress.getAllByName0(InetAddress.java:1818) ~[na:na]
+	at java.base/java.net.InetAddress.getAllByName(InetAddress.java:1688) ~[na:na]
+	at org.apache.kafka.clients.DefaultHostResolver.resolve(DefaultHostResolver.java:27) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.ClientUtils.resolve(ClientUtils.java:124) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.ClusterConnectionStates$NodeConnectionState.resolveAddresses(ClusterConnectionStates.java:536) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.ClusterConnectionStates$NodeConnectionState.currentAddress(ClusterConnectionStates.java:511) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.ClusterConnectionStates$NodeConnectionState.access$200(ClusterConnectionStates.java:466) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.ClusterConnectionStates.currentAddress(ClusterConnectionStates.java:173) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.NetworkClient.initiateConnect(NetworkClient.java:1050) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.NetworkClient.ready(NetworkClient.java:310) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.admin.KafkaAdminClient$AdminClientRunnable.sendEligibleCalls(KafkaAdminClient.java:1232) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.admin.KafkaAdminClient$AdminClientRunnable.processRequests(KafkaAdminClient.java:1492) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.admin.KafkaAdminClient$AdminClientRunnable.run(KafkaAdminClient.java:1435) ~[kafka-clients-3.7.1.jar!/:na]
+	at java.base/java.lang.Thread.run(Thread.java:1583) ~[na:na]
+
+2026-09-24T07:33:18.363Z  WARN 74316 --- [carddemo-authorization-service] [service-admin-0] org.apache.kafka.clients.NetworkClient   : [AdminClient clientId=carddemo-authorization-service-admin-0] Error connecting to node kafka:9092 (id: 1 rack: null)
+
+java.net.UnknownHostException: kafka
+	at java.base/java.net.InetAddress$CachedLookup.get(InetAddress.java:988) ~[na:na]
+	at java.base/java.net.InetAddress.getAllByName0(InetAddress.java:1818) ~[na:na]
+	at java.base/java.net.InetAddress.getAllByName(InetAddress.java:1688) ~[na:na]
+	at org.apache.kafka.clients.DefaultHostResolver.resolve(DefaultHostResolver.java:27) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.ClientUtils.resolve(ClientUtils.java:124) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.ClusterConnectionStates$NodeConnectionState.resolveAddresses(ClusterConnectionStates.java:536) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.ClusterConnectionStates$NodeConnectionState.currentAddress(ClusterConnectionStates.java:511) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.ClusterConnectionStates$NodeConnectionState.access$200(ClusterConnectionStates.java:466) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.ClusterConnectionStates.currentAddress(ClusterConnectionStates.java:173) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.NetworkClient.initiateConnect(NetworkClient.java:1050) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.NetworkClient.ready(NetworkClient.java:310) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.admin.KafkaAdminClient$AdminClientRunnable.sendEligibleCalls(KafkaAdminClient.java:1232) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.admin.KafkaAdminClient$AdminClientRunnable.processRequests(KafkaAdminClient.java:1492) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.admin.KafkaAdminClient$AdminClientRunnable.run(KafkaAdminClient.java:1435) ~[kafka-clients-3.7.1.jar!/:na]
+	at java.base/java.lang.Thread.run(Thread.java:1583) ~[na:na]
+
+2026-09-24T07:33:19.283Z  WARN 74316 --- [carddemo-authorization-service] [service-admin-0] org.apache.kafka.clients.NetworkClient   : [AdminClient clientId=carddemo-authorization-service-admin-0] Error connecting to node kafka:9092 (id: 1 rack: null)
+
+java.net.UnknownHostException: kafka
+	at java.base/java.net.InetAddress$CachedLookup.get(InetAddress.java:988) ~[na:na]
+	at java.base/java.net.InetAddress.getAllByName0(InetAddress.java:1818) ~[na:na]
+	at java.base/java.net.InetAddress.getAllByName(InetAddress.java:1688) ~[na:na]
+	at org.apache.kafka.clients.DefaultHostResolver.resolve(DefaultHostResolver.java:27) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.ClientUtils.resolve(ClientUtils.java:124) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.ClusterConnectionStates$NodeConnectionState.resolveAddresses(ClusterConnectionStates.java:536) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.ClusterConnectionStates$NodeConnectionState.currentAddress(ClusterConnectionStates.java:511) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.ClusterConnectionStates$NodeConnectionState.access$200(ClusterConnectionStates.java:466) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.ClusterConnectionStates.currentAddress(ClusterConnectionStates.java:173) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.NetworkClient.initiateConnect(NetworkClient.java:1050) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.NetworkClient.ready(NetworkClient.java:310) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.admin.KafkaAdminClient$AdminClientRunnable.sendEligibleCalls(KafkaAdminClient.java:1232) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.admin.KafkaAdminClient$AdminClientRunnable.processRequests(KafkaAdminClient.java:1492) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.admin.KafkaAdminClient$AdminClientRunnable.run(KafkaAdminClient.java:1435) ~[kafka-clients-3.7.1.jar!/:na]
+	at java.base/java.lang.Thread.run(Thread.java:1583) ~[na:na]
+
+2026-09-24T07:33:20.288Z  WARN 74316 --- [carddemo-authorization-service] [service-admin-0] org.apache.kafka.clients.NetworkClient   : [AdminClient clientId=carddemo-authorization-service-admin-0] Error connecting to node kafka:9092 (id: 1 rack: null)
+
+java.net.UnknownHostException: kafka
+	at java.base/java.net.InetAddress$CachedLookup.get(InetAddress.java:988) ~[na:na]
+	at java.base/java.net.InetAddress.getAllByName0(InetAddress.java:1818) ~[na:na]
+	at java.base/java.net.InetAddress.getAllByName(InetAddress.java:1688) ~[na:na]
+	at org.apache.kafka.clients.DefaultHostResolver.resolve(DefaultHostResolver.java:27) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.ClientUtils.resolve(ClientUtils.java:124) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.ClusterConnectionStates$NodeConnectionState.resolveAddresses(ClusterConnectionStates.java:536) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.ClusterConnectionStates$NodeConnectionState.currentAddress(ClusterConnectionStates.java:511) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.ClusterConnectionStates$NodeConnectionState.access$200(ClusterConnectionStates.java:466) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.ClusterConnectionStates.currentAddress(ClusterConnectionStates.java:173) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.NetworkClient.initiateConnect(NetworkClient.java:1050) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.NetworkClient.ready(NetworkClient.java:310) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.admin.KafkaAdminClient$AdminClientRunnable.sendEligibleCalls(KafkaAdminClient.java:1232) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.admin.KafkaAdminClient$AdminClientRunnable.processRequests(KafkaAdminClient.java:1492) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.admin.KafkaAdminClient$AdminClientRunnable.run(KafkaAdminClient.java:1435) ~[kafka-clients-3.7.1.jar!/:na]
+	at java.base/java.lang.Thread.run(Thread.java:1583) ~[na:na]
+
+2026-09-24T07:33:21.294Z  WARN 74316 --- [carddemo-authorization-service] [service-admin-0] org.apache.kafka.clients.NetworkClient   : [AdminClient clientId=carddemo-authorization-service-admin-0] Error connecting to node kafka:9092 (id: 1 rack: null)
+
+java.net.UnknownHostException: kafka
+	at java.base/java.net.InetAddress$CachedLookup.get(InetAddress.java:988) ~[na:na]
+	at java.base/java.net.InetAddress.getAllByName0(InetAddress.java:1818) ~[na:na]
+	at java.base/java.net.InetAddress.getAllByName(InetAddress.java:1688) ~[na:na]
+	at org.apache.kafka.clients.DefaultHostResolver.resolve(DefaultHostResolver.java:27) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.ClientUtils.resolve(ClientUtils.java:124) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.ClusterConnectionStates$NodeConnectionState.resolveAddresses(ClusterConnectionStates.java:536) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.ClusterConnectionStates$NodeConnectionState.currentAddress(ClusterConnectionStates.java:511) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.ClusterConnectionStates$NodeConnectionState.access$200(ClusterConnectionStates.java:466) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.ClusterConnectionStates.currentAddress(ClusterConnectionStates.java:173) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.NetworkClient.initiateConnect(NetworkClient.java:1050) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.NetworkClient.ready(NetworkClient.java:310) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.admin.KafkaAdminClient$AdminClientRunnable.sendEligibleCalls(KafkaAdminClient.java:1232) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.admin.KafkaAdminClient$AdminClientRunnable.processRequests(KafkaAdminClient.java:1492) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.admin.KafkaAdminClient$AdminClientRunnable.run(KafkaAdminClient.java:1435) ~[kafka-clients-3.7.1.jar!/:na]
+	at java.base/java.lang.Thread.run(Thread.java:1583) ~[na:na]
+
+2026-09-24T07:33:22.119Z  WARN 74316 --- [carddemo-authorization-service] [service-admin-0] org.apache.kafka.clients.NetworkClient   : [AdminClient clientId=carddemo-authorization-service-admin-0] Error connecting to node kafka:9092 (id: 1 rack: null)
+
+java.net.UnknownHostException: kafka
+	at java.base/java.net.InetAddress$CachedLookup.get(InetAddress.java:988) ~[na:na]
+	at java.base/java.net.InetAddress.getAllByName0(InetAddress.java:1818) ~[na:na]
+	at java.base/java.net.InetAddress.getAllByName(InetAddress.java:1688) ~[na:na]
+	at org.apache.kafka.clients.DefaultHostResolver.resolve(DefaultHostResolver.java:27) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.ClientUtils.resolve(ClientUtils.java:124) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.ClusterConnectionStates$NodeConnectionState.resolveAddresses(ClusterConnectionStates.java:536) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.ClusterConnectionStates$NodeConnectionState.currentAddress(ClusterConnectionStates.java:511) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.ClusterConnectionStates$NodeConnectionState.access$200(ClusterConnectionStates.java:466) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.ClusterConnectionStates.currentAddress(ClusterConnectionStates.java:173) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.NetworkClient.initiateConnect(NetworkClient.java:1050) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.NetworkClient.ready(NetworkClient.java:310) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.admin.KafkaAdminClient$AdminClientRunnable.sendEligibleCalls(KafkaAdminClient.java:1232) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.admin.KafkaAdminClient$AdminClientRunnable.processRequests(KafkaAdminClient.java:1492) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.admin.KafkaAdminClient$AdminClientRunnable.run(KafkaAdminClient.java:1435) ~[kafka-clients-3.7.1.jar!/:na]
+	at java.base/java.lang.Thread.run(Thread.java:1583) ~[na:na]
+
+2026-09-24T07:33:23.125Z  WARN 74316 --- [carddemo-authorization-service] [service-admin-0] org.apache.kafka.clients.NetworkClient   : [AdminClient clientId=carddemo-authorization-service-admin-0] Error connecting to node kafka:9092 (id: 1 rack: null)
+
+java.net.UnknownHostException: kafka
+	at java.base/java.net.InetAddress$CachedLookup.get(InetAddress.java:988) ~[na:na]
+	at java.base/java.net.InetAddress.getAllByName0(InetAddress.java:1818) ~[na:na]
+	at java.base/java.net.InetAddress.getAllByName(InetAddress.java:1688) ~[na:na]
+	at org.apache.kafka.clients.DefaultHostResolver.resolve(DefaultHostResolver.java:27) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.ClientUtils.resolve(ClientUtils.java:124) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.ClusterConnectionStates$NodeConnectionState.resolveAddresses(ClusterConnectionStates.java:536) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.ClusterConnectionStates$NodeConnectionState.currentAddress(ClusterConnectionStates.java:511) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.ClusterConnectionStates$NodeConnectionState.access$200(ClusterConnectionStates.java:466) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.ClusterConnectionStates.currentAddress(ClusterConnectionStates.java:173) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.NetworkClient.initiateConnect(NetworkClient.java:1050) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.NetworkClient.ready(NetworkClient.java:310) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.admin.KafkaAdminClient$AdminClientRunnable.sendEligibleCalls(KafkaAdminClient.java:1232) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.admin.KafkaAdminClient$AdminClientRunnable.processRequests(KafkaAdminClient.java:1492) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.admin.KafkaAdminClient$AdminClientRunnable.run(KafkaAdminClient.java:1435) ~[kafka-clients-3.7.1.jar!/:na]
+	at java.base/java.lang.Thread.run(Thread.java:1583) ~[na:na]
+
+2026-09-24T07:33:23.844Z ERROR 74316 --- [carddemo-authorization-service] [           main] o.springframework.kafka.core.KafkaAdmin  : Could not configure topics
+
+org.springframework.kafka.KafkaException: Timed out waiting to get existing topics
+	at org.springframework.kafka.core.KafkaAdmin.lambda$checkPartitions$13(KafkaAdmin.java:550) ~[spring-kafka-3.2.4.jar!/:3.2.4]
+	at java.base/java.util.HashMap.forEach(HashMap.java:1429) ~[na:na]
+	at org.springframework.kafka.core.KafkaAdmin.checkPartitions(KafkaAdmin.java:529) ~[spring-kafka-3.2.4.jar!/:3.2.4]
+	at org.springframework.kafka.core.KafkaAdmin.addOrModifyTopicsIfNeeded(KafkaAdmin.java:422) ~[spring-kafka-3.2.4.jar!/:3.2.4]
+	at org.springframework.kafka.core.KafkaAdmin.initialize(KafkaAdmin.java:274) ~[spring-kafka-3.2.4.jar!/:3.2.4]
+	at org.springframework.kafka.core.KafkaAdmin.afterSingletonsInstantiated(KafkaAdmin.java:238) ~[spring-kafka-3.2.4.jar!/:3.2.4]
+	at org.springframework.beans.factory.support.DefaultListableBeanFactory.preInstantiateSingletons(DefaultListableBeanFactory.java:986) ~[spring-beans-6.1.13.jar!/:6.1.13]
+	at org.springframework.context.support.AbstractApplicationContext.finishBeanFactoryInitialization(AbstractApplicationContext.java:971) ~[spring-context-6.1.13.jar!/:6.1.13]
+	at org.springframework.context.support.AbstractApplicationContext.refresh(AbstractApplicationContext.java:625) ~[spring-context-6.1.13.jar!/:6.1.13]
+	at org.springframework.boot.web.servlet.context.ServletWebServerApplicationContext.refresh(ServletWebServerApplicationContext.java:146) ~[spring-boot-3.3.4.jar!/:3.3.4]
+	at org.springframework.boot.SpringApplication.refresh(SpringApplication.java:754) ~[spring-boot-3.3.4.jar!/:3.3.4]
+	at org.springframework.boot.SpringApplication.refreshContext(SpringApplication.java:456) ~[spring-boot-3.3.4.jar!/:3.3.4]
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:335) ~[spring-boot-3.3.4.jar!/:3.3.4]
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1363) ~[spring-boot-3.3.4.jar!/:3.3.4]
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1352) ~[spring-boot-3.3.4.jar!/:3.3.4]
+	at com.carddemo.authorization.AuthorizationServiceApplication.main(AuthorizationServiceApplication.java:28) ~[!/:1.0.0-SNAPSHOT]
+	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:103) ~[na:na]
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580) ~[na:na]
+	at org.springframework.boot.loader.launch.Launcher.launch(Launcher.java:102) ~[carddemo-authorization-service.jar:1.0.0-SNAPSHOT]
+	at org.springframework.boot.loader.launch.Launcher.launch(Launcher.java:64) ~[carddemo-authorization-service.jar:1.0.0-SNAPSHOT]
+	at org.springframework.boot.loader.launch.JarLauncher.main(JarLauncher.java:40) ~[carddemo-authorization-service.jar:1.0.0-SNAPSHOT]
+Caused by: java.util.concurrent.TimeoutException: null
+	at java.base/java.util.concurrent.CompletableFuture.timedGet(CompletableFuture.java:1960) ~[na:na]
+	at java.base/java.util.concurrent.CompletableFuture.get(CompletableFuture.java:2095) ~[na:na]
+	at org.apache.kafka.common.internals.KafkaFutureImpl.get(KafkaFutureImpl.java:180) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.springframework.kafka.core.KafkaAdmin.lambda$checkPartitions$13(KafkaAdmin.java:532) ~[spring-kafka-3.2.4.jar!/:3.2.4]
+	... 20 common frames omitted
+
+2026-09-24T07:33:24.046Z  WARN 74316 --- [carddemo-authorization-service] [service-admin-0] org.apache.kafka.clients.NetworkClient   : [AdminClient clientId=carddemo-authorization-service-admin-0] Error connecting to node kafka:9092 (id: 1 rack: null)
+
+java.net.UnknownHostException: kafka
+	at java.base/java.net.InetAddress$CachedLookup.get(InetAddress.java:988) ~[na:na]
+	at java.base/java.net.InetAddress.getAllByName0(InetAddress.java:1818) ~[na:na]
+	at java.base/java.net.InetAddress.getAllByName(InetAddress.java:1688) ~[na:na]
+	at org.apache.kafka.clients.DefaultHostResolver.resolve(DefaultHostResolver.java:27) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.ClientUtils.resolve(ClientUtils.java:124) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.ClusterConnectionStates$NodeConnectionState.resolveAddresses(ClusterConnectionStates.java:536) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.ClusterConnectionStates$NodeConnectionState.currentAddress(ClusterConnectionStates.java:511) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.ClusterConnectionStates$NodeConnectionState.access$200(ClusterConnectionStates.java:466) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.ClusterConnectionStates.currentAddress(ClusterConnectionStates.java:173) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.NetworkClient.initiateConnect(NetworkClient.java:1050) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.NetworkClient.ready(NetworkClient.java:310) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.admin.KafkaAdminClient$AdminClientRunnable.sendEligibleCalls(KafkaAdminClient.java:1232) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.admin.KafkaAdminClient$AdminClientRunnable.processRequests(KafkaAdminClient.java:1492) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.admin.KafkaAdminClient$AdminClientRunnable.run(KafkaAdminClient.java:1435) ~[kafka-clients-3.7.1.jar!/:na]
+	at java.base/java.lang.Thread.run(Thread.java:1583) ~[na:na]
+
+2026-09-24T07:33:24.114Z  INFO 74316 --- [carddemo-authorization-service] [service-admin-0] o.a.k.c.a.i.AdminMetadataManager         : [AdminClient clientId=carddemo-authorization-service-admin-0] Metadata update failed
+
+org.apache.kafka.common.errors.TimeoutException: Timed out waiting for a node assignment. Call: fetchMetadata
+
+2026-09-24T07:33:25.121Z  WARN 74316 --- [carddemo-authorization-service] [service-admin-0] org.apache.kafka.clients.NetworkClient   : [AdminClient clientId=carddemo-authorization-service-admin-0] Error connecting to node kafka:9092 (id: 1 rack: null)
+
+java.net.UnknownHostException: kafka: Temporary failure in name resolution
+	at java.base/java.net.Inet6AddressImpl.lookupAllHostAddr(Native Method) ~[na:na]
+	at java.base/java.net.Inet6AddressImpl.lookupAllHostAddr(Inet6AddressImpl.java:52) ~[na:na]
+	at java.base/java.net.InetAddress$PlatformResolver.lookupByName(InetAddress.java:1211) ~[na:na]
+	at java.base/java.net.InetAddress.getAddressesFromNameService(InetAddress.java:1828) ~[na:na]
+	at java.base/java.net.InetAddress$NameServiceAddresses.get(InetAddress.java:1139) ~[na:na]
+	at java.base/java.net.InetAddress.getAllByName0(InetAddress.java:1818) ~[na:na]
+	at java.base/java.net.InetAddress.getAllByName(InetAddress.java:1688) ~[na:na]
+	at org.apache.kafka.clients.DefaultHostResolver.resolve(DefaultHostResolver.java:27) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.ClientUtils.resolve(ClientUtils.java:124) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.ClusterConnectionStates$NodeConnectionState.resolveAddresses(ClusterConnectionStates.java:536) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.ClusterConnectionStates$NodeConnectionState.currentAddress(ClusterConnectionStates.java:511) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.ClusterConnectionStates$NodeConnectionState.access$200(ClusterConnectionStates.java:466) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.ClusterConnectionStates.currentAddress(ClusterConnectionStates.java:173) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.NetworkClient.initiateConnect(NetworkClient.java:1050) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.NetworkClient.ready(NetworkClient.java:310) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.admin.KafkaAdminClient$AdminClientRunnable.sendEligibleCalls(KafkaAdminClient.java:1232) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.admin.KafkaAdminClient$AdminClientRunnable.processRequests(KafkaAdminClient.java:1492) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.admin.KafkaAdminClient$AdminClientRunnable.run(KafkaAdminClient.java:1435) ~[kafka-clients-3.7.1.jar!/:na]
+	at java.base/java.lang.Thread.run(Thread.java:1583) ~[na:na]
+
+2026-09-24T07:33:26.026Z  WARN 74316 --- [carddemo-authorization-service] [service-admin-0] org.apache.kafka.clients.NetworkClient   : [AdminClient clientId=carddemo-authorization-service-admin-0] Error connecting to node kafka:9092 (id: 1 rack: null)
+
+java.net.UnknownHostException: kafka
+	at java.base/java.net.InetAddress$CachedLookup.get(InetAddress.java:988) ~[na:na]
+	at java.base/java.net.InetAddress.getAllByName0(InetAddress.java:1818) ~[na:na]
+	at java.base/java.net.InetAddress.getAllByName(InetAddress.java:1688) ~[na:na]
+	at org.apache.kafka.clients.DefaultHostResolver.resolve(DefaultHostResolver.java:27) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.ClientUtils.resolve(ClientUtils.java:124) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.ClusterConnectionStates$NodeConnectionState.resolveAddresses(ClusterConnectionStates.java:536) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.ClusterConnectionStates$NodeConnectionState.currentAddress(ClusterConnectionStates.java:511) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.ClusterConnectionStates$NodeConnectionState.access$200(ClusterConnectionStates.java:466) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.ClusterConnectionStates.currentAddress(ClusterConnectionStates.java:173) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.NetworkClient.initiateConnect(NetworkClient.java:1050) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.NetworkClient.ready(NetworkClient.java:310) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.admin.KafkaAdminClient$AdminClientRunnable.sendEligibleCalls(KafkaAdminClient.java:1232) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.admin.KafkaAdminClient$AdminClientRunnable.processRequests(KafkaAdminClient.java:1492) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.admin.KafkaAdminClient$AdminClientRunnable.run(KafkaAdminClient.java:1435) ~[kafka-clients-3.7.1.jar!/:na]
+	at java.base/java.lang.Thread.run(Thread.java:1583) ~[na:na]
+
+2026-09-24T07:33:27.031Z  WARN 74316 --- [carddemo-authorization-service] [service-admin-0] org.apache.kafka.clients.NetworkClient   : [AdminClient clientId=carddemo-authorization-service-admin-0] Error connecting to node kafka:9092 (id: 1 rack: null)
+
+java.net.UnknownHostException: kafka
+	at java.base/java.net.InetAddress$CachedLookup.get(InetAddress.java:988) ~[na:na]
+	at java.base/java.net.InetAddress.getAllByName0(InetAddress.java:1818) ~[na:na]
+	at java.base/java.net.InetAddress.getAllByName(InetAddress.java:1688) ~[na:na]
+	at org.apache.kafka.clients.DefaultHostResolver.resolve(DefaultHostResolver.java:27) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.ClientUtils.resolve(ClientUtils.java:124) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.ClusterConnectionStates$NodeConnectionState.resolveAddresses(ClusterConnectionStates.java:536) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.ClusterConnectionStates$NodeConnectionState.currentAddress(ClusterConnectionStates.java:511) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.ClusterConnectionStates$NodeConnectionState.access$200(ClusterConnectionStates.java:466) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.ClusterConnectionStates.currentAddress(ClusterConnectionStates.java:173) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.NetworkClient.initiateConnect(NetworkClient.java:1050) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.NetworkClient.ready(NetworkClient.java:310) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.admin.KafkaAdminClient$AdminClientRunnable.sendEligibleCalls(KafkaAdminClient.java:1232) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.admin.KafkaAdminClient$AdminClientRunnable.processRequests(KafkaAdminClient.java:1492) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.admin.KafkaAdminClient$AdminClientRunnable.run(KafkaAdminClient.java:1435) ~[kafka-clients-3.7.1.jar!/:na]
+	at java.base/java.lang.Thread.run(Thread.java:1583) ~[na:na]
+
+2026-09-24T07:33:27.924Z  WARN 74316 --- [carddemo-authorization-service] [service-admin-0] org.apache.kafka.clients.NetworkClient   : [AdminClient clientId=carddemo-authorization-service-admin-0] Error connecting to node kafka:9092 (id: 1 rack: null)
+
+java.net.UnknownHostException: kafka
+	at java.base/java.net.InetAddress$CachedLookup.get(InetAddress.java:988) ~[na:na]
+	at java.base/java.net.InetAddress.getAllByName0(InetAddress.java:1818) ~[na:na]
+	at java.base/java.net.InetAddress.getAllByName(InetAddress.java:1688) ~[na:na]
+	at org.apache.kafka.clients.DefaultHostResolver.resolve(DefaultHostResolver.java:27) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.ClientUtils.resolve(ClientUtils.java:124) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.ClusterConnectionStates$NodeConnectionState.resolveAddresses(ClusterConnectionStates.java:536) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.ClusterConnectionStates$NodeConnectionState.currentAddress(ClusterConnectionStates.java:511) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.ClusterConnectionStates$NodeConnectionState.access$200(ClusterConnectionStates.java:466) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.ClusterConnectionStates.currentAddress(ClusterConnectionStates.java:173) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.NetworkClient.initiateConnect(NetworkClient.java:1050) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.NetworkClient.ready(NetworkClient.java:310) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.admin.KafkaAdminClient$AdminClientRunnable.sendEligibleCalls(KafkaAdminClient.java:1232) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.admin.KafkaAdminClient$AdminClientRunnable.processRequests(KafkaAdminClient.java:1492) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.admin.KafkaAdminClient$AdminClientRunnable.run(KafkaAdminClient.java:1435) ~[kafka-clients-3.7.1.jar!/:na]
+	at java.base/java.lang.Thread.run(Thread.java:1583) ~[na:na]
+
+2026-09-24T07:33:28.929Z  WARN 74316 --- [carddemo-authorization-service] [service-admin-0] org.apache.kafka.clients.NetworkClient   : [AdminClient clientId=carddemo-authorization-service-admin-0] Error connecting to node kafka:9092 (id: 1 rack: null)
+
+java.net.UnknownHostException: kafka
+	at java.base/java.net.InetAddress$CachedLookup.get(InetAddress.java:988) ~[na:na]
+	at java.base/java.net.InetAddress.getAllByName0(InetAddress.java:1818) ~[na:na]
+	at java.base/java.net.InetAddress.getAllByName(InetAddress.java:1688) ~[na:na]
+	at org.apache.kafka.clients.DefaultHostResolver.resolve(DefaultHostResolver.java:27) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.ClientUtils.resolve(ClientUtils.java:124) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.ClusterConnectionStates$NodeConnectionState.resolveAddresses(ClusterConnectionStates.java:536) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.ClusterConnectionStates$NodeConnectionState.currentAddress(ClusterConnectionStates.java:511) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.ClusterConnectionStates$NodeConnectionState.access$200(ClusterConnectionStates.java:466) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.ClusterConnectionStates.currentAddress(ClusterConnectionStates.java:173) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.NetworkClient.initiateConnect(NetworkClient.java:1050) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.NetworkClient.ready(NetworkClient.java:310) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.admin.KafkaAdminClient$AdminClientRunnable.sendEligibleCalls(KafkaAdminClient.java:1232) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.admin.KafkaAdminClient$AdminClientRunnable.processRequests(KafkaAdminClient.java:1492) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.admin.KafkaAdminClient$AdminClientRunnable.run(KafkaAdminClient.java:1435) ~[kafka-clients-3.7.1.jar!/:na]
+	at java.base/java.lang.Thread.run(Thread.java:1583) ~[na:na]
+
+2026-09-24T07:33:29.908Z  WARN 74316 --- [carddemo-authorization-service] [service-admin-0] org.apache.kafka.clients.NetworkClient   : [AdminClient clientId=carddemo-authorization-service-admin-0] Error connecting to node kafka:9092 (id: 1 rack: null)
+
+java.net.UnknownHostException: kafka
+	at java.base/java.net.InetAddress$CachedLookup.get(InetAddress.java:988) ~[na:na]
+	at java.base/java.net.InetAddress.getAllByName0(InetAddress.java:1818) ~[na:na]
+	at java.base/java.net.InetAddress.getAllByName(InetAddress.java:1688) ~[na:na]
+	at org.apache.kafka.clients.DefaultHostResolver.resolve(DefaultHostResolver.java:27) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.ClientUtils.resolve(ClientUtils.java:124) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.ClusterConnectionStates$NodeConnectionState.resolveAddresses(ClusterConnectionStates.java:536) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.ClusterConnectionStates$NodeConnectionState.currentAddress(ClusterConnectionStates.java:511) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.ClusterConnectionStates$NodeConnectionState.access$200(ClusterConnectionStates.java:466) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.ClusterConnectionStates.currentAddress(ClusterConnectionStates.java:173) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.NetworkClient.initiateConnect(NetworkClient.java:1050) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.NetworkClient.ready(NetworkClient.java:310) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.admin.KafkaAdminClient$AdminClientRunnable.sendEligibleCalls(KafkaAdminClient.java:1232) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.admin.KafkaAdminClient$AdminClientRunnable.processRequests(KafkaAdminClient.java:1492) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.admin.KafkaAdminClient$AdminClientRunnable.run(KafkaAdminClient.java:1435) ~[kafka-clients-3.7.1.jar!/:na]
+	at java.base/java.lang.Thread.run(Thread.java:1583) ~[na:na]
+
+2026-09-24T07:33:30.914Z  WARN 74316 --- [carddemo-authorization-service] [service-admin-0] org.apache.kafka.clients.NetworkClient   : [AdminClient clientId=carddemo-authorization-service-admin-0] Error connecting to node kafka:9092 (id: 1 rack: null)
+
+java.net.UnknownHostException: kafka
+	at java.base/java.net.InetAddress$CachedLookup.get(InetAddress.java:988) ~[na:na]
+	at java.base/java.net.InetAddress.getAllByName0(InetAddress.java:1818) ~[na:na]
+	at java.base/java.net.InetAddress.getAllByName(InetAddress.java:1688) ~[na:na]
+	at org.apache.kafka.clients.DefaultHostResolver.resolve(DefaultHostResolver.java:27) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.ClientUtils.resolve(ClientUtils.java:124) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.ClusterConnectionStates$NodeConnectionState.resolveAddresses(ClusterConnectionStates.java:536) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.ClusterConnectionStates$NodeConnectionState.currentAddress(ClusterConnectionStates.java:511) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.ClusterConnectionStates$NodeConnectionState.access$200(ClusterConnectionStates.java:466) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.ClusterConnectionStates.currentAddress(ClusterConnectionStates.java:173) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.NetworkClient.initiateConnect(NetworkClient.java:1050) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.NetworkClient.ready(NetworkClient.java:310) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.admin.KafkaAdminClient$AdminClientRunnable.sendEligibleCalls(KafkaAdminClient.java:1232) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.admin.KafkaAdminClient$AdminClientRunnable.processRequests(KafkaAdminClient.java:1492) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.admin.KafkaAdminClient$AdminClientRunnable.run(KafkaAdminClient.java:1435) ~[kafka-clients-3.7.1.jar!/:na]
+	at java.base/java.lang.Thread.run(Thread.java:1583) ~[na:na]
+
+2026-09-24T07:33:31.871Z  WARN 74316 --- [carddemo-authorization-service] [service-admin-0] org.apache.kafka.clients.NetworkClient   : [AdminClient clientId=carddemo-authorization-service-admin-0] Error connecting to node kafka:9092 (id: 1 rack: null)
+
+java.net.UnknownHostException: kafka
+	at java.base/java.net.InetAddress$CachedLookup.get(InetAddress.java:988) ~[na:na]
+	at java.base/java.net.InetAddress.getAllByName0(InetAddress.java:1818) ~[na:na]
+	at java.base/java.net.InetAddress.getAllByName(InetAddress.java:1688) ~[na:na]
+	at org.apache.kafka.clients.DefaultHostResolver.resolve(DefaultHostResolver.java:27) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.ClientUtils.resolve(ClientUtils.java:124) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.ClusterConnectionStates$NodeConnectionState.resolveAddresses(ClusterConnectionStates.java:536) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.ClusterConnectionStates$NodeConnectionState.currentAddress(ClusterConnectionStates.java:511) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.ClusterConnectionStates$NodeConnectionState.access$200(ClusterConnectionStates.java:466) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.ClusterConnectionStates.currentAddress(ClusterConnectionStates.java:173) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.NetworkClient.initiateConnect(NetworkClient.java:1050) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.NetworkClient.ready(NetworkClient.java:310) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.admin.KafkaAdminClient$AdminClientRunnable.sendEligibleCalls(KafkaAdminClient.java:1232) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.admin.KafkaAdminClient$AdminClientRunnable.processRequests(KafkaAdminClient.java:1492) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.admin.KafkaAdminClient$AdminClientRunnable.run(KafkaAdminClient.java:1435) ~[kafka-clients-3.7.1.jar!/:na]
+	at java.base/java.lang.Thread.run(Thread.java:1583) ~[na:na]
+
+2026-09-24T07:33:32.876Z  WARN 74316 --- [carddemo-authorization-service] [service-admin-0] org.apache.kafka.clients.NetworkClient   : [AdminClient clientId=carddemo-authorization-service-admin-0] Error connecting to node kafka:9092 (id: 1 rack: null)
+
+java.net.UnknownHostException: kafka
+	at java.base/java.net.InetAddress$CachedLookup.get(InetAddress.java:988) ~[na:na]
+	at java.base/java.net.InetAddress.getAllByName0(InetAddress.java:1818) ~[na:na]
+	at java.base/java.net.InetAddress.getAllByName(InetAddress.java:1688) ~[na:na]
+	at org.apache.kafka.clients.DefaultHostResolver.resolve(DefaultHostResolver.java:27) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.ClientUtils.resolve(ClientUtils.java:124) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.ClusterConnectionStates$NodeConnectionState.resolveAddresses(ClusterConnectionStates.java:536) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.ClusterConnectionStates$NodeConnectionState.currentAddress(ClusterConnectionStates.java:511) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.ClusterConnectionStates$NodeConnectionState.access$200(ClusterConnectionStates.java:466) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.ClusterConnectionStates.currentAddress(ClusterConnectionStates.java:173) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.NetworkClient.initiateConnect(NetworkClient.java:1050) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.NetworkClient.ready(NetworkClient.java:310) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.admin.KafkaAdminClient$AdminClientRunnable.sendEligibleCalls(KafkaAdminClient.java:1232) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.admin.KafkaAdminClient$AdminClientRunnable.processRequests(KafkaAdminClient.java:1492) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.admin.KafkaAdminClient$AdminClientRunnable.run(KafkaAdminClient.java:1435) ~[kafka-clients-3.7.1.jar!/:na]
+	at java.base/java.lang.Thread.run(Thread.java:1583) ~[na:na]
+
+2026-09-24T07:33:33.689Z  WARN 74316 --- [carddemo-authorization-service] [service-admin-0] org.apache.kafka.clients.NetworkClient   : [AdminClient clientId=carddemo-authorization-service-admin-0] Error connecting to node kafka:9092 (id: 1 rack: null)
+
+java.net.UnknownHostException: kafka
+	at java.base/java.net.InetAddress$CachedLookup.get(InetAddress.java:988) ~[na:na]
+	at java.base/java.net.InetAddress.getAllByName0(InetAddress.java:1818) ~[na:na]
+	at java.base/java.net.InetAddress.getAllByName(InetAddress.java:1688) ~[na:na]
+	at org.apache.kafka.clients.DefaultHostResolver.resolve(DefaultHostResolver.java:27) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.ClientUtils.resolve(ClientUtils.java:124) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.ClusterConnectionStates$NodeConnectionState.resolveAddresses(ClusterConnectionStates.java:536) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.ClusterConnectionStates$NodeConnectionState.currentAddress(ClusterConnectionStates.java:511) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.ClusterConnectionStates$NodeConnectionState.access$200(ClusterConnectionStates.java:466) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.ClusterConnectionStates.currentAddress(ClusterConnectionStates.java:173) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.NetworkClient.initiateConnect(NetworkClient.java:1050) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.NetworkClient.ready(NetworkClient.java:310) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.admin.KafkaAdminClient$AdminClientRunnable.sendEligibleCalls(KafkaAdminClient.java:1232) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.admin.KafkaAdminClient$AdminClientRunnable.processRequests(KafkaAdminClient.java:1492) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.admin.KafkaAdminClient$AdminClientRunnable.run(KafkaAdminClient.java:1435) ~[kafka-clients-3.7.1.jar!/:na]
+	at java.base/java.lang.Thread.run(Thread.java:1583) ~[na:na]
+
+2026-09-24T07:33:33.846Z  INFO 74316 --- [carddemo-authorization-service] [service-admin-0] o.a.k.clients.admin.KafkaAdminClient     : [AdminClient clientId=carddemo-authorization-service-admin-0] Forcing a hard I/O thread shutdown. Requests in progress will be aborted.
+2026-09-24T07:33:33.847Z  INFO 74316 --- [carddemo-authorization-service] [service-admin-0] o.a.kafka.common.utils.AppInfoParser     : App info kafka.admin.client for carddemo-authorization-service-admin-0 unregistered
+2026-09-24T07:33:33.847Z  INFO 74316 --- [carddemo-authorization-service] [service-admin-0] o.a.k.c.a.i.AdminMetadataManager         : [AdminClient clientId=carddemo-authorization-service-admin-0] Metadata update failed
+
+org.apache.kafka.common.errors.TimeoutException: The AdminClient thread has exited. Call: fetchMetadata
+
+2026-09-24T07:33:33.847Z  INFO 74316 --- [carddemo-authorization-service] [service-admin-0] o.a.k.clients.admin.KafkaAdminClient     : [AdminClient clientId=carddemo-authorization-service-admin-0] Timed out 2 remaining operation(s) during close.
+2026-09-24T07:33:33.850Z  INFO 74316 --- [carddemo-authorization-service] [service-admin-0] o.apache.kafka.common.metrics.Metrics    : Metrics scheduler closed
+2026-09-24T07:33:33.850Z  INFO 74316 --- [carddemo-authorization-service] [service-admin-0] o.apache.kafka.common.metrics.Metrics    : Closing reporter org.apache.kafka.common.metrics.JmxReporter
+2026-09-24T07:33:33.850Z  INFO 74316 --- [carddemo-authorization-service] [service-admin-0] o.apache.kafka.common.metrics.Metrics    : Metrics reporters closed
+2026-09-24T07:33:33.855Z  INFO 74316 --- [carddemo-authorization-service] [           main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 8082 (http) with context path '/'
+2026-09-24T07:33:33.871Z  INFO 74316 --- [carddemo-authorization-service] [           main] o.a.k.clients.consumer.ConsumerConfig    : ConsumerConfig values: 
+	allow.auto.create.topics = true
+	auto.commit.interval.ms = 5000
+	auto.include.jmx.reporter = true
+	auto.offset.reset = earliest
+	bootstrap.servers = [172.18.0.6:9092]
+	check.crcs = true
+	client.dns.lookup = use_all_dns_ips
+	client.id = consumer-carddemo-authorization-1
+	client.rack = 
+	connections.max.idle.ms = 540000
+	default.api.timeout.ms = 60000
+	enable.auto.commit = false
+	enable.metrics.push = true
+	exclude.internal.topics = true
+	fetch.max.bytes = 52428800
+	fetch.max.wait.ms = 500
+	fetch.min.bytes = 1
+	group.id = carddemo-authorization
+	group.instance.id = null
+	group.protocol = classic
+	group.remote.assignor = null
+	heartbeat.interval.ms = 3000
+	interceptor.classes = []
+	internal.leave.group.on.close = true
+	internal.throw.on.fetch.stable.offset.unsupported = false
+	isolation.level = read_uncommitted
+	key.deserializer = class org.apache.kafka.common.serialization.StringDeserializer
+	max.partition.fetch.bytes = 1048576
+	max.poll.interval.ms = 300000
+	max.poll.records = 500
+	metadata.max.age.ms = 300000
+	metric.reporters = []
+	metrics.num.samples = 2
+	metrics.recording.level = INFO
+	metrics.sample.window.ms = 30000
+	partition.assignment.strategy = [class org.apache.kafka.clients.consumer.RangeAssignor, class org.apache.kafka.clients.consumer.CooperativeStickyAssignor]
+	receive.buffer.bytes = 65536
+	reconnect.backoff.max.ms = 1000
+	reconnect.backoff.ms = 50
+	request.timeout.ms = 30000
+	retry.backoff.max.ms = 1000
+	retry.backoff.ms = 100
+	sasl.client.callback.handler.class = null
+	sasl.jaas.config = null
+	sasl.kerberos.kinit.cmd = /usr/bin/kinit
+	sasl.kerberos.min.time.before.relogin = 60000
+	sasl.kerberos.service.name = null
+	sasl.kerberos.ticket.renew.jitter = 0.05
+	sasl.kerberos.ticket.renew.window.factor = 0.8
+	sasl.login.callback.handler.class = null
+	sasl.login.class = null
+	sasl.login.connect.timeout.ms = null
+	sasl.login.read.timeout.ms = null
+	sasl.login.refresh.buffer.seconds = 300
+	sasl.login.refresh.min.period.seconds = 60
+	sasl.login.refresh.window.factor = 0.8
+	sasl.login.refresh.window.jitter = 0.05
+	sasl.login.retry.backoff.max.ms = 10000
+	sasl.login.retry.backoff.ms = 100
+	sasl.mechanism = GSSAPI
+	sasl.oauthbearer.clock.skew.seconds = 30
+	sasl.oauthbearer.expected.audience = null
+	sasl.oauthbearer.expected.issuer = null
+	sasl.oauthbearer.jwks.endpoint.refresh.ms = 3600000
+	sasl.oauthbearer.jwks.endpoint.retry.backoff.max.ms = 10000
+	sasl.oauthbearer.jwks.endpoint.retry.backoff.ms = 100
+	sasl.oauthbearer.jwks.endpoint.url = null
+	sasl.oauthbearer.scope.claim.name = scope
+	sasl.oauthbearer.sub.claim.name = sub
+	sasl.oauthbearer.token.endpoint.url = null
+	security.protocol = PLAINTEXT
+	security.providers = null
+	send.buffer.bytes = 131072
+	session.timeout.ms = 45000
+	socket.connection.setup.timeout.max.ms = 30000
+	socket.connection.setup.timeout.ms = 10000
+	ssl.cipher.suites = null
+	ssl.enabled.protocols = [TLSv1.2, TLSv1.3]
+	ssl.endpoint.identification.algorithm = https
+	ssl.engine.factory.class = null
+	ssl.key.password = null
+	ssl.keymanager.algorithm = SunX509
+	ssl.keystore.certificate.chain = null
+	ssl.keystore.key = null
+	ssl.keystore.location = null
+	ssl.keystore.password = null
+	ssl.keystore.type = JKS
+	ssl.protocol = TLSv1.3
+	ssl.provider = null
+	ssl.secure.random.implementation = null
+	ssl.trustmanager.algorithm = PKIX
+	ssl.truststore.certificates = null
+	ssl.truststore.location = null
+	ssl.truststore.password = null
+	ssl.truststore.type = JKS
+	value.deserializer = class org.apache.kafka.common.serialization.StringDeserializer
+
+2026-09-24T07:33:33.894Z  INFO 74316 --- [carddemo-authorization-service] [           main] o.a.k.c.t.i.KafkaMetricsCollector        : initializing Kafka metrics collector
+2026-09-24T07:33:33.922Z  INFO 74316 --- [carddemo-authorization-service] [           main] o.a.kafka.common.utils.AppInfoParser     : Kafka version: 3.7.1
+2026-09-24T07:33:33.922Z  INFO 74316 --- [carddemo-authorization-service] [           main] o.a.kafka.common.utils.AppInfoParser     : Kafka commitId: e2494e6ffb89f828
+2026-09-24T07:33:33.922Z  INFO 74316 --- [carddemo-authorization-service] [           main] o.a.kafka.common.utils.AppInfoParser     : Kafka startTimeMs: 1790235213921
+2026-09-24T07:33:33.927Z  INFO 74316 --- [carddemo-authorization-service] [           main] o.a.k.c.c.internals.LegacyKafkaConsumer  : [Consumer clientId=consumer-carddemo-authorization-1, groupId=carddemo-authorization] Subscribed to topic(s): carddemo.authorization.request.v1
+2026-09-24T07:33:33.941Z  INFO 74316 --- [carddemo-authorization-service] [           main] c.c.a.AuthorizationServiceApplication    : Started AuthorizationServiceApplication in 58.841 seconds (process running for 60.433)
+2026-09-24T07:33:33.944Z  WARN 74316 --- [carddemo-authorization-service] [n-request-0-C-1] org.apache.kafka.clients.NetworkClient   : [Consumer clientId=consumer-carddemo-authorization-1, groupId=carddemo-authorization] Error while fetching metadata with correlation id 2 : {carddemo.authorization.request.v1=UNKNOWN_TOPIC_OR_PARTITION}
+2026-09-24T07:33:33.945Z  INFO 74316 --- [carddemo-authorization-service] [n-request-0-C-1] org.apache.kafka.clients.Metadata        : [Consumer clientId=consumer-carddemo-authorization-1, groupId=carddemo-authorization] Cluster ID: 5L6g3nShT-eMCtK--X86sw
+2026-09-24T07:33:34.059Z  WARN 74316 --- [carddemo-authorization-service] [n-request-0-C-1] org.apache.kafka.clients.NetworkClient   : [Consumer clientId=consumer-carddemo-authorization-1, groupId=carddemo-authorization] Error connecting to node kafka:9092 (id: 1 rack: null)
+
+java.net.UnknownHostException: kafka
+	at java.base/java.net.InetAddress$CachedLookup.get(InetAddress.java:988) ~[na:na]
+	at java.base/java.net.InetAddress.getAllByName0(InetAddress.java:1818) ~[na:na]
+	at java.base/java.net.InetAddress.getAllByName(InetAddress.java:1688) ~[na:na]
+	at org.apache.kafka.clients.DefaultHostResolver.resolve(DefaultHostResolver.java:27) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.ClientUtils.resolve(ClientUtils.java:124) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.ClusterConnectionStates$NodeConnectionState.resolveAddresses(ClusterConnectionStates.java:536) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.ClusterConnectionStates$NodeConnectionState.currentAddress(ClusterConnectionStates.java:511) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.ClusterConnectionStates$NodeConnectionState.access$200(ClusterConnectionStates.java:466) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.ClusterConnectionStates.currentAddress(ClusterConnectionStates.java:173) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.NetworkClient.initiateConnect(NetworkClient.java:1050) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.NetworkClient.access$700(NetworkClient.java:76) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.NetworkClient$DefaultMetadataUpdater.maybeUpdate(NetworkClient.java:1230) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.NetworkClient$DefaultMetadataUpdater.maybeUpdate(NetworkClient.java:1130) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.NetworkClient.poll(NetworkClient.java:582) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.consumer.internals.ConsumerNetworkClient.poll(ConsumerNetworkClient.java:281) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.consumer.internals.ConsumerNetworkClient.poll(ConsumerNetworkClient.java:252) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.consumer.internals.ConsumerNetworkClient.poll(ConsumerNetworkClient.java:243) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.consumer.internals.ConsumerNetworkClient.awaitMetadataUpdate(ConsumerNetworkClient.java:165) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.consumer.internals.AbstractCoordinator.ensureCoordinatorReady(AbstractCoordinator.java:302) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.consumer.internals.AbstractCoordinator.ensureCoordinatorReady(AbstractCoordinator.java:263) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.consumer.internals.ConsumerCoordinator.coordinatorUnknownAndUnreadySync(ConsumerCoordinator.java:446) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.consumer.internals.ConsumerCoordinator.poll(ConsumerCoordinator.java:478) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.consumer.internals.LegacyKafkaConsumer.updateAssignmentMetadataIfNeeded(LegacyKafkaConsumer.java:651) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.consumer.internals.LegacyKafkaConsumer.poll(LegacyKafkaConsumer.java:610) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.consumer.internals.LegacyKafkaConsumer.poll(LegacyKafkaConsumer.java:590) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.consumer.KafkaConsumer.poll(KafkaConsumer.java:874) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.springframework.kafka.listener.KafkaMessageListenerContainer$ListenerConsumer.pollConsumer(KafkaMessageListenerContainer.java:1625) ~[spring-kafka-3.2.4.jar!/:3.2.4]
+	at org.springframework.kafka.listener.KafkaMessageListenerContainer$ListenerConsumer.doPoll(KafkaMessageListenerContainer.java:1600) ~[spring-kafka-3.2.4.jar!/:3.2.4]
+	at org.springframework.kafka.listener.KafkaMessageListenerContainer$ListenerConsumer.pollAndInvoke(KafkaMessageListenerContainer.java:1405) ~[spring-kafka-3.2.4.jar!/:3.2.4]
+	at org.springframework.kafka.listener.KafkaMessageListenerContainer$ListenerConsumer.run(KafkaMessageListenerContainer.java:1296) ~[spring-kafka-3.2.4.jar!/:3.2.4]
+	at java.base/java.util.concurrent.CompletableFuture$AsyncRun.run(CompletableFuture.java:1804) ~[na:na]
+	at java.base/java.lang.Thread.run(Thread.java:1583) ~[na:na]
+
+2026-09-24T07:33:34.150Z  WARN 74316 --- [carddemo-authorization-service] [n-request-0-C-1] org.apache.kafka.clients.NetworkClient   : [Consumer clientId=consumer-carddemo-authorization-1, groupId=carddemo-authorization] Error connecting to node kafka:9092 (id: 1 rack: null)
+
+java.net.UnknownHostException: kafka
+	at java.base/java.net.InetAddress$CachedLookup.get(InetAddress.java:988) ~[na:na]
+	at java.base/java.net.InetAddress.getAllByName0(InetAddress.java:1818) ~[na:na]
+	at java.base/java.net.InetAddress.getAllByName(InetAddress.java:1688) ~[na:na]
+	at org.apache.kafka.clients.DefaultHostResolver.resolve(DefaultHostResolver.java:27) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.ClientUtils.resolve(ClientUtils.java:124) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.ClusterConnectionStates$NodeConnectionState.resolveAddresses(ClusterConnectionStates.java:536) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.ClusterConnectionStates$NodeConnectionState.currentAddress(ClusterConnectionStates.java:511) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.ClusterConnectionStates$NodeConnectionState.access$200(ClusterConnectionStates.java:466) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.ClusterConnectionStates.currentAddress(ClusterConnectionStates.java:173) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.NetworkClient.initiateConnect(NetworkClient.java:1050) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.NetworkClient.access$700(NetworkClient.java:76) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.NetworkClient$DefaultMetadataUpdater.maybeUpdate(NetworkClient.java:1230) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.NetworkClient$DefaultMetadataUpdater.maybeUpdate(NetworkClient.java:1130) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.NetworkClient.poll(NetworkClient.java:582) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.consumer.internals.ConsumerNetworkClient.poll(ConsumerNetworkClient.java:281) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.consumer.internals.ConsumerNetworkClient.poll(ConsumerNetworkClient.java:252) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.consumer.internals.ConsumerNetworkClient.poll(ConsumerNetworkClient.java:243) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.consumer.internals.ConsumerNetworkClient.awaitMetadataUpdate(ConsumerNetworkClient.java:165) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.consumer.internals.AbstractCoordinator.ensureCoordinatorReady(AbstractCoordinator.java:302) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.consumer.internals.AbstractCoordinator.ensureCoordinatorReady(AbstractCoordinator.java:263) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.consumer.internals.ConsumerCoordinator.coordinatorUnknownAndUnreadySync(ConsumerCoordinator.java:446) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.consumer.internals.ConsumerCoordinator.poll(ConsumerCoordinator.java:478) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.consumer.internals.LegacyKafkaConsumer.updateAssignmentMetadataIfNeeded(LegacyKafkaConsumer.java:651) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.consumer.internals.LegacyKafkaConsumer.poll(LegacyKafkaConsumer.java:610) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.consumer.internals.LegacyKafkaConsumer.poll(LegacyKafkaConsumer.java:590) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.consumer.KafkaConsumer.poll(KafkaConsumer.java:874) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.springframework.kafka.listener.KafkaMessageListenerContainer$ListenerConsumer.pollConsumer(KafkaMessageListenerContainer.java:1625) ~[spring-kafka-3.2.4.jar!/:3.2.4]
+	at org.springframework.kafka.listener.KafkaMessageListenerContainer$ListenerConsumer.doPoll(KafkaMessageListenerContainer.java:1600) ~[spring-kafka-3.2.4.jar!/:3.2.4]
+	at org.springframework.kafka.listener.KafkaMessageListenerContainer$ListenerConsumer.pollAndInvoke(KafkaMessageListenerContainer.java:1405) ~[spring-kafka-3.2.4.jar!/:3.2.4]
+	at org.springframework.kafka.listener.KafkaMessageListenerContainer$ListenerConsumer.run(KafkaMessageListenerContainer.java:1296) ~[spring-kafka-3.2.4.jar!/:3.2.4]
+	at java.base/java.util.concurrent.CompletableFuture$AsyncRun.run(CompletableFuture.java:1804) ~[na:na]
+	at java.base/java.lang.Thread.run(Thread.java:1583) ~[na:na]
+
+2026-09-24T07:33:34.383Z  WARN 74316 --- [carddemo-authorization-service] [n-request-0-C-1] org.apache.kafka.clients.NetworkClient   : [Consumer clientId=consumer-carddemo-authorization-1, groupId=carddemo-authorization] Error connecting to node kafka:9092 (id: 1 rack: null)
+
+java.net.UnknownHostException: kafka
+	at java.base/java.net.InetAddress$CachedLookup.get(InetAddress.java:988) ~[na:na]
+	at java.base/java.net.InetAddress.getAllByName0(InetAddress.java:1818) ~[na:na]
+	at java.base/java.net.InetAddress.getAllByName(InetAddress.java:1688) ~[na:na]
+	at org.apache.kafka.clients.DefaultHostResolver.resolve(DefaultHostResolver.java:27) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.ClientUtils.resolve(ClientUtils.java:124) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.ClusterConnectionStates$NodeConnectionState.resolveAddresses(ClusterConnectionStates.java:536) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.ClusterConnectionStates$NodeConnectionState.currentAddress(ClusterConnectionStates.java:511) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.ClusterConnectionStates$NodeConnectionState.access$200(ClusterConnectionStates.java:466) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.ClusterConnectionStates.currentAddress(ClusterConnectionStates.java:173) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.NetworkClient.initiateConnect(NetworkClient.java:1050) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.NetworkClient.access$700(NetworkClient.java:76) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.NetworkClient$DefaultMetadataUpdater.maybeUpdate(NetworkClient.java:1230) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.NetworkClient$DefaultMetadataUpdater.maybeUpdate(NetworkClient.java:1130) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.NetworkClient.poll(NetworkClient.java:582) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.consumer.internals.ConsumerNetworkClient.poll(ConsumerNetworkClient.java:281) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.consumer.internals.ConsumerNetworkClient.poll(ConsumerNetworkClient.java:252) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.consumer.internals.ConsumerNetworkClient.poll(ConsumerNetworkClient.java:243) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.consumer.internals.ConsumerNetworkClient.awaitMetadataUpdate(ConsumerNetworkClient.java:165) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.consumer.internals.AbstractCoordinator.ensureCoordinatorReady(AbstractCoordinator.java:302) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.consumer.internals.AbstractCoordinator.ensureCoordinatorReady(AbstractCoordinator.java:263) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.consumer.internals.ConsumerCoordinator.coordinatorUnknownAndUnreadySync(ConsumerCoordinator.java:446) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.consumer.internals.ConsumerCoordinator.poll(ConsumerCoordinator.java:478) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.consumer.internals.LegacyKafkaConsumer.updateAssignmentMetadataIfNeeded(LegacyKafkaConsumer.java:651) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.consumer.internals.LegacyKafkaConsumer.poll(LegacyKafkaConsumer.java:610) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.consumer.internals.LegacyKafkaConsumer.poll(LegacyKafkaConsumer.java:590) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.consumer.KafkaConsumer.poll(KafkaConsumer.java:874) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.springframework.kafka.listener.KafkaMessageListenerContainer$ListenerConsumer.pollConsumer(KafkaMessageListenerContainer.java:1625) ~[spring-kafka-3.2.4.jar!/:3.2.4]
+	at org.springframework.kafka.listener.KafkaMessageListenerContainer$ListenerConsumer.doPoll(KafkaMessageListenerContainer.java:1600) ~[spring-kafka-3.2.4.jar!/:3.2.4]
+	at org.springframework.kafka.listener.KafkaMessageListenerContainer$ListenerConsumer.pollAndInvoke(KafkaMessageListenerContainer.java:1405) ~[spring-kafka-3.2.4.jar!/:3.2.4]
+	at org.springframework.kafka.listener.KafkaMessageListenerContainer$ListenerConsumer.run(KafkaMessageListenerContainer.java:1296) ~[spring-kafka-3.2.4.jar!/:3.2.4]
+	at java.base/java.util.concurrent.CompletableFuture$AsyncRun.run(CompletableFuture.java:1804) ~[na:na]
+	at java.base/java.lang.Thread.run(Thread.java:1583) ~[na:na]
+
+2026-09-24T07:33:34.736Z  WARN 74316 --- [carddemo-authorization-service] [n-request-0-C-1] org.apache.kafka.clients.NetworkClient   : [Consumer clientId=consumer-carddemo-authorization-1, groupId=carddemo-authorization] Error connecting to node kafka:9092 (id: 1 rack: null)
+
+java.net.UnknownHostException: kafka
+	at java.base/java.net.InetAddress$CachedLookup.get(InetAddress.java:988) ~[na:na]
+	at java.base/java.net.InetAddress.getAllByName0(InetAddress.java:1818) ~[na:na]
+	at java.base/java.net.InetAddress.getAllByName(InetAddress.java:1688) ~[na:na]
+	at org.apache.kafka.clients.DefaultHostResolver.resolve(DefaultHostResolver.java:27) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.ClientUtils.resolve(ClientUtils.java:124) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.ClusterConnectionStates$NodeConnectionState.resolveAddresses(ClusterConnectionStates.java:536) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.ClusterConnectionStates$NodeConnectionState.currentAddress(ClusterConnectionStates.java:511) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.ClusterConnectionStates$NodeConnectionState.access$200(ClusterConnectionStates.java:466) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.ClusterConnectionStates.currentAddress(ClusterConnectionStates.java:173) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.NetworkClient.initiateConnect(NetworkClient.java:1050) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.NetworkClient.access$700(NetworkClient.java:76) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.NetworkClient$DefaultMetadataUpdater.maybeUpdate(NetworkClient.java:1230) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.NetworkClient$DefaultMetadataUpdater.maybeUpdate(NetworkClient.java:1130) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.NetworkClient.poll(NetworkClient.java:582) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.consumer.internals.ConsumerNetworkClient.poll(ConsumerNetworkClient.java:281) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.consumer.internals.ConsumerNetworkClient.poll(ConsumerNetworkClient.java:252) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.consumer.internals.ConsumerNetworkClient.poll(ConsumerNetworkClient.java:243) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.consumer.internals.ConsumerNetworkClient.awaitMetadataUpdate(ConsumerNetworkClient.java:165) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.consumer.internals.AbstractCoordinator.ensureCoordinatorReady(AbstractCoordinator.java:302) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.consumer.internals.AbstractCoordinator.ensureCoordinatorReady(AbstractCoordinator.java:263) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.consumer.internals.ConsumerCoordinator.coordinatorUnknownAndUnreadySync(ConsumerCoordinator.java:446) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.consumer.internals.ConsumerCoordinator.poll(ConsumerCoordinator.java:478) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.consumer.internals.LegacyKafkaConsumer.updateAssignmentMetadataIfNeeded(LegacyKafkaConsumer.java:651) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.consumer.internals.LegacyKafkaConsumer.poll(LegacyKafkaConsumer.java:610) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.consumer.internals.LegacyKafkaConsumer.poll(LegacyKafkaConsumer.java:590) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.apache.kafka.clients.consumer.KafkaConsumer.poll(KafkaConsumer.java:874) ~[kafka-clients-3.7.1.jar!/:na]
+	at org.springframework.kafka.listener.KafkaMessageListenerContainer$ListenerConsumer.pollConsumer(KafkaMessageListenerContainer.java:1625) ~[spring-kafka-3.2.4.jar!/:3.2.4]
+	at org.springframework.kafka.listener.KafkaMessageListenerContainer$ListenerConsumer.doPoll(KafkaMessageListenerContainer.java:1600) ~[spring-kafka-3.2.4.jar!/:3.2.4]
+	at org.springframework.kafka.listener.KafkaMessageListenerContainer$ListenerConsumer.pollAndInvoke(KafkaMessageListenerContainer.java:1405) ~[spring-kafka-3.2.4.jar!/:3.2.4]
+	at org.springframework.kafka.listener.KafkaMessageListenerContainer$ListenerConsumer.run(KafkaMessageListenerContainer.java:1296) ~[spring-kafka-3.2.4.jar!/:3.2.4]
+	at java.base/java.util.concurrent.CompletableFuture$AsyncRun.run(CompletableFuture.java:1804) ~[na:na]
+	at java.base/java.lang.Thread.run(Thread.java:1583) ~[na:na]
+
+2026-09-24T07:33:35.165Z  INFO 74316 --- [carddemo-authorization-service] [n-request-0-C-1] o.a.k.c.c.internals.ConsumerCoordinator  : [Consumer clientId=consumer-carddemo-authorization-1, groupId=carddemo-authorization] Discovered group coordinator kafka:9092 (id: 2147483646 rack: null)
+2026-09-24T07:33:35.167Z  INFO 74316 --- [carddemo-authorization-service] [n-request-0-C-1] o.a.k.c.c.internals.ConsumerCoordinator  : [Consumer clientId=consumer-carddemo-authorization-1, groupId=carddemo-authorization] (Re-)joining group
+2026-09-24T07:33:35.179Z  INFO 74316 --- [carddemo-authorization-service] [n-request-0-C-1] o.a.k.c.c.internals.ConsumerCoordinator  : [Consumer clientId=consumer-carddemo-authorization-1, groupId=carddemo-authorization] Request joining group due to: need to re-join with the given member-id: consumer-carddemo-authorization-1-bd4252df-9002-49b7-a21e-a51ec6a82067
+2026-09-24T07:33:35.179Z  INFO 74316 --- [carddemo-authorization-service] [n-request-0-C-1] o.a.k.c.c.internals.ConsumerCoordinator  : [Consumer clientId=consumer-carddemo-authorization-1, groupId=carddemo-authorization] (Re-)joining group
+2026-09-24T07:33:38.190Z  INFO 74316 --- [carddemo-authorization-service] [n-request-0-C-1] o.a.k.c.c.internals.ConsumerCoordinator  : [Consumer clientId=consumer-carddemo-authorization-1, groupId=carddemo-authorization] Successfully joined group with generation Generation{generationId=1, memberId='consumer-carddemo-authorization-1-bd4252df-9002-49b7-a21e-a51ec6a82067', protocol='range'}
+2026-09-24T07:33:38.194Z  INFO 74316 --- [carddemo-authorization-service] [n-request-0-C-1] o.a.k.c.c.internals.ConsumerCoordinator  : [Consumer clientId=consumer-carddemo-authorization-1, groupId=carddemo-authorization] Finished assignment for group at generation 1: {consumer-carddemo-authorization-1-bd4252df-9002-49b7-a21e-a51ec6a82067=Assignment(partitions=[carddemo.authorization.request.v1-0])}
+2026-09-24T07:33:38.206Z  INFO 74316 --- [carddemo-authorization-service] [n-request-0-C-1] o.a.k.c.c.internals.ConsumerCoordinator  : [Consumer clientId=consumer-carddemo-authorization-1, groupId=carddemo-authorization] Successfully synced group in generation Generation{generationId=1, memberId='consumer-carddemo-authorization-1-bd4252df-9002-49b7-a21e-a51ec6a82067', protocol='range'}
+2026-09-24T07:33:38.206Z  INFO 74316 --- [carddemo-authorization-service] [n-request-0-C-1] o.a.k.c.c.internals.ConsumerCoordinator  : [Consumer clientId=consumer-carddemo-authorization-1, groupId=carddemo-authorization] Notifying assignor about the new Assignment(partitions=[carddemo.authorization.request.v1-0])
+2026-09-24T07:33:38.208Z  INFO 74316 --- [carddemo-authorization-service] [n-request-0-C-1] k.c.c.i.ConsumerRebalanceListenerInvoker : [Consumer clientId=consumer-carddemo-authorization-1, groupId=carddemo-authorization] Adding newly assigned partitions: carddemo.authorization.request.v1-0
+2026-09-24T07:33:38.214Z  INFO 74316 --- [carddemo-authorization-service] [n-request-0-C-1] o.a.k.c.c.internals.ConsumerCoordinator  : [Consumer clientId=consumer-carddemo-authorization-1, groupId=carddemo-authorization] Found no committed offset for partition carddemo.authorization.request.v1-0
+2026-09-24T07:33:38.219Z  INFO 74316 --- [carddemo-authorization-service] [n-request-0-C-1] o.a.k.c.c.internals.SubscriptionState    : [Consumer clientId=consumer-carddemo-authorization-1, groupId=carddemo-authorization] Resetting offset for partition carddemo.authorization.request.v1-0 to position FetchPosition{offset=0, offsetEpoch=Optional.empty, currentLeader=LeaderAndEpoch{leader=Optional[kafka:9092 (id: 1 rack: null)], epoch=0}}.
+2026-09-24T07:33:38.219Z  INFO 74316 --- [carddemo-authorization-service] [n-request-0-C-1] o.s.k.l.KafkaMessageListenerContainer    : carddemo-authorization: partitions assigned: [carddemo.authorization.request.v1-0]
+2026-09-24T07:42:34.084Z  INFO 74316 --- [carddemo-authorization-service] [n-request-0-C-1] org.apache.kafka.clients.NetworkClient   : [Consumer clientId=consumer-carddemo-authorization-1, groupId=carddemo-authorization] Node -1 disconnected.
+2026-09-24T07:52:34.205Z  INFO 74316 --- [carddemo-authorization-service] [n-request-0-C-1] org.apache.kafka.clients.NetworkClient   : [Consumer clientId=consumer-carddemo-authorization-1, groupId=carddemo-authorization] Node -1 disconnected.

@@ -1,0 +1,38 @@
+# Local-only configuration. The credentials below are local development placeholders.
+spring:
+  application:
+    name: carddemo-batch-auth-purge
+  datasource:
+    url: ${CARDDEMO_AUTHORIZATION_JDBC_URL:jdbc:postgresql://localhost:5432/carddemo_authorization}
+    username: ${CARDDEMO_AUTHORIZATION_DB_USER:carddemo}
+    password: ${CARDDEMO_AUTHORIZATION_DB_PASSWORD:carddemo}
+  jpa:
+    open-in-view: false
+    hibernate:
+      ddl-auto: validate
+  flyway:
+    # The authorization schema is owned by the authorization service; the purge only works on it.
+    enabled: false
+  batch:
+    jdbc:
+      # Spring Batch metadata tables are framework infrastructure, not converted business schema.
+      initialize-schema: always
+    job:
+      # Submitted explicitly, as the JCL job was, with
+      # --spring.batch.job.enabled=true --spring.batch.job.name=purgeExpiredAuthorizationsJob
+      enabled: false
+
+carddemo:
+  batch:
+    authpurge:
+      # SYSIN card of CBPAUP0J: expiry days, checkpoint frequency, checkpoint display frequency,
+      # debug flag. The production card shipped with the source is 00,00001,00001,Y.
+      expiry-days: 5
+      checkpoint-frequency: 5
+      checkpoint-display-frequency: 10
+      debug: false
+      persist-summary-adjustments: true
+
+logging:
+  level:
+    com.carddemo: INFO

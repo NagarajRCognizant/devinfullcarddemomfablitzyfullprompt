@@ -1,0 +1,544 @@
+{
+  "realm": "carddemo",
+  "displayName": "CardDemo",
+  "enabled": true,
+  "sslRequired": "external",
+  "registrationAllowed": false,
+  "loginWithEmailAllowed": false,
+  "duplicateEmailsAllowed": false,
+  "resetPasswordAllowed": false,
+  "editUsernameAllowed": false,
+
+  "accessTokenLifespan": 900,
+  "ssoSessionIdleTimeout": 1800,
+  "ssoSessionMaxLifespan": 28800,
+
+  "bruteForceProtected": true,
+  "permanentLockout": false,
+  "failureFactor": 5,
+  "waitIncrementSeconds": 60,
+  "maxFailureWaitSeconds": 900,
+  "quickLoginCheckMilliSeconds": 1000,
+  "minimumQuickLoginWaitSeconds": 60,
+  "maxDeltaTimeSeconds": 43200,
+
+  "otpPolicyType": "totp",
+  "otpPolicyAlgorithm": "HmacSHA1",
+  "otpPolicyDigits": 6,
+  "otpPolicyPeriod": 30,
+  "otpPolicyInitialCounter": 0,
+  "otpPolicyLookAheadWindow": 1,
+  "otpPolicyCodeReusable": false,
+  "otpSupportedApplications": [
+    "totpAppFreeOTPName",
+    "totpAppGoogleName",
+    "totpAppMicrosoftAuthenticatorName"
+  ],
+
+  "roles": {
+    "realm": [
+      {
+        "name": "ADMIN",
+        "description": "SEC-USR-TYPE 'A': the administrator COSGN00C routed to COADM01C"
+      },
+      {
+        "name": "USER",
+        "description": "Every other SEC-USR-TYPE: the user COSGN00C routed to COMEN01C"
+      },
+      {
+        "name": "SERVICE",
+        "description": "Machine caller: the MQ triggered CP00 transaction had no signed-on user"
+      }
+    ]
+  },
+
+  "browserFlow": "carddemo browser",
+  "authenticationFlows": [
+    {
+      "alias": "carddemo browser",
+      "description": "Copy of the built-in browser flow with the OTP step promoted from conditional to required",
+      "providerId": "basic-flow",
+      "topLevel": true,
+      "builtIn": false,
+      "authenticationExecutions": [
+        {
+          "authenticator": "auth-cookie",
+          "requirement": "ALTERNATIVE",
+          "priority": 10,
+          "autheticatorFlow": false,
+          "userSetupAllowed": false
+        },
+        {
+          "authenticator": "identity-provider-redirector",
+          "requirement": "ALTERNATIVE",
+          "priority": 20,
+          "autheticatorFlow": false,
+          "userSetupAllowed": false
+        },
+        {
+          "flowAlias": "carddemo browser forms",
+          "requirement": "ALTERNATIVE",
+          "priority": 30,
+          "autheticatorFlow": true,
+          "userSetupAllowed": false
+        }
+      ]
+    },
+    {
+      "alias": "carddemo browser forms",
+      "description": "Password then OTP: the OTP step is required, so a user without an authenticator is sent through CONFIGURE_TOTP before a token is issued",
+      "providerId": "basic-flow",
+      "topLevel": false,
+      "builtIn": false,
+      "authenticationExecutions": [
+        {
+          "authenticator": "auth-username-password-form",
+          "requirement": "REQUIRED",
+          "priority": 10,
+          "autheticatorFlow": false,
+          "userSetupAllowed": false
+        },
+        {
+          "authenticator": "auth-otp-form",
+          "requirement": "REQUIRED",
+          "priority": 20,
+          "autheticatorFlow": false,
+          "userSetupAllowed": false
+        }
+      ]
+    }
+  ],
+
+  "requiredActions": [
+    {
+      "alias": "CONFIGURE_TOTP",
+      "name": "Configure OTP",
+      "providerId": "CONFIGURE_TOTP",
+      "enabled": true,
+      "defaultAction": true,
+      "priority": 10,
+      "config": {}
+    },
+    {
+      "alias": "UPDATE_PASSWORD",
+      "name": "Update Password",
+      "providerId": "UPDATE_PASSWORD",
+      "enabled": true,
+      "defaultAction": false,
+      "priority": 30,
+      "config": {}
+    },
+    {
+      "alias": "VERIFY_PROFILE",
+      "name": "Verify Profile",
+      "providerId": "VERIFY_PROFILE",
+      "enabled": true,
+      "defaultAction": false,
+      "priority": 90,
+      "config": {}
+    }
+  ],
+
+  "clients": [
+    {
+      "clientId": "carddemo-ui",
+      "name": "CardDemo screens (React SPA)",
+      "description": "Public client of the converted BMS maps: authorization code with PKCE, no secret in the browser",
+      "enabled": true,
+      "protocol": "openid-connect",
+      "publicClient": true,
+      "standardFlowEnabled": true,
+      "implicitFlowEnabled": false,
+      "directAccessGrantsEnabled": false,
+      "serviceAccountsEnabled": false,
+      "fullScopeAllowed": false,
+      "redirectUris": [
+        "http://localhost:5173/*",
+        "http://127.0.0.1:5173/*"
+      ],
+      "webOrigins": [
+        "http://localhost:5173",
+        "http://127.0.0.1:5173"
+      ],
+      "attributes": {
+        "pkce.code.challenge.method": "S256",
+        "post.logout.redirect.uris": "http://localhost:5173/*##http://127.0.0.1:5173/*",
+        "access.token.lifespan": "900"
+      },
+      "defaultClientScopes": [
+        "web-origins",
+        "acr",
+        "profile",
+        "roles",
+        "basic"
+      ],
+      "optionalClientScopes": [],
+      "protocolMappers": [
+        {
+          "name": "audience-gateway",
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-audience-mapper",
+          "consentRequired": false,
+          "config": {
+            "included.custom.audience": "carddemo-gateway",
+            "access.token.claim": "true",
+            "id.token.claim": "false"
+          }
+        },
+        {
+          "name": "audience-identity-service",
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-audience-mapper",
+          "consentRequired": false,
+          "config": {
+            "included.custom.audience": "carddemo-identity-service",
+            "access.token.claim": "true",
+            "id.token.claim": "false"
+          }
+        },
+        {
+          "name": "audience-account-service",
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-audience-mapper",
+          "consentRequired": false,
+          "config": {
+            "included.custom.audience": "carddemo-account-service",
+            "access.token.claim": "true",
+            "id.token.claim": "false"
+          }
+        },
+        {
+          "name": "audience-authorization-service",
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-audience-mapper",
+          "consentRequired": false,
+          "config": {
+            "included.custom.audience": "carddemo-authorization-service",
+            "access.token.claim": "true",
+            "id.token.claim": "false"
+          }
+        },
+        {
+          "name": "audience-transaction-service",
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-audience-mapper",
+          "consentRequired": false,
+          "config": {
+            "included.custom.audience": "carddemo-transaction-service",
+            "access.token.claim": "true",
+            "id.token.claim": "false"
+          }
+        }
+      ]
+    },
+    {
+      "clientId": "carddemo-identity-admin",
+      "name": "CardDemo identity service (Admin REST client)",
+      "description": "Confidential back channel client the COUSR screens provision Keycloak users with",
+      "enabled": true,
+      "protocol": "openid-connect",
+      "publicClient": false,
+      "standardFlowEnabled": false,
+      "implicitFlowEnabled": false,
+      "directAccessGrantsEnabled": false,
+      "serviceAccountsEnabled": true,
+      "fullScopeAllowed": true,
+      "attributes": {
+        "use.refresh.tokens": "false"
+      }
+    },
+    {
+      "clientId": "carddemo-authorization-svc",
+      "name": "CardDemo authorization service (client credentials)",
+      "description": "Replaces the self signed service token of the MQ triggered CP00 path",
+      "enabled": true,
+      "protocol": "openid-connect",
+      "publicClient": false,
+      "standardFlowEnabled": false,
+      "implicitFlowEnabled": false,
+      "directAccessGrantsEnabled": false,
+      "serviceAccountsEnabled": true,
+      "fullScopeAllowed": true,
+      "attributes": {
+        "use.refresh.tokens": "false"
+      },
+      "protocolMappers": [
+        {
+          "name": "audience-account-service",
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-audience-mapper",
+          "consentRequired": false,
+          "config": {
+            "included.custom.audience": "carddemo-account-service",
+            "access.token.claim": "true",
+            "id.token.claim": "false"
+          }
+        }
+      ]
+    },
+    {
+      "clientId": "carddemo-transaction-svc",
+      "name": "CardDemo transaction service (client credentials)",
+      "description": "Lets the bill payment adjust the balance in the account service as itself, the unit of recovery COBIL00C had within one program",
+      "enabled": true,
+      "protocol": "openid-connect",
+      "publicClient": false,
+      "standardFlowEnabled": false,
+      "implicitFlowEnabled": false,
+      "directAccessGrantsEnabled": false,
+      "serviceAccountsEnabled": true,
+      "fullScopeAllowed": true,
+      "attributes": {
+        "use.refresh.tokens": "false"
+      },
+      "protocolMappers": [
+        {
+          "name": "audience-account-service",
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-audience-mapper",
+          "consentRequired": false,
+          "config": {
+            "included.custom.audience": "carddemo-account-service",
+            "access.token.claim": "true",
+            "id.token.claim": "false"
+          }
+        }
+      ]
+    }
+  ],
+
+  "users": [
+    {
+      "username": "admin001",
+      "enabled": true,
+      "emailVerified": true,
+      "email": "admin001@carddemo.local",
+      "firstName": "MARGARET",
+      "lastName": "GOLD",
+      "credentials": [
+        {
+          "type": "password",
+          "value": "PASSWORD",
+          "temporary": false
+        }
+      ],
+      "requiredActions": [
+        "CONFIGURE_TOTP"
+      ],
+      "realmRoles": [
+        "ADMIN"
+      ]
+    },
+    {
+      "username": "admin002",
+      "enabled": true,
+      "emailVerified": true,
+      "email": "admin002@carddemo.local",
+      "firstName": "RUSSELL",
+      "lastName": "RUSSELL",
+      "credentials": [
+        {
+          "type": "password",
+          "value": "PASSWORD",
+          "temporary": false
+        }
+      ],
+      "requiredActions": [
+        "CONFIGURE_TOTP"
+      ],
+      "realmRoles": [
+        "ADMIN"
+      ]
+    },
+    {
+      "username": "admin003",
+      "enabled": true,
+      "emailVerified": true,
+      "email": "admin003@carddemo.local",
+      "firstName": "RAYMOND",
+      "lastName": "WHITMORE",
+      "credentials": [
+        {
+          "type": "password",
+          "value": "PASSWORD",
+          "temporary": false
+        }
+      ],
+      "requiredActions": [
+        "CONFIGURE_TOTP"
+      ],
+      "realmRoles": [
+        "ADMIN"
+      ]
+    },
+    {
+      "username": "admin004",
+      "enabled": true,
+      "emailVerified": true,
+      "email": "admin004@carddemo.local",
+      "firstName": "EMMANUEL",
+      "lastName": "CASGRAIN",
+      "credentials": [
+        {
+          "type": "password",
+          "value": "PASSWORD",
+          "temporary": false
+        }
+      ],
+      "requiredActions": [
+        "CONFIGURE_TOTP"
+      ],
+      "realmRoles": [
+        "ADMIN"
+      ]
+    },
+    {
+      "username": "admin005",
+      "enabled": true,
+      "emailVerified": true,
+      "email": "admin005@carddemo.local",
+      "firstName": "GRANVILLE",
+      "lastName": "LACHAPELLE",
+      "credentials": [
+        {
+          "type": "password",
+          "value": "PASSWORD",
+          "temporary": false
+        }
+      ],
+      "requiredActions": [
+        "CONFIGURE_TOTP"
+      ],
+      "realmRoles": [
+        "ADMIN"
+      ]
+    },
+    {
+      "username": "user0001",
+      "enabled": true,
+      "emailVerified": true,
+      "email": "user0001@carddemo.local",
+      "firstName": "LAWRENCE",
+      "lastName": "THOMAS",
+      "credentials": [
+        {
+          "type": "password",
+          "value": "PASSWORD",
+          "temporary": false
+        }
+      ],
+      "requiredActions": [
+        "CONFIGURE_TOTP"
+      ],
+      "realmRoles": [
+        "USER"
+      ]
+    },
+    {
+      "username": "user0002",
+      "enabled": true,
+      "emailVerified": true,
+      "email": "user0002@carddemo.local",
+      "firstName": "AJITH",
+      "lastName": "KUMAR",
+      "credentials": [
+        {
+          "type": "password",
+          "value": "PASSWORD",
+          "temporary": false
+        }
+      ],
+      "requiredActions": [
+        "CONFIGURE_TOTP"
+      ],
+      "realmRoles": [
+        "USER"
+      ]
+    },
+    {
+      "username": "user0003",
+      "enabled": true,
+      "emailVerified": true,
+      "email": "user0003@carddemo.local",
+      "firstName": "LAURITZ",
+      "lastName": "ALME",
+      "credentials": [
+        {
+          "type": "password",
+          "value": "PASSWORD",
+          "temporary": false
+        }
+      ],
+      "requiredActions": [
+        "CONFIGURE_TOTP"
+      ],
+      "realmRoles": [
+        "USER"
+      ]
+    },
+    {
+      "username": "user0004",
+      "enabled": true,
+      "emailVerified": true,
+      "email": "user0004@carddemo.local",
+      "firstName": "AVERARDO",
+      "lastName": "MAZZI",
+      "credentials": [
+        {
+          "type": "password",
+          "value": "PASSWORD",
+          "temporary": false
+        }
+      ],
+      "requiredActions": [
+        "CONFIGURE_TOTP"
+      ],
+      "realmRoles": [
+        "USER"
+      ]
+    },
+    {
+      "username": "user0005",
+      "enabled": true,
+      "emailVerified": true,
+      "email": "user0005@carddemo.local",
+      "firstName": "LEE",
+      "lastName": "TING",
+      "credentials": [
+        {
+          "type": "password",
+          "value": "PASSWORD",
+          "temporary": false
+        }
+      ],
+      "requiredActions": [
+        "CONFIGURE_TOTP"
+      ],
+      "realmRoles": [
+        "USER"
+      ]
+    }
+  ],
+
+  "scopeMappings": [
+    {
+      "client": "carddemo-ui",
+      "roles": [
+        "ADMIN",
+        "USER"
+      ]
+    },
+    {
+      "client": "carddemo-authorization-svc",
+      "roles": [
+        "SERVICE"
+      ]
+    },
+    {
+      "client": "carddemo-transaction-svc",
+      "roles": [
+        "SERVICE"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,584 @@
+openapi: 3.1.0
+info:
+  title: CardDemo Account Management
+  version: 1.0.0
+  description: >-
+    REST contract of the account service, one of the two services the CardDemo account management
+    and user administration capabilities were decomposed into. Operations replace CICS transactions
+    CAVW (program COACTVWC) and CAUP (program COACTUPC) and the menu of COMEN01C; the terminal
+    transport, the COMMAREA and the PF keys are modernized away while the field edits, the read
+    sequence, the messages and the update lifecycle are preserved.
+
+
+    Every operation except the actuator endpoints requires the bearer token the identity service
+    issues at POST /api/signon. The token carries the user id and the SEC-USR-TYPE that COSGN00C put
+    in the COMMAREA, so the caller no longer states its own user type.
+  license:
+    name: Apache-2.0
+    identifier: Apache-2.0
+servers:
+  - url: http://localhost:8090
+    description: API gateway
+  - url: http://localhost:8080
+    description: Account service, addressed directly
+security:
+  - bearerAuth: []
+tags:
+  - name: Account View
+    description: CICS transaction CAVW - program COACTVWC
+  - name: Account Update
+    description: CICS transaction CAUP - program COACTUPC
+  - name: Menu
+    description: Program COMEN01C - the main menu, restricted to the options this service owns
+  - name: Cardholder Lookup
+    description: >-
+      The service to service read that replaces the CARDXREF, ACCTDAT and CUSTDAT reads other
+      bounded contexts used to perform themselves
+paths:
+  /api/menu:
+    get:
+      tags: [Menu]
+      operationId: menu
+      summary: Menu options available to the signed-on operator
+      description: >-
+        Applies the access rule of COMEN01C paragraph PROCESS-ENTER-KEY to the menu table of
+        app/cpy/COMEN02Y.cpy, for the user id and SEC-USR-TYPE carried by the token.
+      responses:
+        '200':
+          description: The signed-on operator and its menu options
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MenuResponse'
+        '401':
+          $ref: '#/components/responses/Unauthenticated'
+  /api/accounts/view:
+    get:
+      tags: [Account View]
+      operationId: promptAccountView
+      summary: Empty Account View screen
+      description: First turn of transaction CAVW, which only carries WS-PROMPT-FOR-INPUT.
+      responses:
+        '200':
+          description: Prompt message
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AccountViewResponse'
+        '401':
+          $ref: '#/components/responses/Unauthenticated'
+        '403':
+          $ref: '#/components/responses/NoAccess'
+  /api/accounts/search:
+    get:
+      tags: [Account View]
+      operationId: searchAccount
+      summary: Account inquiry on the filter as keyed
+      description: >-
+        The ENTER key of map COACTVW. The filter is carried exactly as keyed, so a blank value or the
+        '*' the map writes back reaches 2210-EDIT-ACCOUNT and returns that paragraph's message and
+        field flag instead of an unroutable request.
+      parameters:
+        - $ref: '#/components/parameters/AccountIdQuery'
+      responses:
+        '200':
+          description: Account and customer details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AccountViewResponse'
+        '400':
+          $ref: '#/components/responses/ValidationError'
+        '401':
+          $ref: '#/components/responses/Unauthenticated'
+        '403':
+          $ref: '#/components/responses/NoAccess'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalError'
+  /api/accounts/update:
+    get:
+      tags: [Account Update]
+      operationId: fetchAccountForUpdateKeyed
+      summary: Fetch the record to be updated from the filter as keyed
+      description: >-
+        The first ENTER of map COACTUP, with the filter carried exactly as keyed so that blank and
+        '*' values reach 1210-EDIT-ACCOUNT.
+      parameters:
+        - $ref: '#/components/parameters/AccountIdQuery'
+      responses:
+        '200':
+          description: Fetched values with state DETAILS_FETCHED
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AccountUpdateResponse'
+        '400':
+          $ref: '#/components/responses/ValidationError'
+        '401':
+          $ref: '#/components/responses/Unauthenticated'
+        '403':
+          $ref: '#/components/responses/NoAccess'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalError'
+  /api/accounts/{accountId}:
+    get:
+      tags: [Account View]
+      operationId: viewAccount
+      summary: Account inquiry
+      description: >-
+        COACTVWC paragraph 2210-EDIT-ACCOUNT followed by 9000-READ-ACCT: the keyed account id is
+        edited, then the cross reference, the account master and the customer master are read in
+        that order.
+      parameters:
+        - $ref: '#/components/parameters/AccountIdPath'
+      responses:
+        '200':
+          description: Account and customer details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AccountViewResponse'
+        '400':
+          $ref: '#/components/responses/ValidationError'
+        '401':
+          $ref: '#/components/responses/Unauthenticated'
+        '403':
+          $ref: '#/components/responses/NoAccess'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalError'
+  /api/accounts/{accountId}/update:
+    get:
+      tags: [Account Update]
+      operationId: fetchAccountForUpdate
+      summary: Fetch the record to be updated
+      description: >-
+        COACTUPC paragraphs 1210-EDIT-ACCOUNT, 9000-READ-ACCT and 9500-STORE-FETCHED-DATA. The
+        returned form is both the snapshot to send back as `original` and the initial content of the
+        editable fields.
+      parameters:
+        - $ref: '#/components/parameters/AccountIdPath'
+      responses:
+        '200':
+          description: Fetched values with state DETAILS_FETCHED
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AccountUpdateResponse'
+        '400':
+          $ref: '#/components/responses/ValidationError'
+        '401':
+          $ref: '#/components/responses/Unauthenticated'
+        '403':
+          $ref: '#/components/responses/NoAccess'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalError'
+  /api/accounts/{accountId}/update/validate:
+    post:
+      tags: [Account Update]
+      operationId: validateAccountUpdate
+      summary: Change detection and field edits
+      description: >-
+        COACTUPC paragraphs 1205-COMPARE-OLD-NEW and 1200-EDIT-MAP-INPUTS. A submission identical to
+        the fetched values returns NO_CHANGES without running any edit.
+      parameters:
+        - $ref: '#/components/parameters/AccountIdPath'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AccountUpdateRequest'
+      responses:
+        '200':
+          description: State NO_CHANGES, VALIDATION_ERROR or CHANGES_VALIDATED
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AccountUpdateResponse'
+        '400':
+          $ref: '#/components/responses/ValidationError'
+        '401':
+          $ref: '#/components/responses/Unauthenticated'
+        '403':
+          $ref: '#/components/responses/NoAccess'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalError'
+  /api/accounts/{accountId}/update/confirm:
+    post:
+      tags: [Account Update]
+      operationId: confirmAccountUpdate
+      summary: Rewrite the account and customer records
+      description: >-
+        The F5 branch of COACTUPC paragraph 2000-DECIDE-ACTION, performing 9600-WRITE-PROCESSING and
+        9700-CHECK-CHANGE-IN-REC: both records are locked, compared with the fetched snapshot and
+        rewritten account first, customer second, in one unit of work.
+      parameters:
+        - $ref: '#/components/parameters/AccountIdPath'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AccountUpdateRequest'
+      responses:
+        '200':
+          description: >-
+            State CHANGES_COMMITTED, NO_CHANGES, VALIDATION_ERROR, RECORD_CHANGED or LOCK_ERROR
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AccountUpdateResponse'
+        '400':
+          $ref: '#/components/responses/ValidationError'
+        '401':
+          $ref: '#/components/responses/Unauthenticated'
+        '403':
+          $ref: '#/components/responses/NoAccess'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '409':
+          description: The stored record changed after it was fetched
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          $ref: '#/components/responses/InternalError'
+  /api/cardholders/by-card/{cardNumber}:
+    get:
+      tags: [Cardholder Lookup]
+      operationId: cardholderByCard
+      summary: Cross reference, account and customer data for one card number
+      description: >-
+        The read sequence of COPAUA0C paragraphs 1000-READ-CARD-XREF, 2000-READ-ACCT-MASTER and
+        3000-READ-CUST-MASTER, offered as one API so a service that does not own this data does not
+        open the carddemo database. A record that was not found is reported by the corresponding
+        flag, exactly as the source's read flags did, rather than by a 404.
+      parameters:
+        - name: cardNumber
+          in: path
+          required: true
+          description: CARD-NUM, as characters, because the source key is a 16 byte display field.
+          schema:
+            type: string
+            maxLength: 16
+      responses:
+        '200':
+          description: The cardholder context, with a flag per record read
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CardholderLookupResponse'
+        '401':
+          $ref: '#/components/responses/Unauthenticated'
+        '500':
+          $ref: '#/components/responses/InternalError'
+  /api/cardholders/by-account/{accountId}:
+    get:
+      tags: [Cardholder Lookup]
+      operationId: cardholderByAccount
+      summary: Account and customer data for one account id
+      description: >-
+        The read sequence of COPAUS0C paragraphs 2000-READ-ACCT-MASTER and 3000-READ-CUST-MASTER,
+        which the authorization summary screen performed before displaying its header.
+      parameters:
+        - $ref: '#/components/parameters/AccountIdPath'
+      responses:
+        '200':
+          description: The cardholder context, with a flag per record read
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CardholderLookupResponse'
+        '401':
+          $ref: '#/components/responses/Unauthenticated'
+        '500':
+          $ref: '#/components/responses/InternalError'
+components:
+  parameters:
+    AccountIdPath:
+      name: accountId
+      in: path
+      required: true
+      description: The keyed account id, as characters, because the edits are defined on the input.
+      schema:
+        type: string
+    AccountIdQuery:
+      name: accountId
+      in: query
+      required: false
+      description: >-
+        The account filter exactly as keyed on the map, which may be blank or hold the '*' the map
+        writes back for a required field left empty.
+      schema:
+        type: string
+        default: ''
+        maxLength: 11
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: >-
+        The token POST /api/signon returns. Its subject is SEC-USR-ID and its userType claim is
+        SEC-USR-TYPE, the two values COSGN00C left in the COMMAREA for every following screen.
+  responses:
+    Unauthenticated:
+      description: No token was presented, or the token is expired or not valid
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    ValidationError:
+      description: An edit failed; the message is the WS-RETURN-MSG text of the source
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    NotFound:
+      description: A keyed read returned NOTFND
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    NoAccess:
+      description: The menu option is not available to this user type
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    InternalError:
+      description: A file status other than '00' or '10', which abends the source program
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+  schemas:
+    UserType:
+      type: string
+      description: A = administrator, U = regular user
+      enum: [A, U]
+      default: U
+    MoneyValue:
+      type: object
+      description: An S9(10)V99 amount with the edited text of the PIC +ZZZ,ZZZ,ZZZ.99 map field
+      properties:
+        amount:
+          type: string
+          description: Exact decimal value, two decimal places
+          examples: ['-1025.00']
+        display:
+          type: string
+          examples: ['-    1,025.00']
+    FieldFlag:
+      type: string
+      description: The edit outcome the BMS attribute bytes carried for one field
+      enum: [VALID, BLANK, NOT_OK]
+    FieldFlags:
+      type: object
+      description: Map of map field name to edit outcome
+      additionalProperties:
+        $ref: '#/components/schemas/FieldFlag'
+    CardholderLookupResponse:
+      type: object
+      description: >-
+        CARDXREF, ACCTDAT and CUSTDAT fields a caller outside this bounded context needs. The three
+        flags are WS-XREF-READ-FLG, WS-ACCT-MASTER-READ-FLG and WS-CUST-MASTER-READ-FLG.
+      properties:
+        cardFound: { type: boolean }
+        accountFound: { type: boolean }
+        customerFound: { type: boolean }
+        cardNumber: { type: string }
+        accountId: { type: [integer, 'null'], format: int64 }
+        customerId: { type: [integer, 'null'], format: int64 }
+        accountActiveStatus: { type: [string, 'null'] }
+        creditLimit: { type: [string, 'null'], description: ACCT-CREDIT-LIMIT }
+        cashCreditLimit: { type: [string, 'null'], description: ACCT-CASH-CREDIT-LIMIT }
+        currentBalance: { type: [string, 'null'], description: ACCT-CURR-BAL }
+        firstName: { type: [string, 'null'] }
+        middleName: { type: [string, 'null'] }
+        lastName: { type: [string, 'null'] }
+        addressLine1: { type: [string, 'null'] }
+        addressLine2: { type: [string, 'null'] }
+        addressLine3: { type: [string, 'null'] }
+        stateCode: { type: [string, 'null'] }
+        zip: { type: [string, 'null'] }
+        phone1: { type: [string, 'null'] }
+    MenuOption:
+      type: object
+      properties:
+        number:
+          type: integer
+        name:
+          type: string
+        program:
+          type: string
+        userType:
+          $ref: '#/components/schemas/UserType'
+        accessible:
+          type: boolean
+    MenuResponse:
+      type: object
+      properties:
+        userId:
+          type: string
+        userType:
+          $ref: '#/components/schemas/UserType'
+        userTypeName:
+          type: string
+        options:
+          type: array
+          items:
+            $ref: '#/components/schemas/MenuOption'
+    AccountDetails:
+      type: object
+      description: Output fields of the COACTVW map
+      properties:
+        accountId: { type: string }
+        activeStatus: { type: string }
+        currentBalance: { $ref: '#/components/schemas/MoneyValue' }
+        creditLimit: { $ref: '#/components/schemas/MoneyValue' }
+        cashCreditLimit: { $ref: '#/components/schemas/MoneyValue' }
+        currentCycleCredit: { $ref: '#/components/schemas/MoneyValue' }
+        currentCycleDebit: { $ref: '#/components/schemas/MoneyValue' }
+        openDate: { type: string }
+        expirationDate: { type: string }
+        reissueDate: { type: string }
+        groupId: { type: string }
+        customerId: { type: string }
+        cardNumber: { type: string }
+        ssn: { type: string }
+        ssnFormatted: { type: string }
+        ficoScore: { type: [integer, 'null'] }
+        dateOfBirth: { type: string }
+        firstName: { type: string }
+        middleName: { type: string }
+        lastName: { type: string }
+        addressLine1: { type: string }
+        addressLine2: { type: string }
+        city: { type: string }
+        state: { type: string }
+        zip: { type: string }
+        country: { type: string }
+        phone1: { type: string }
+        phone2: { type: string }
+        governmentIssuedId: { type: string }
+        eftAccountId: { type: string }
+        primaryCardHolder: { type: string }
+    AccountViewResponse:
+      type: object
+      properties:
+        details:
+          oneOf:
+            - $ref: '#/components/schemas/AccountDetails'
+            - type: 'null'
+        infoMessage:
+          type: string
+    AccountUpdateForm:
+      type: object
+      description: >-
+        The editable fields of the COACTUP map as keyed text. Every field is a string because a
+        blank, an asterisk, a zero and an unparsable value are distinct inputs in the source.
+      properties:
+        accountId: { type: string }
+        activeStatus: { type: string }
+        currentBalance: { type: string }
+        creditLimit: { type: string }
+        cashCreditLimit: { type: string }
+        openYear: { type: string }
+        openMonth: { type: string }
+        openDay: { type: string }
+        expiryYear: { type: string }
+        expiryMonth: { type: string }
+        expiryDay: { type: string }
+        reissueYear: { type: string }
+        reissueMonth: { type: string }
+        reissueDay: { type: string }
+        currentCycleCredit: { type: string }
+        currentCycleDebit: { type: string }
+        groupId: { type: string }
+        customerId: { type: string }
+        ssnPart1: { type: string }
+        ssnPart2: { type: string }
+        ssnPart3: { type: string }
+        dobYear: { type: string }
+        dobMonth: { type: string }
+        dobDay: { type: string }
+        ficoScore: { type: string }
+        firstName: { type: string }
+        middleName: { type: string }
+        lastName: { type: string }
+        addressLine1: { type: string }
+        addressLine2: { type: string }
+        city: { type: string }
+        state: { type: string }
+        zip: { type: string }
+        country: { type: string }
+        phone1Area: { type: string }
+        phone1Prefix: { type: string }
+        phone1Line: { type: string }
+        phone2Area: { type: string }
+        phone2Prefix: { type: string }
+        phone2Line: { type: string }
+        governmentIssuedId: { type: string }
+        eftAccountId: { type: string }
+        primaryCardHolder: { type: string }
+    AccountUpdateRequest:
+      type: object
+      required: [original, updated]
+      properties:
+        original:
+          $ref: '#/components/schemas/AccountUpdateForm'
+        updated:
+          $ref: '#/components/schemas/AccountUpdateForm'
+    AccountUpdateStatus:
+      type: string
+      description: The values COACTUPC keeps in ACUP-CHANGE-ACTION
+      enum:
+        - DETAILS_FETCHED
+        - NO_CHANGES
+        - VALIDATION_ERROR
+        - CHANGES_VALIDATED
+        - CHANGES_COMMITTED
+        - RECORD_CHANGED
+        - LOCK_ERROR
+        - UPDATE_FAILED
+    AccountUpdateResponse:
+      type: object
+      properties:
+        status:
+          $ref: '#/components/schemas/AccountUpdateStatus'
+        infoMessage:
+          type: [string, 'null']
+        errorMessage:
+          type: [string, 'null']
+        original:
+          $ref: '#/components/schemas/AccountUpdateForm'
+        updated:
+          $ref: '#/components/schemas/AccountUpdateForm'
+        details:
+          oneOf:
+            - $ref: '#/components/schemas/AccountDetails'
+            - type: 'null'
+        fieldFlags:
+          $ref: '#/components/schemas/FieldFlags'
+    ErrorResponse:
+      type: object
+      properties:
+        status:
+          type: string
+        message:
+          type: string
+          description: The WS-RETURN-MSG text of the source program
+        fieldFlags:
+          $ref: '#/components/schemas/FieldFlags'

@@ -1,0 +1,23 @@
+
+    ╔═══════════════════════════════════════════════════════╗
+    ║                                                       ║
+    ║  A new version of Redocly CLI (2.54.2) is available.  ║
+    ║  Update now: `npm i -g @redocly/cli@latest`.          ║
+    ║  Changelog: https://redocly.com/docs/cli/changelog/   ║
+    ║                                                       ║
+    ╚═══════════════════════════════════════════════════════╝
+
+validating /account-service/src/main/resources/openapi/openapi.yaml...
+/account-service/src/main/resources/openapi/openapi.yaml: validated in 29ms
+
+validating /identity-service/src/main/resources/openapi/openapi.yaml...
+/identity-service/src/main/resources/openapi/openapi.yaml: validated in 12ms
+
+validating /authorization-service/src/main/resources/openapi/openapi.yaml...
+/authorization-service/src/main/resources/openapi/openapi.yaml: validated in 5ms
+
+validating /transaction-service/src/main/resources/openapi/openapi.yaml...
+/transaction-service/src/main/resources/openapi/openapi.yaml: validated in 7ms
+
+Woohoo! Your API descriptions are valid. 🎉
+

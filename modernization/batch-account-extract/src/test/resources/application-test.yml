@@ -1,0 +1,39 @@
+# Integration test configuration. The database is the local carddemo_test database; every test
+# context cleans it and re-applies the account service migrations copied onto the test classpath.
+spring:
+  datasource:
+    url: ${CARDDEMO_TEST_JDBC_URL:jdbc:postgresql://localhost:5432/carddemo_test}
+    username: ${CARDDEMO_TEST_DB_USER:carddemo}
+    password: ${CARDDEMO_TEST_DB_PASSWORD:carddemo}
+  jpa:
+    open-in-view: false
+    hibernate:
+      ddl-auto: validate
+  flyway:
+    enabled: true
+    locations: classpath:db/migration
+    clean-disabled: false
+  batch:
+    jdbc:
+      initialize-schema: always
+    job:
+      enabled: false
+
+carddemo:
+  batch:
+    readacct:
+      output-directory: target/readacct-test
+      record-charset: ISO-8859-1
+      chunk-size: 10
+    migration:
+      directory: target/migration-test
+      export-file: expfile.acct
+      import-files: expfile.acct
+      customer-file: custfile.dat
+      account-file: acctfile.dat
+      xref-file: xreffile.dat
+      transaction-file: transact.dat
+      card-file: cardfile.dat
+      error-file: errfile.dat
+      record-charset: ISO-8859-1
+      chunk-size: 10

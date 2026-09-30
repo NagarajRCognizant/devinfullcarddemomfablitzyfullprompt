@@ -1,0 +1,27 @@
+# Integration test configuration. The jobs run against the local carddemo_transaction_test
+# database created by modernization/scripts/local-db.sh; every test context cleans it and
+# re-applies the transaction service migrations, which loads the sample data the IDCAMS REPRO
+# steps loaded.
+spring:
+  datasource:
+    url: ${CARDDEMO_TRANSACTION_TEST_JDBC_URL:jdbc:postgresql://localhost:5432/carddemo_transaction_test}
+    username: ${CARDDEMO_TEST_DB_USER:carddemo}
+    password: ${CARDDEMO_TEST_DB_PASSWORD:carddemo}
+  jpa:
+    open-in-view: false
+    hibernate:
+      ddl-auto: validate
+  flyway:
+    enabled: true
+    locations: classpath:db/migration
+    clean-disabled: false
+  batch:
+    jdbc:
+      initialize-schema: always
+    job:
+      enabled: false
+
+carddemo:
+  batch:
+    transaction:
+      output-directory: target/transaction-batch-test

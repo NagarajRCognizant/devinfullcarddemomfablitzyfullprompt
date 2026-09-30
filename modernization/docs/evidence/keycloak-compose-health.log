@@ -1,0 +1,48 @@
+$ docker compose ps -a
+SERVICE                 STATE     STATUS
+account-db              running   Up About an hour (healthy)
+account-service         running   Up 41 minutes (healthy)
+authorization-db        running   Up About an hour (healthy)
+authorization-service   running   Up 50 minutes (healthy)
+frontend                running   Up 50 minutes (healthy)
+gateway                 running   Up 50 minutes (healthy)
+identity-db             running   Up About an hour (healthy)
+identity-service        running   Up 50 minutes (healthy)
+kafka                   running   Up About an hour (healthy)
+keycloak                running   Up About an hour (healthy)
+keycloak-bootstrap      exited    Exited (0) 13 minutes ago
+keycloak-db             running   Up About an hour (healthy)
+
+$ curl -s http://127.0.0.1:8088/realms/carddemo/.well-known/openid-configuration | jq {issuer,authorization_endpoint,jwks_uri,end_session_endpoint,id_token_signing_alg_values_supported,code_challenge_methods_supported}
+{
+  "issuer": "http://127.0.0.1:8088/realms/carddemo",
+  "authorization_endpoint": "http://127.0.0.1:8088/realms/carddemo/protocol/openid-connect/auth",
+  "jwks_uri": "http://127.0.0.1:8088/realms/carddemo/protocol/openid-connect/certs",
+  "end_session_endpoint": "http://127.0.0.1:8088/realms/carddemo/protocol/openid-connect/logout",
+  "id_token_signing_alg_values_supported": [
+    "PS384",
+    "RS384",
+    "EdDSA",
+    "ES384",
+    "HS256",
+    "HS512",
+    "ES256",
+    "RS256",
+    "HS384",
+    "ES512",
+    "PS256",
+    "PS512",
+    "RS512"
+  ],
+  "code_challenge_methods_supported": [
+    "plain",
+    "S256"
+  ]
+}
+
+$ curl -si http://127.0.0.1:8090/api/users | head -1   # no token
+HTTP/1.1 401 Unauthorized
+$ curl -si -H "Authorization: Bearer nonsense" http://127.0.0.1:8090/api/menu | head -1
+HTTP/1.1 401 Unauthorized
+$ curl -si -X POST http://127.0.0.1:8090/api/signon | head -1   # not mapped in keycloak mode
+HTTP/1.1 401 Unauthorized

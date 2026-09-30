@@ -1,0 +1,101 @@
+# Local-only configuration. Every credential here is a local development placeholder and must be
+# supplied per environment; the authorization service owns carddemo_authorization and never opens a
+# connection to the carddemo or carddemo_identity databases.
+spring:
+  application:
+    name: carddemo-authorization-service
+  datasource:
+    url: ${CARDDEMO_AUTHORIZATION_JDBC_URL:jdbc:postgresql://localhost:5432/carddemo_authorization}
+    username: ${CARDDEMO_AUTHORIZATION_DB_USER:carddemo}
+    password: ${CARDDEMO_AUTHORIZATION_DB_PASSWORD:carddemo}
+  jpa:
+    open-in-view: false
+    hibernate:
+      ddl-auto: validate
+    properties:
+      hibernate:
+        jdbc:
+          time_zone: UTC
+  flyway:
+    enabled: true
+    locations: classpath:db/migration
+  kafka:
+    bootstrap-servers: ${CARDDEMO_KAFKA_BOOTSTRAP:localhost:9092}
+    consumer:
+      group-id: carddemo-authorization
+      # The offset advances only after the processing transaction commits, so a restart re-reads an
+      # in-flight request; the request log makes that re-read idempotent.
+      enable-auto-commit: false
+      auto-offset-reset: earliest
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.apache.kafka.common.serialization.StringSerializer
+      acks: all
+      properties:
+        enable.idempotence: true
+    listener:
+      ack-mode: record
+  security:
+    oauth2:
+      client:
+        provider:
+          # The token endpoint is named rather than discovered, so the service starts whether or not
+          # Keycloak is up yet; the first Kafka record is what needs the realm, not the boot.
+          carddemo-realm:
+            token-uri: ${KEYCLOAK_URL:http://localhost:8088}/realms/${KEYCLOAK_REALM:carddemo}/protocol/openid-connect/token
+        registration:
+          carddemo-authorization-svc:
+            provider: carddemo-realm
+            client-id: ${KEYCLOAK_CLIENT_ID:carddemo-authorization-svc}
+            client-secret: ${KEYCLOAK_CLIENT_SECRET:}
+            authorization-grant-type: client_credentials
+
+server:
+  address: 127.0.0.1
+  port: 8082
+
+carddemo:
+  security:
+    token:
+      # One realm for every service; the signing keys come from its JWKS, so no service holds a key.
+      issuer-uri: ${KEYCLOAK_ISSUER_URI:${KEYCLOAK_URL:http://localhost:8088}/realms/${KEYCLOAK_REALM:carddemo}}
+      # The issuer is what the tokens say and the browser reached; the keys are fetched on the address
+      # this service can reach, which is the same thing wherever Keycloak has one address only.
+      jwk-set-uri: ${KEYCLOAK_URL:http://localhost:8088}/realms/${KEYCLOAK_REALM:carddemo}/protocol/openid-connect/certs
+      clock-skew: ${CARDDEMO_TOKEN_CLOCK_SKEW_SECONDS:60}
+      require-second-factor: ${CARDDEMO_TOKEN_REQUIRE_SECOND_FACTOR:true}
+      audience: carddemo-authorization-service
+  authorization:
+    account-service:
+      base-url: ${CARDDEMO_ACCOUNT_SERVICE_URL:http://localhost:8080}
+      connect-timeout-millis: 2000
+      read-timeout-millis: 5000
+    kafka:
+      request-topic: carddemo.authorization.request.v1
+      reply-topic: carddemo.authorization.reply.v1
+      dead-letter-topic: carddemo.authorization.request.DLT
+      fraud-marked-topic: carddemo.fraud.marked.v1
+      partitions: 3
+      replication-factor: 1
+      retry-attempts: 3
+      retry-backoff-millis: 500
+    outbox:
+      relay-delay-millis: 200
+
+springdoc:
+  api-docs:
+    path: /v3/api-docs
+  swagger-ui:
+    path: /swagger-ui.html
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics,prometheus
+
+logging:
+  level:
+    com.carddemo: INFO

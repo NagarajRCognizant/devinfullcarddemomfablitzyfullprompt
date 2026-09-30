@@ -1,0 +1,125 @@
+===== identity-service startup =====
+
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+
+ :: Spring Boot ::                (v3.3.4)
+
+2026-09-17T07:43:24.603Z  INFO 28474 --- [carddemo-identity-service] [           main] c.carddemo.IdentityServiceApplication    : Starting IdentityServiceApplication v1.0.0-SNAPSHOT using Java 21.0.12 with PID 28474 (/home/ubuntu/repos/Aws-Card-Demo2/modernization/identity-service/target/carddemo-identity-service.jar started by ubuntu in /home/ubuntu/repos/Aws-Card-Demo2/modernization)
+2026-09-17T07:43:24.604Z  INFO 28474 --- [carddemo-identity-service] [           main] c.carddemo.IdentityServiceApplication    : No active profile set, falling back to 1 default profile: "default"
+2026-09-17T07:43:25.517Z  INFO 28474 --- [carddemo-identity-service] [           main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2026-09-17T07:43:25.556Z  INFO 28474 --- [carddemo-identity-service] [           main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 33 ms. Found 1 JPA repository interface.
+2026-09-17T07:43:26.343Z  INFO 28474 --- [carddemo-identity-service] [           main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 8081 (http)
+2026-09-17T07:43:26.367Z  INFO 28474 --- [carddemo-identity-service] [           main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2026-09-17T07:43:26.368Z  INFO 28474 --- [carddemo-identity-service] [           main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.30]
+2026-09-17T07:43:26.417Z  INFO 28474 --- [carddemo-identity-service] [           main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2026-09-17T07:43:26.422Z  INFO 28474 --- [carddemo-identity-service] [           main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 1782 ms
+2026-09-17T07:43:26.818Z  INFO 28474 --- [carddemo-identity-service] [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2026-09-17T07:43:27.202Z  INFO 28474 --- [carddemo-identity-service] [           main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection org.postgresql.jdbc.PgConnection@1a139347
+2026-09-17T07:43:27.205Z  INFO 28474 --- [carddemo-identity-service] [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2026-09-17T07:43:27.252Z  INFO 28474 --- [carddemo-identity-service] [           main] org.flywaydb.core.FlywayExecutor         : Database: jdbc:postgresql://localhost:5432/carddemo_identity (PostgreSQL 14.24)
+2026-09-17T07:43:27.283Z  INFO 28474 --- [carddemo-identity-service] [           main] o.f.c.i.s.JdbcTableSchemaHistory         : Schema history table "public"."flyway_schema_history" does not exist yet
+2026-09-17T07:43:27.286Z  INFO 28474 --- [carddemo-identity-service] [           main] o.f.core.internal.command.DbValidate     : Successfully validated 2 migrations (execution time 00:00.015s)
+2026-09-17T07:43:27.298Z  INFO 28474 --- [carddemo-identity-service] [           main] o.f.c.i.s.JdbcTableSchemaHistory         : Creating Schema History table "public"."flyway_schema_history" ...
+2026-09-17T07:43:27.358Z  INFO 28474 --- [carddemo-identity-service] [           main] o.f.core.internal.command.DbMigrate      : Current version of schema "public": << Empty Schema >>
+2026-09-17T07:43:27.368Z  INFO 28474 --- [carddemo-identity-service] [           main] o.f.core.internal.command.DbMigrate      : Migrating schema "public" to version "1 - create identity schema"
+2026-09-17T07:43:27.390Z  INFO 28474 --- [carddemo-identity-service] [           main] o.f.core.internal.command.DbMigrate      : Migrating schema "public" to version "2 - load usrsec data"
+2026-09-17T07:43:27.400Z  INFO 28474 --- [carddemo-identity-service] [           main] o.f.core.internal.command.DbMigrate      : Successfully applied 2 migrations to schema "public", now at version v2 (execution time 00:00.010s)
+2026-09-17T07:43:27.496Z  INFO 28474 --- [carddemo-identity-service] [           main] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2026-09-17T07:43:27.587Z  INFO 28474 --- [carddemo-identity-service] [           main] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.5.3.Final
+2026-09-17T07:43:27.666Z  INFO 28474 --- [carddemo-identity-service] [           main] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
+2026-09-17T07:43:28.016Z  INFO 28474 --- [carddemo-identity-service] [           main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2026-09-17T07:43:28.807Z  INFO 28474 --- [carddemo-identity-service] [           main] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2026-09-17T07:43:28.833Z  INFO 28474 --- [carddemo-identity-service] [           main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2026-09-17T07:43:30.148Z  INFO 28474 --- [carddemo-identity-service] [           main] o.s.b.a.e.web.EndpointLinksResolver      : Exposing 2 endpoints beneath base path '/actuator'
+2026-09-17T07:43:30.792Z  INFO 28474 --- [carddemo-identity-service] [           main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 8081 (http) with context path '/'
+2026-09-17T07:43:30.819Z  INFO 28474 --- [carddemo-identity-service] [           main] c.carddemo.IdentityServiceApplication    : Started IdentityServiceApplication in 6.56 seconds (process running for 6.935)
+2026-09-17T07:43:52.323Z  INFO 28474 --- [carddemo-identity-service] [nio-8081-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2026-09-17T07:43:52.323Z  INFO 28474 --- [carddemo-identity-service] [nio-8081-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2026-09-17T07:43:52.324Z  INFO 28474 --- [carddemo-identity-service] [nio-8081-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 1 ms
+
+===== account-service startup =====
+
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+
+ :: Spring Boot ::                (v3.3.4)
+
+2026-09-17T07:43:25.733Z  INFO 28507 --- [carddemo-account-service] [           main] com.carddemo.AccountServiceApplication   : Starting AccountServiceApplication v1.0.0-SNAPSHOT using Java 21.0.12 with PID 28507 (/home/ubuntu/repos/Aws-Card-Demo2/modernization/account-service/target/carddemo-account-service.jar started by ubuntu in /home/ubuntu/repos/Aws-Card-Demo2/modernization)
+2026-09-17T07:43:25.735Z  INFO 28507 --- [carddemo-account-service] [           main] com.carddemo.AccountServiceApplication   : No active profile set, falling back to 1 default profile: "default"
+2026-09-17T07:43:27.185Z  INFO 28507 --- [carddemo-account-service] [           main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2026-09-17T07:43:27.260Z  INFO 28507 --- [carddemo-account-service] [           main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 68 ms. Found 3 JPA repository interfaces.
+2026-09-17T07:43:28.196Z  INFO 28507 --- [carddemo-account-service] [           main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 8080 (http)
+2026-09-17T07:43:28.210Z  INFO 28507 --- [carddemo-account-service] [           main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2026-09-17T07:43:28.210Z  INFO 28507 --- [carddemo-account-service] [           main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.30]
+2026-09-17T07:43:28.237Z  INFO 28507 --- [carddemo-account-service] [           main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2026-09-17T07:43:28.237Z  INFO 28507 --- [carddemo-account-service] [           main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 2462 ms
+2026-09-17T07:43:28.621Z  INFO 28507 --- [carddemo-account-service] [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2026-09-17T07:43:28.953Z  INFO 28507 --- [carddemo-account-service] [           main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection org.postgresql.jdbc.PgConnection@77f03916
+2026-09-17T07:43:28.954Z  INFO 28507 --- [carddemo-account-service] [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2026-09-17T07:43:28.989Z  INFO 28507 --- [carddemo-account-service] [           main] org.flywaydb.core.FlywayExecutor         : Database: jdbc:postgresql://localhost:5432/carddemo (PostgreSQL 14.24)
+2026-09-17T07:43:29.065Z  INFO 28507 --- [carddemo-account-service] [           main] o.f.c.i.s.JdbcTableSchemaHistory         : Schema history table "public"."flyway_schema_history" does not exist yet
+2026-09-17T07:43:29.075Z  INFO 28507 --- [carddemo-account-service] [           main] o.f.core.internal.command.DbValidate     : Successfully validated 2 migrations (execution time 00:00.046s)
+2026-09-17T07:43:29.099Z  INFO 28507 --- [carddemo-account-service] [           main] o.f.c.i.s.JdbcTableSchemaHistory         : Creating Schema History table "public"."flyway_schema_history" ...
+2026-09-17T07:43:29.185Z  INFO 28507 --- [carddemo-account-service] [           main] o.f.core.internal.command.DbMigrate      : Current version of schema "public": << Empty Schema >>
+2026-09-17T07:43:29.199Z  INFO 28507 --- [carddemo-account-service] [           main] o.f.core.internal.command.DbMigrate      : Migrating schema "public" to version "1 - create account management schema"
+2026-09-17T07:43:29.285Z  INFO 28507 --- [carddemo-account-service] [           main] o.f.core.internal.command.DbMigrate      : Migrating schema "public" to version "2 - load sample data"
+2026-09-17T07:43:29.324Z  INFO 28507 --- [carddemo-account-service] [           main] o.f.core.internal.command.DbMigrate      : Successfully applied 2 migrations to schema "public", now at version v2 (execution time 00:00.028s)
+2026-09-17T07:43:29.516Z  INFO 28507 --- [carddemo-account-service] [           main] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2026-09-17T07:43:29.604Z  INFO 28507 --- [carddemo-account-service] [           main] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.5.3.Final
+2026-09-17T07:43:29.647Z  INFO 28507 --- [carddemo-account-service] [           main] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
+2026-09-17T07:43:29.977Z  INFO 28507 --- [carddemo-account-service] [           main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2026-09-17T07:43:30.892Z  INFO 28507 --- [carddemo-account-service] [           main] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2026-09-17T07:43:30.922Z  INFO 28507 --- [carddemo-account-service] [           main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2026-09-17T07:43:31.179Z  INFO 28507 --- [carddemo-account-service] [           main] o.s.d.j.r.query.QueryEnhancerFactory     : Hibernate is in classpath; If applicable, HQL parser will be used.
+2026-09-17T07:43:31.966Z  INFO 28507 --- [carddemo-account-service] [           main] o.s.b.a.e.web.EndpointLinksResolver      : Exposing 3 endpoints beneath base path '/actuator'
+2026-09-17T07:43:32.469Z  INFO 28507 --- [carddemo-account-service] [           main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 8080 (http) with context path '/'
+2026-09-17T07:43:32.480Z  INFO 28507 --- [carddemo-account-service] [           main] com.carddemo.AccountServiceApplication   : Started AccountServiceApplication in 7.158 seconds (process running for 7.594)
+2026-09-17T07:43:52.208Z  INFO 28507 --- [carddemo-account-service] [0.1-8080-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2026-09-17T07:43:52.208Z  INFO 28507 --- [carddemo-account-service] [0.1-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2026-09-17T07:43:52.209Z  INFO 28507 --- [carddemo-account-service] [0.1-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 1 ms
+
+===== gateway-service startup =====
+
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+
+ :: Spring Boot ::                (v3.3.4)
+
+2026-09-17T07:43:27.241Z  INFO 28538 --- [carddemo-gateway] [           main] com.carddemo.GatewayApplication          : Starting GatewayApplication v1.0.0-SNAPSHOT using Java 21.0.12 with PID 28538 (/home/ubuntu/repos/Aws-Card-Demo2/modernization/gateway/target/carddemo-gateway.jar started by ubuntu in /home/ubuntu/repos/Aws-Card-Demo2/modernization)
+2026-09-17T07:43:27.244Z  INFO 28538 --- [carddemo-gateway] [           main] com.carddemo.GatewayApplication          : No active profile set, falling back to 1 default profile: "default"
+2026-09-17T07:43:28.909Z  INFO 28538 --- [carddemo-gateway] [           main] o.s.cloud.context.scope.GenericScope     : BeanFactory id=c315928c-dca2-3256-ae2c-8c2880a44a8f
+2026-09-17T07:43:30.285Z  INFO 28538 --- [carddemo-gateway] [           main] o.s.c.g.r.RouteDefinitionRouteLocator    : Loaded RoutePredicateFactory [After]
+2026-09-17T07:43:30.286Z  INFO 28538 --- [carddemo-gateway] [           main] o.s.c.g.r.RouteDefinitionRouteLocator    : Loaded RoutePredicateFactory [Before]
+2026-09-17T07:43:30.286Z  INFO 28538 --- [carddemo-gateway] [           main] o.s.c.g.r.RouteDefinitionRouteLocator    : Loaded RoutePredicateFactory [Between]
+2026-09-17T07:43:30.286Z  INFO 28538 --- [carddemo-gateway] [           main] o.s.c.g.r.RouteDefinitionRouteLocator    : Loaded RoutePredicateFactory [Cookie]
+2026-09-17T07:43:30.286Z  INFO 28538 --- [carddemo-gateway] [           main] o.s.c.g.r.RouteDefinitionRouteLocator    : Loaded RoutePredicateFactory [Header]
+2026-09-17T07:43:30.286Z  INFO 28538 --- [carddemo-gateway] [           main] o.s.c.g.r.RouteDefinitionRouteLocator    : Loaded RoutePredicateFactory [Host]
+2026-09-17T07:43:30.286Z  INFO 28538 --- [carddemo-gateway] [           main] o.s.c.g.r.RouteDefinitionRouteLocator    : Loaded RoutePredicateFactory [Method]
+2026-09-17T07:43:30.286Z  INFO 28538 --- [carddemo-gateway] [           main] o.s.c.g.r.RouteDefinitionRouteLocator    : Loaded RoutePredicateFactory [Path]
+2026-09-17T07:43:30.286Z  INFO 28538 --- [carddemo-gateway] [           main] o.s.c.g.r.RouteDefinitionRouteLocator    : Loaded RoutePredicateFactory [Query]
+2026-09-17T07:43:30.286Z  INFO 28538 --- [carddemo-gateway] [           main] o.s.c.g.r.RouteDefinitionRouteLocator    : Loaded RoutePredicateFactory [ReadBody]
+2026-09-17T07:43:30.286Z  INFO 28538 --- [carddemo-gateway] [           main] o.s.c.g.r.RouteDefinitionRouteLocator    : Loaded RoutePredicateFactory [RemoteAddr]
+2026-09-17T07:43:30.286Z  INFO 28538 --- [carddemo-gateway] [           main] o.s.c.g.r.RouteDefinitionRouteLocator    : Loaded RoutePredicateFactory [XForwardedRemoteAddr]
+2026-09-17T07:43:30.286Z  INFO 28538 --- [carddemo-gateway] [           main] o.s.c.g.r.RouteDefinitionRouteLocator    : Loaded RoutePredicateFactory [Weight]
+2026-09-17T07:43:30.286Z  INFO 28538 --- [carddemo-gateway] [           main] o.s.c.g.r.RouteDefinitionRouteLocator    : Loaded RoutePredicateFactory [CloudFoundryRouteService]
+2026-09-17T07:43:30.466Z  INFO 28538 --- [carddemo-gateway] [           main] o.s.b.a.e.web.EndpointLinksResolver      : Exposing 2 endpoints beneath base path '/actuator'
+2026-09-17T07:43:30.789Z  INFO 28538 --- [carddemo-gateway] [           main] o.s.b.web.embedded.netty.NettyWebServer  : Netty started on port 8090 (http)
+2026-09-17T07:43:30.855Z  INFO 28538 --- [carddemo-gateway] [           main] com.carddemo.GatewayApplication          : Started GatewayApplication in 4.197 seconds (process running for 4.967)
+
+===== health =====
+port 8081: {"status":"UP","groups":["liveness","readiness"]}
+port 8080: {"status":"UP"}
+port 8090: {"status":"UP","groups":["liveness","readiness"]}

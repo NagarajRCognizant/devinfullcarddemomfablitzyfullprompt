@@ -1,0 +1,51 @@
+{{- if .Values.identityService.enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "carddemo.fullname" . }}-identity-service
+  labels:
+    {{- include "carddemo.labels" . | nindent 4 }}
+    app.kubernetes.io/component: identity-service
+spec:
+  replicas: {{ .Values.identityService.replicas }}
+  selector:
+    matchLabels:
+      app.kubernetes.io/instance: {{ .Release.Name }}
+      app.kubernetes.io/component: identity-service
+  template:
+    metadata:
+      labels:
+        {{- include "carddemo.labels" . | nindent 8 }}
+        app.kubernetes.io/component: identity-service
+    spec:
+      containers:
+        # COSGN00C, COADM01C and COUSR00C-COUSR03C: sign-on and user administration.
+        - name: identity-service
+          image: {{ include "carddemo.image" (dict "root" . "component" .Values.identityService) }}
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            - name: http
+              containerPort: {{ .Values.identityService.port }}
+          env:
+            {{- include "carddemo.serviceEnv" (dict "root" . "component" .Values.identityService) | nindent 12 }}
+          {{- include "carddemo.probes" . | nindent 10 }}
+          resources:
+            {{- toYaml .Values.identityService.resources | nindent 12 }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "carddemo.fullname" . }}-identity-service
+  labels:
+    {{- include "carddemo.labels" . | nindent 4 }}
+    app.kubernetes.io/component: identity-service
+spec:
+  type: ClusterIP
+  ports:
+    - name: http
+      port: {{ .Values.identityService.port }}
+      targetPort: http
+  selector:
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/component: identity-service
+{{- end }}

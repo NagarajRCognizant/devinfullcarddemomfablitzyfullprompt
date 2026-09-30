@@ -1,0 +1,54 @@
+=== docker compose build attempt ===
+Mon Sep 14 06:42:23 UTC 2026
+ Image carddemo-account-management-frontend Building 
+ Image carddemo-account-management-backend Building 
+#1 [internal] load local bake definitions
+#1 reading from stdin 1.13kB done
+#1 DONE 0.0s
+
+#2 [backend internal] load build definition from Dockerfile
+#2 transferring dockerfile: 608B done
+#2 DONE 0.0s
+
+#3 [frontend internal] load build definition from Dockerfile
+#3 transferring dockerfile: 478B done
+#3 DONE 0.0s
+
+#4 [backend internal] load metadata for docker.io/library/eclipse-temurin:21-jre-alpine
+#4 ...
+
+#5 [frontend internal] load metadata for docker.io/library/nginx:1.27-alpine
+#5 ERROR: unexpected status from HEAD request to https://registry-1.docker.io/v2/library/nginx/manifests/1.27-alpine: 429 Too Many Requests
+
+#4 [backend internal] load metadata for docker.io/library/eclipse-temurin:21-jre-alpine
+#4 CANCELED
+------
+ > [frontend internal] load metadata for docker.io/library/nginx:1.27-alpine:
+------
+Dockerfile:6
+
+--------------------
+
+   4 |     # only copied in, so the image build needs no npm registry access. nginx also proxies /api to the
+
+   5 |     # backend container so the browser keeps talking to a single local origin.
+
+   6 | >>> FROM nginx:1.27-alpine
+
+   7 |     
+
+   8 |     COPY dist /usr/share/nginx/html
+
+--------------------
+
+target frontend: failed to solve: nginx:1.27-alpine: failed to resolve source metadata for docker.io/library/nginx:1.27-alpine: unexpected status from HEAD request to https://registry-1.docker.io/v2/library/nginx/manifests/1.27-alpine: 429 Too Many Requests
+
+
+=== direct base image pulls (Docker Hub and public.ecr.aws mirror) ===
+Error response from daemon: unknown: failed to resolve reference "docker.io/library/nginx:1.27-alpine": unexpected status from HEAD request to https://registry-1.docker.io/v2/library/nginx/manifests/1.27-alpine: 429 Too Many Requests
+Error response from daemon: unknown: failed to resolve reference "docker.io/library/eclipse-temurin:21-jre-alpine": unexpected status from HEAD request to https://registry-1.docker.io/v2/library/eclipse-temurin/manifests/21-jre-alpine: 429 Too Many Requests
+Error response from daemon: error from registry: Data limit exceeded
+
+=== locally available images ===
+IMAGE         ID             DISK USAGE   CONTENT SIZE   EXTRA
+postgres:16   f1c3376c26f2        642MB          166MB   U    

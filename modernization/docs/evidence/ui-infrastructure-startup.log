@@ -1,0 +1,131 @@
+ Image apache/kafka:3.8.0 Pulling 
+ e9e1a86a14df Pulling fs layer 0B
+ c6a83fedfae6 Pulling fs layer 0B
+ a39822f482a5 Pulling fs layer 0B
+ 1673c1a2cfa7 Pulling fs layer 0B
+ c23d170f77ed Pulling fs layer 0B
+ c4c98316ca78 Pulling fs layer 0B
+ e2d8f56b95eb Pulling fs layer 0B
+ a42500819bdc Pulling fs layer 0B
+ 634d60101085 Pulling fs layer 0B
+ 0b502c76566e Pulling fs layer 0B
+ e9e1a86a14df Download complete 0B
+ a39822f482a5 Download complete 0B
+ c4c98316ca78 Downloading 4.194MB
+ e2d8f56b95eb Downloading 12.57MB
+ c6a83fedfae6 Download complete 0B
+ c6a83fedfae6 Extracting 1B
+ e2d8f56b95eb Download complete 0B
+ 1673c1a2cfa7 Download complete 0B
+ c23d170f77ed Download complete 0B
+ c4c98316ca78 Downloading 27.26MB
+ c6a83fedfae6 Extracting 1B
+ c4c98316ca78 Downloading 49.28MB
+ a42500819bdc Download complete 0B
+ 634d60101085 Downloading 10.67MB
+ c6a83fedfae6 Extracting 1B
+ 634d60101085 Downloading 32.51MB
+ 0b502c76566e Download complete 0B
+ c4c98316ca78 Download complete 0B
+ c6a83fedfae6 Extracting 1B
+ 634d60101085 Downloading 56.62MB
+ c6a83fedfae6 Extracting 1B
+ 634d60101085 Downloading 79.69MB
+ c6a83fedfae6 Extracting 1B
+ 634d60101085 Downloading 103.8MB
+ c6a83fedfae6 Extracting 1B
+ 634d60101085 Downloading 124.3MB
+ c6a83fedfae6 Extracting 1B
+ 634d60101085 Download complete 0B
+ c6a83fedfae6 Extracting 1B
+ cd1abd17dbe2 Download complete 0B
+ c6a83fedfae6 Pull complete 0B
+ 0b502c76566e Extracting 1B
+ 0b502c76566e Pull complete 0B
+ c4c98316ca78 Extracting 1B
+ c4c98316ca78 Extracting 1B
+ c4c98316ca78 Extracting 1B
+ c4c98316ca78 Extracting 1B
+ c4c98316ca78 Extracting 1B
+ c4c98316ca78 Extracting 1B
+ c4c98316ca78 Extracting 1B
+ c4c98316ca78 Extracting 1B
+ c4c98316ca78 Extracting 1B
+ 1673c1a2cfa7 Pull complete 0B
+ a42500819bdc Pull complete 0B
+ c4c98316ca78 Pull complete 0B
+ 634d60101085 Extracting 1B
+ 634d60101085 Extracting 1B
+ 634d60101085 Extracting 1B
+ 634d60101085 Extracting 1B
+ 634d60101085 Extracting 1B
+ 634d60101085 Extracting 1B
+ e2d8f56b95eb Extracting 1B
+ 634d60101085 Pull complete 0B
+ e2d8f56b95eb Extracting 1B
+ e2d8f56b95eb Pull complete 0B
+ c23d170f77ed Extracting 1B
+ e9e1a86a14df Pull complete 0B
+ a39822f482a5 Pull complete 0B
+ c23d170f77ed Pull complete 0B
+ Image apache/kafka:3.8.0 Pulled 
+ Network carddemo-modernization_default Creating 
+ Network carddemo-modernization_default Creating 
+ Volume carddemo-modernization_carddemo-account-pgdata Creating 
+ Volume carddemo-modernization_carddemo-identity-pgdata Creating 
+ Volume carddemo-modernization_carddemo-account-pgdata Creating 
+ Volume carddemo-modernization_carddemo-identity-pgdata Creating 
+ Volume carddemo-modernization_carddemo-keycloak-pgdata Creating 
+ Volume carddemo-modernization_carddemo-keycloak-pgdata Creating 
+ Volume carddemo-modernization_carddemo-authorization-pgdata Creating 
+ Volume carddemo-modernization_carddemo-transaction-pgdata Creating 
+ Volume carddemo-modernization_carddemo-authorization-pgdata Creating 
+ Volume carddemo-modernization_carddemo-transaction-pgdata Creating 
+ Volume carddemo-modernization_carddemo-identity-pgdata Created 
+ Volume carddemo-modernization_carddemo-identity-pgdata Created 
+ Volume carddemo-modernization_carddemo-keycloak-pgdata Created 
+ Volume carddemo-modernization_carddemo-keycloak-pgdata Created 
+ Volume carddemo-modernization_carddemo-transaction-pgdata Created 
+ Volume carddemo-modernization_carddemo-transaction-pgdata Created 
+ Volume carddemo-modernization_carddemo-account-pgdata Created 
+ Volume carddemo-modernization_carddemo-account-pgdata Created 
+ Volume carddemo-modernization_carddemo-authorization-pgdata Created 
+ Volume carddemo-modernization_carddemo-authorization-pgdata Created 
+ Network carddemo-modernization_default Created 
+ Network carddemo-modernization_default Created 
+ Container carddemo-modernization-transaction-db-1 Creating 
+ Container carddemo-modernization-keycloak-db-1 Creating 
+ Container carddemo-modernization-authorization-db-1 Creating 
+ Container carddemo-modernization-kafka-1 Creating 
+ Container carddemo-modernization-identity-db-1 Creating 
+ Container carddemo-modernization-account-db-1 Creating 
+ Container carddemo-modernization-account-db-1 Created 
+ Container carddemo-modernization-identity-db-1 Created 
+ Container carddemo-modernization-kafka-1 Created 
+ Container carddemo-modernization-keycloak-db-1 Created 
+ Container carddemo-modernization-keycloak-1 Creating 
+ Container carddemo-modernization-transaction-db-1 Created 
+ Container carddemo-modernization-authorization-db-1 Created 
+ Container carddemo-modernization-keycloak-1 Created 
+ Container carddemo-modernization-keycloak-bootstrap-1 Creating 
+ Container carddemo-modernization-keycloak-bootstrap-1 Created 
+ Container carddemo-modernization-authorization-db-1 Starting 
+ Container carddemo-modernization-kafka-1 Starting 
+ Container carddemo-modernization-transaction-db-1 Starting 
+ Container carddemo-modernization-identity-db-1 Starting 
+ Container carddemo-modernization-keycloak-db-1 Starting 
+ Container carddemo-modernization-account-db-1 Starting 
+ Container carddemo-modernization-identity-db-1 Started 
+ Container carddemo-modernization-transaction-db-1 Started 
+ Container carddemo-modernization-authorization-db-1 Started 
+ Container carddemo-modernization-keycloak-db-1 Started 
+ Container carddemo-modernization-keycloak-db-1 Waiting 
+ Container carddemo-modernization-kafka-1 Started 
+ Container carddemo-modernization-account-db-1 Started 
+ Container carddemo-modernization-keycloak-db-1 Healthy 
+ Container carddemo-modernization-keycloak-1 Starting 
+ Container carddemo-modernization-keycloak-1 Started 
+ Container carddemo-modernization-keycloak-1 Waiting 
+ Container carddemo-modernization-keycloak-1 Healthy 
+ Container carddemo-modernization-keycloak-bootstrap-1 Starting 
+ Container carddemo-modernization-keycloak-bootstrap-1 Started 

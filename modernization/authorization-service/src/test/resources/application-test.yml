@@ -1,0 +1,39 @@
+# Integration test configuration. The database is the local carddemo_authorization_test database
+# created by modernization/scripts/local-db.sh; every test context cleans it and re-applies the
+# authorization migrations, so each test class starts from an empty PAUTSUM0/PAUTDTL1 hierarchy.
+#
+# The Kafka bootstrap address is replaced at runtime by the embedded broker of the messaging tests;
+# the tests that do not use Kafka never open a connection because the listener is not auto-started.
+spring:
+  datasource:
+    url: ${CARDDEMO_AUTHORIZATION_TEST_JDBC_URL:jdbc:postgresql://localhost:5432/carddemo_authorization_test}
+    username: ${CARDDEMO_TEST_DB_USER:carddemo}
+    password: ${CARDDEMO_TEST_DB_PASSWORD:carddemo}
+  jpa:
+    open-in-view: false
+    hibernate:
+      ddl-auto: validate
+  flyway:
+    enabled: true
+    locations: classpath:db/migration
+    clean-disabled: false
+  kafka:
+    bootstrap-servers: ${spring.embedded.kafka.brokers:localhost:9092}
+    consumer:
+      auto-offset-reset: earliest
+    listener:
+      # Only the messaging test starts the listener; it overrides this property.
+      auto-startup: false
+
+carddemo:
+  security:
+    jwt:
+      secret: test-only-signing-key-0123456789-0123456789
+      issuer: carddemo-identity-service
+  authorization:
+    account-service:
+      base-url: http://localhost:18080
+    outbox:
+      # The relay is effectively idle unless a test enables it, so the tests that do not use Kafka
+      # never publish; the messaging test overrides this to a short delay.
+      relay-delay-millis: 3600000

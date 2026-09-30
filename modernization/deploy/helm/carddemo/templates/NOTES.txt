@@ -1,0 +1,23 @@
+The CardDemo account management, user administration and credit card authorization services are
+installed.
+
+Signing on is the realm's job now: the screens redirect the browser to
+{{ .Values.keycloak.issuerUri }}, which asks for the password and the TOTP code and returns an
+authorization code the SPA exchanges for a token. There is no /api/signon to post credentials to.
+
+To exercise the API by hand, get a token from the realm the same way a browser would (Authorization
+Code with PKCE against {{ .Values.keycloak.issuerUri }}/protocol/openid-connect/auth) and send it as a
+bearer token:
+
+  kubectl -n {{ .Release.Namespace }} port-forward svc/{{ include "carddemo.fullname" . }}-gateway {{ .Values.gateway.port }}
+  curl -s http://127.0.0.1:{{ .Values.gateway.port }}/api/me -H "Authorization: Bearer $TOKEN"
+
+/api/menu and /api/accounts/** are open to any signed-on user; /api/users/** and /api/admin-menu/**
+need the ADMIN realm role. The authorization summary, detail and fraud marking transactions are under
+/api/authorizations/**.
+
+{{- if not .Values.keycloak.requireSecondFactor }}
+
+WARNING: keycloak.requireSecondFactor is false, so the services accept a token that carries no
+evidence of a second factor. Leave it on outside a controlled test.
+{{- end }}

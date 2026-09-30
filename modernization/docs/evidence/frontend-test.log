@@ -1,0 +1,34 @@
+
+> carddemo-account-management-ui@1.0.0 test
+> vitest run --run
+
+
+ RUN  v2.1.1 /home/ubuntu/repos/Aws-Card-Demo2/modernization/frontend
+
+ ✓ src/auth/session.test.ts  (12 tests) 20ms
+ ✓ src/screens/UserListScreen.test.tsx  (7 tests) 488ms
+ ✓ src/App.test.tsx  (7 tests) 158ms
+ ✓ src/screens/CardListScreen.test.tsx  (9 tests) 592ms
+ ✓ src/screens/CardUpdateScreen.test.tsx  (6 tests) 592ms
+ ✓ src/screens/AccountUpdateScreen.test.tsx  (5 tests) 862ms
+ ✓ src/screens/AuthorizationSummaryScreen.test.tsx  (10 tests) 855ms
+ ✓ src/screens/AccountViewScreen.test.tsx  (5 tests) 370ms
+ ✓ src/screens/TransactionAddScreen.test.tsx  (3 tests) 481ms
+ ✓ src/screens/AuthorizationDetailScreen.test.tsx  (4 tests) 260ms
+ ✓ src/screens/TransactionListScreen.test.tsx  (6 tests) 432ms
+ ✓ src/screens/AdminMenuScreen.test.tsx  (4 tests) 294ms
+ ✓ src/screens/ReportRequestScreen.test.tsx  (3 tests) 459ms
+ ✓ src/screens/BillPaymentScreen.test.tsx  (3 tests) 594ms
+ ✓ src/screens/UserDeleteScreen.test.tsx  (3 tests) 168ms
+ ✓ src/screens/CardViewScreen.test.tsx  (3 tests) 268ms
+ ✓ src/screens/UserAddScreen.test.tsx  (2 tests) 571ms
+ ✓ src/screens/TransactionViewScreen.test.tsx  (3 tests) 217ms
+ ✓ src/screens/UserUpdateScreen.test.tsx  (3 tests) 273ms
+ ✓ src/screens/SignOnScreen.test.tsx  (3 tests) 80ms
+ ✓ src/screens/MenuScreen.test.tsx  (2 tests) 96ms
+
+ Test Files  21 passed (21)
+      Tests  103 passed (103)
+   Start at  07:35:32
+   Duration  4.08s (transform 481ms, setup 1.17s, collect 2.86s, tests 8.13s, environment 9.22s, prepare 1.54s)
+

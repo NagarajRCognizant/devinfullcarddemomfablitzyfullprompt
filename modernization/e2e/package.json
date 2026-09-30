@@ -1,0 +1,16 @@
+{
+  "name": "carddemo-e2e",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "description": "Browser end-to-end tests of the converted CardDemo screens, signing on through the Keycloak realm with a password and a TOTP code",
+  "scripts": {
+    "test": "playwright test",
+    "lint": "tsc --noEmit"
+  },
+  "devDependencies": {
+    "@playwright/test": "1.47.2",
+    "@types/node": "20.16.5",
+    "typescript": "5.5.4"
+  }
+}

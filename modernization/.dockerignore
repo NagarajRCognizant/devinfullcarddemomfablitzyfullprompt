@@ -1,0 +1,7 @@
+# The build context of every service image is modernization/, so the artefacts of a local build and the
+# frontend tree are excluded: the jar is produced inside the image and a stale target/ would only be
+# copied in and thrown away.
+**/target
+frontend/node_modules
+frontend/dist
+docs

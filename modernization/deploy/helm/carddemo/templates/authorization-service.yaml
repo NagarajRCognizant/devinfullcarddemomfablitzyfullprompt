@@ -1,0 +1,58 @@
+{{- if .Values.authorizationService.enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "carddemo.fullname" . }}-authorization-service
+  labels:
+    {{- include "carddemo.labels" . | nindent 4 }}
+    app.kubernetes.io/component: authorization-service
+spec:
+  replicas: {{ .Values.authorizationService.replicas }}
+  selector:
+    matchLabels:
+      app.kubernetes.io/instance: {{ .Release.Name }}
+      app.kubernetes.io/component: authorization-service
+  template:
+    metadata:
+      labels:
+        {{- include "carddemo.labels" . | nindent 8 }}
+        app.kubernetes.io/component: authorization-service
+    spec:
+      containers:
+        # COPAUA0C (the Kafka consumer that replaced the MQ trigger) plus CPVS, CPVD and the fraud
+        # marking transaction. Replicas share the request topic's partitions, and the card number
+        # partition key keeps the authorizations of one card on one consumer, as the single
+        # MQ-triggered task did.
+        - name: authorization-service
+          image: {{ include "carddemo.image" (dict "root" . "component" .Values.authorizationService) }}
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            - name: http
+              containerPort: {{ .Values.authorizationService.port }}
+          env:
+            {{- include "carddemo.serviceEnv" (dict "root" . "component" .Values.authorizationService) | nindent 12 }}
+            - name: CARDDEMO_KAFKA_BOOTSTRAP
+              value: {{ .Values.kafka.bootstrapServers | quote }}
+            - name: CARDDEMO_ACCOUNT_SERVICE_URL
+              value: {{ printf "http://%s-account-service:%v" (include "carddemo.fullname" .) .Values.accountService.port | quote }}
+          {{- include "carddemo.probes" . | nindent 10 }}
+          resources:
+            {{- toYaml .Values.authorizationService.resources | nindent 12 }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "carddemo.fullname" . }}-authorization-service
+  labels:
+    {{- include "carddemo.labels" . | nindent 4 }}
+    app.kubernetes.io/component: authorization-service
+spec:
+  type: ClusterIP
+  ports:
+    - name: http
+      port: {{ .Values.authorizationService.port }}
+      targetPort: http
+  selector:
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/component: authorization-service
+{{- end }}

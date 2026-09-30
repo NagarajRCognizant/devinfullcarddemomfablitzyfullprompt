@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>com.carddemo</groupId>
+    <artifactId>carddemo-modernization</artifactId>
+    <version>1.0.0-SNAPSHOT</version>
+  </parent>
+
+  <artifactId>carddemo-batch-transaction</artifactId>
+  <name>CardDemo Transaction Batch</name>
+  <description>The POSTTRAN, TRANREPT and INTCALC jobs (CBTRN01C, CBTRN02C, CBTRN03C, CBACT04C) as
+    Spring Batch applications</description>
+
+  <dependencies>
+    <dependency>
+      <groupId>com.carddemo</groupId>
+      <artifactId>carddemo-common</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.carddemo</groupId>
+      <artifactId>carddemo-transaction-domain</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.carddemo</groupId>
+      <artifactId>carddemo-transaction-client</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-batch</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.postgresql</groupId>
+      <artifactId>postgresql</artifactId>
+      <scope>runtime</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.springframework.batch</groupId>
+      <artifactId>spring-batch-test</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.flywaydb</groupId>
+      <artifactId>flyway-core</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.flywaydb</groupId>
+      <artifactId>flyway-database-postgresql</artifactId>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+
+  <build>
+    <finalName>carddemo-batch-transaction</finalName>
+    <testResources>
+      <testResource>
+        <directory>src/test/resources</directory>
+      </testResource>
+      <!-- The jobs read and write the transaction schema owned by the transaction service; the
+           integration tests apply that service's migrations rather than keeping a second copy. -->
+      <testResource>
+        <directory>../transaction-service/src/main/resources</directory>
+        <includes>
+          <include>db/migration/**</include>
+        </includes>
+      </testResource>
+    </testResources>
+    <plugins>
+      <plugin>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-maven-plugin</artifactId>
+      </plugin>
+    </plugins>
+  </build>
+</project>

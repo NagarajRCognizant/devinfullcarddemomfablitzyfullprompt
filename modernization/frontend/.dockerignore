@@ -1,0 +1,5 @@
+# The bundle is built inside the image, so the local build output and the installed modules are left
+# out of the context: npm ci in the image installs from package-lock.json.
+node_modules
+dist
+*.log

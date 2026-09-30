@@ -1,0 +1,25 @@
+# batch-auth-purge (CBPAUP0J) execution evidence
+
+Seeded carddemo_authorization: 21 PAUTSUM0 roots / 202 PAUTDTL1 children (authorization dates 2022).
+Run date 2026-09-17, expiry-days=5 -> every stored authorization is outside the window, so the
+job expires all details and deletes the roots, exactly as CBPAUP0C would on this data.
+
+$ java -jar batch-auth-purge/target/carddemo-batch-auth-purge.jar \
+    --spring.batch.job.enabled=true --spring.batch.job.name=purgeExpiredAuthorizationsJob
+
+    2026-09-17T15:05:38.192Z  INFO 79164 --- [carddemo-batch-auth-purge] [           main] o.s.b.c.l.support.SimpleJobLauncher      : Job: [SimpleJob: [name=purgeExpiredAuthorizationsJob]] launched with the following parameters: [{}]
+    2026-09-17T15:05:38.525Z  INFO 79164 --- [carddemo-batch-auth-purge] [           main] c.c.batch.auth.PurgeAuthJobConfig        : *-------------------------------------*
+    2026-09-17T15:05:38.525Z  INFO 79164 --- [carddemo-batch-auth-purge] [           main] c.c.batch.auth.PurgeAuthJobConfig        : # TOTAL SUMMARY READ  :21
+    2026-09-17T15:05:38.525Z  INFO 79164 --- [carddemo-batch-auth-purge] [           main] c.c.batch.auth.PurgeAuthJobConfig        : # SUMMARY REC DELETED :21
+    2026-09-17T15:05:38.525Z  INFO 79164 --- [carddemo-batch-auth-purge] [           main] c.c.batch.auth.PurgeAuthJobConfig        : # TOTAL DETAILS READ  :202
+    2026-09-17T15:05:38.525Z  INFO 79164 --- [carddemo-batch-auth-purge] [           main] c.c.batch.auth.PurgeAuthJobConfig        : # DETAILS REC DELETED :202
+    2026-09-17T15:05:38.525Z  INFO 79164 --- [carddemo-batch-auth-purge] [           main] c.c.batch.auth.PurgeAuthJobConfig        : # SUMMARY REC ADJUSTED:0
+    2026-09-17T15:05:38.525Z  INFO 79164 --- [carddemo-batch-auth-purge] [           main] c.c.batch.auth.PurgeAuthJobConfig        : *-------------------------------------*
+    2026-09-17T15:05:38.527Z  INFO 79164 --- [carddemo-batch-auth-purge] [           main] o.s.b.c.l.support.SimpleJobLauncher      : Job: [SimpleJob: [name=purgeExpiredAuthorizationsJob]] completed with the following parameters: [{}] and the following status: [COMPLETED] in 318ms
+
+Post-run row counts:
+ summaries | details 
+-----------+---------
+         0 |       0
+(1 row)
+

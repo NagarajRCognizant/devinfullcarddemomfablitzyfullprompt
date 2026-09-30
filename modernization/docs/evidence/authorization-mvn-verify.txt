@@ -1,0 +1,88 @@
+# mvn -B clean verify — full reactor including the authorization modules
+# host: Devin VM, Maven 3.9 (/usr/local/bin/mvn39), Java 21, native PostgreSQL 16, embedded Kafka for the messaging tests
+# captured: 2026-09-17T15:29:30Z
+
+[INFO] Building CardDemo Modernization 1.0.0-SNAPSHOT                    [1/10]
+[INFO] Building CardDemo Common 1.0.0-SNAPSHOT                           [2/10]
+[INFO] Tests run: 7, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.213 s -- in com.carddemo.cobol.ZonedDecimalCodecTest
+[INFO] Tests run: 7, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.020 s -- in com.carddemo.cobol.CobolRecordBuilderTest
+[INFO] Tests run: 4, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.017 s -- in com.carddemo.cobol.CobdatftDateFormatterTest
+[INFO] Tests run: 26, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.041 s -- in com.carddemo.cobol.CobolTextTest
+[INFO] Tests run: 21, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.031 s -- in com.carddemo.cobol.CobolNumericTest
+[INFO] Tests run: 18, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.072 s -- in com.carddemo.domain.validation.FieldEditorTest
+[INFO] Tests run: 4, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.008 s -- in com.carddemo.domain.validation.DateValidationServiceTest
+[INFO] Tests run: 7, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.008 s -- in com.carddemo.domain.validation.DateEditorTest
+[INFO] Tests run: 94, Failures: 0, Errors: 0, Skipped: 0
+[INFO] All coverage checks have been met.
+[INFO] Building CardDemo Account Domain 1.0.0-SNAPSHOT                   [3/10]
+[INFO] Tests run: 0, Failures: 0, Errors: 0, Skipped: 0
+[INFO] Building CardDemo Account Service 1.0.0-SNAPSHOT                  [4/10]
+[INFO] Tests run: 6, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 8.071 s -- in com.carddemo.persistence.AccountStoreIntegrationTest
+[INFO] Tests run: 16, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 1.488 s -- in com.carddemo.api.AccountApiIntegrationTest
+[INFO] Tests run: 6, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.010 s -- in com.carddemo.api.ApiExceptionHandlerTest
+[INFO] Tests run: 11, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.619 s -- in com.carddemo.service.AccountUpdateServiceTest
+[INFO] Tests run: 5, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.006 s -- in com.carddemo.service.AccountScreenMapperTest
+[INFO] Tests run: 48, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.104 s -- in com.carddemo.service.AccountChangeDetectorTest
+[INFO] Tests run: 5, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.014 s -- in com.carddemo.service.AccountUpdateValidatorTest
+[INFO] Tests run: 4, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.012 s -- in com.carddemo.service.AccountViewServiceTest
+[INFO] Tests run: 5, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.005 s -- in com.carddemo.service.MenuAccessServiceTest
+[INFO] Tests run: 14, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.081 s -- in com.carddemo.service.AccountReadServiceTest
+[INFO] Tests run: 120, Failures: 0, Errors: 0, Skipped: 0
+[INFO] All coverage checks have been met.
+[INFO] Building CardDemo Identity Service 1.0.0-SNAPSHOT                 [5/10]
+[INFO] Tests run: 11, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 8.592 s -- in com.carddemo.api.IdentityApiIntegrationTest
+[INFO] Tests run: 8, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.582 s -- in com.carddemo.service.SignOnServiceTest
+[INFO] Tests run: 7, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.067 s -- in com.carddemo.service.AdminMenuServiceTest
+[INFO] Tests run: 8, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 1.916 s -- in com.carddemo.service.UserListServiceIntegrationTest
+[INFO] Tests run: 10, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.408 s -- in com.carddemo.service.UserAdminServiceIntegrationTest
+[INFO] Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.084 s -- in com.carddemo.config.TokenIssuerIntegrationTest
+[INFO] Tests run: 46, Failures: 0, Errors: 0, Skipped: 0
+[INFO] All coverage checks have been met.
+[INFO] Building CardDemo Account Extract Batch 1.0.0-SNAPSHOT            [6/10]
+[INFO] Tests run: 6, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.168 s -- in com.carddemo.batch.AcctRecordAggregatorTest
+[INFO] Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 6.404 s -- in com.carddemo.batch.ReadAcctJobIntegrationTest
+[INFO] Tests run: 9, Failures: 0, Errors: 0, Skipped: 0
+[INFO] All coverage checks have been met.
+[INFO] Building CardDemo Authorization Domain 1.0.0-SNAPSHOT             [7/10]
+[INFO] Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.138 s -- in com.carddemo.authorization.domain.FraudStatusTest
+[INFO] Tests run: 8, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.031 s -- in com.carddemo.authorization.domain.AuthorizationKeyTest
+[INFO] Tests run: 9, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.016 s -- in com.carddemo.authorization.domain.AuthorizationDecisionEngineTest
+[INFO] Tests run: 12, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.088 s -- in com.carddemo.authorization.domain.DeclineReasonTest
+[INFO] Tests run: 9, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.018 s -- in com.carddemo.authorization.messaging.AuthorizationMessageLayoutTest
+[INFO] Tests run: 41, Failures: 0, Errors: 0, Skipped: 0
+[INFO] All coverage checks have been met.
+[INFO] Building CardDemo Authorization Service 1.0.0-SNAPSHOT            [8/10]
+[INFO] Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.289 s -- in com.carddemo.authorization.client.ServiceTokenIssuerTest
+[INFO] Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 1.911 s -- in com.carddemo.authorization.client.CardholderLookupClientTest
+[INFO] Tests run: 5, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 17.82 s -- in com.carddemo.authorization.messaging.AuthorizationRequestListenerIntegrationTest
+[INFO] Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.082 s -- in com.carddemo.authorization.messaging.AuthorizationRequestListenerTest
+[INFO] Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.271 s -- in com.carddemo.authorization.messaging.AuthorizationReplyPublisherTest
+[INFO] Tests run: 14, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 1.910 s -- in com.carddemo.authorization.api.AuthorizationApiIntegrationTest
+[INFO] Tests run: 4, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.268 s -- in com.carddemo.authorization.service.FraudMarkingServiceTest
+[INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 1.032 s -- in com.carddemo.authorization.service.AuthorizationConcurrencyIntegrationTest
+[INFO] Tests run: 5, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.097 s -- in com.carddemo.authorization.service.AuthorizationRequestProcessorIntegrationTest
+[INFO] Tests run: 4, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.102 s -- in com.carddemo.authorization.service.AuthorizationInquiryServiceTest
+[INFO] Tests run: 44, Failures: 0, Errors: 0, Skipped: 0
+[INFO] All coverage checks have been met.
+[INFO] Building CardDemo Expired Authorization Purge Batch 1.0.0-SNAPSHOT [9/10]
+[INFO] Tests run: 5, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 1.476 s -- in com.carddemo.batch.auth.AuthPurgeWriterTest
+[INFO] Tests run: 6, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 5.787 s -- in com.carddemo.batch.auth.PurgeAuthJobIntegrationTest
+[INFO] Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.003 s -- in com.carddemo.batch.auth.AuthPurgePropertiesTest
+[INFO] Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.007 s -- in com.carddemo.batch.auth.ExpiredAuthorizationProcessorTest
+[INFO] Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.003 s -- in com.carddemo.batch.auth.AuthSummaryKeysetReaderTest
+[INFO] Tests run: 17, Failures: 0, Errors: 0, Skipped: 0
+[INFO] All coverage checks have been met.
+[INFO] Building CardDemo Gateway 1.0.0-SNAPSHOT                         [10/10]
+[INFO] Reactor Summary for CardDemo Modernization 1.0.0-SNAPSHOT:
+[INFO] CardDemo Modernization ............................. SUCCESS [  0.269 s]
+[INFO] CardDemo Common .................................... SUCCESS [  2.918 s]
+[INFO] CardDemo Account Domain ............................ SUCCESS [  0.648 s]
+[INFO] CardDemo Account Service ........................... SUCCESS [ 12.656 s]
+[INFO] CardDemo Identity Service .......................... SUCCESS [ 13.252 s]
+[INFO] CardDemo Account Extract Batch ..................... SUCCESS [  7.771 s]
+[INFO] CardDemo Authorization Domain ...................... SUCCESS [  1.290 s]
+[INFO] CardDemo Authorization Service ..................... SUCCESS [ 26.096 s]
+[INFO] CardDemo Expired Authorization Purge Batch ......... SUCCESS [  8.471 s]
+[INFO] CardDemo Gateway ................................... SUCCESS [  0.282 s]
+[INFO] BUILD SUCCESS
+[INFO] Total time:  01:13 min

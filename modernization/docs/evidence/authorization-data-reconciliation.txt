@@ -1,0 +1,20 @@
+# python3 tools/reconcile_authorization_data.py --container - --host localhost <repo>
+# captured: 2026-09-17T15:29:58Z
+
+== EBCDIC (cp037) decode of AWS.M2.CARDDEMO.IMSDATA.DBPAUTP0.dat ==
+PAUTSUM0 roots decoded : 21
+PAUTDTL1 children      : 202
+known supplied-data defect (UCR-31): PAUTSUM0 record at offset 51508: not a packed decimal field: 404040404040
+
+== record counts loaded into PostgreSQL ==
+pending_auth_summary  source=  21 database=  21 OK
+pending_auth_detail   source= 202 database= 202 OK
+
+== parent/child fan-out per account ==
+accounts with children source=21 database=21 differing=0 OK
+
+== field level reconciliation ==
+summary fields compared=  231 failures=0 OK
+detail  fields compared= 3030 failures=0 OK
+
+RECONCILIATION PASSED

@@ -1,0 +1,8 @@
+apiVersion: v2
+name: carddemo
+description: >-
+  The converted CardDemo account management and user administration capability: the account service,
+  the identity service and the Spring Cloud Gateway in front of them.
+type: application
+version: 1.0.0
+appVersion: "1.0.0"

@@ -1,0 +1,153 @@
+:root {
+  font-family: 'IBM Plex Sans', system-ui, sans-serif;
+  color-scheme: light;
+}
+
+body {
+  margin: 0;
+  background: #f4f5f7;
+  color: #1c1c1c;
+}
+
+.screen {
+  max-width: 1080px;
+  margin: 0 auto;
+  padding: 1rem 1.5rem 3rem;
+}
+
+.screen__titles {
+  display: flex;
+  justify-content: space-between;
+  font-weight: 600;
+  border-bottom: 1px solid #c9ced6;
+  padding-bottom: 0.25rem;
+}
+
+.screen__transaction {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.85rem;
+  color: #50565f;
+}
+
+nav.screen__nav {
+  display: flex;
+  gap: 0.5rem;
+  margin: 1rem 0;
+}
+
+fieldset {
+  border: 1px solid #c9ced6;
+  border-radius: 4px;
+  margin: 0 0 1rem;
+  padding: 0.75rem 1rem 1rem;
+}
+
+legend {
+  font-weight: 600;
+  padding: 0 0.35rem;
+}
+
+.field {
+  display: grid;
+  grid-template-columns: 15rem 1fr;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.4rem;
+}
+
+.field__group {
+  display: flex;
+  gap: 0.35rem;
+  align-items: center;
+}
+
+input {
+  font-family: 'IBM Plex Mono', ui-monospace, monospace;
+  padding: 0.3rem 0.4rem;
+  border: 1px solid #949aa3;
+  border-radius: 3px;
+  background: #fff;
+}
+
+input[readonly] {
+  background: #eceef1;
+  color: #3d4249;
+}
+
+input[aria-invalid='true'] {
+  border-color: #b3261e;
+  background: #fdecea;
+}
+
+.message {
+  margin: 0.75rem 0;
+  padding: 0.5rem 0.75rem;
+  border-radius: 3px;
+  font-family: 'IBM Plex Mono', ui-monospace, monospace;
+}
+
+.message--info {
+  background: #e6f0ff;
+  border: 1px solid #9dbdf0;
+}
+
+.message--error {
+  background: #fdecea;
+  border: 1px solid #e2a19b;
+}
+
+button {
+  padding: 0.4rem 0.9rem;
+  border: 1px solid #4b5563;
+  border-radius: 3px;
+  background: #fff;
+  cursor: pointer;
+}
+
+button[disabled] {
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+
+button.primary {
+  background: #1c4f9c;
+  border-color: #1c4f9c;
+  color: #fff;
+}
+
+table.details {
+  border-collapse: collapse;
+  width: 100%;
+}
+
+table.details th,
+table.details td {
+  text-align: left;
+  padding: 0.25rem 0.5rem;
+  border-bottom: 1px solid #e2e5e9;
+  font-family: 'IBM Plex Mono', ui-monospace, monospace;
+}
+
+table.details th {
+  width: 15rem;
+  font-family: inherit;
+  font-weight: 500;
+}
+
+/* The header block of the authorization maps: label/value pairs in two columns. */
+.summary {
+  display: grid;
+  grid-template-columns: max-content 1fr;
+  gap: 0.2rem 0.75rem;
+  margin: 0.75rem 0;
+  font-family: 'IBM Plex Mono', ui-monospace, monospace;
+}
+
+.summary dt {
+  color: #3d4249;
+}
+
+.summary dd {
+  margin: 0;
+}

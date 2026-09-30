@@ -1,0 +1,569 @@
+openapi: 3.1.0
+info:
+  title: CardDemo Identity and User Administration
+  version: 1.0.0
+  description: >-
+    REST contract of the identity service, the owner of the converted USRSEC cluster. Operations
+    replace CICS transactions CC00 (program COSGN00C), CAAD (program COADM01C) and the four user
+    administration transactions CU00, CU01, CU02 and CU03 (programs COUSR00C, COUSR01C, COUSR02C and
+    COUSR03C). The terminal transport, the COMMAREA and the PF keys are modernized away; the field
+    edits, the browse order, the messages and the routing are preserved.
+
+
+    Sign-on replaces the COMMAREA fields CDEMO-USER-ID and CDEMO-USER-TYPE with a bearer token
+    carrying the same two values, and the user administration operations require the administrator
+    type because COSGN00C only routed SEC-USR-TYPE 'A' to the menu that reaches them.
+
+
+    Who asks for the password decides which operations exist. With `carddemo.security.mode=keycloak`,
+    the default, the Keycloak realm asks for it and for a one-time code, the token is issued by the
+    realm, POST /api/signon is not mapped at all, and GET /api/me reports the USRSEC row and the
+    routing decision for the user the presented token names. With `carddemo.security.mode=legacy`,
+    kept for parity evidence only, POST /api/signon reads USRSEC itself and issues the token, as the
+    release before this one did.
+
+
+    The stored password is the clear text SEC-USR-PWD of the source file, kept as it was for
+    behavioural parity; replacing it with a hash is a business decision recorded in the risk
+    register, not a conversion detail. In the default mode it is no longer what a sign-on compares
+    against: the realm holds the credential, and the column is read only by the legacy mode.
+  license:
+    name: Apache-2.0
+    identifier: Apache-2.0
+servers:
+  - url: http://localhost:8090
+    description: API gateway
+  - url: http://localhost:8081
+    description: Identity service, addressed directly
+security:
+  - bearerAuth: []
+tags:
+  - name: Sign-on
+    description: CICS transaction CC00 - program COSGN00C
+  - name: Admin Menu
+    description: CICS transaction CAAD - program COADM01C and table app/cpy/COADM02Y.cpy
+  - name: User Administration
+    description: Programs COUSR00C, COUSR01C, COUSR02C and COUSR03C
+paths:
+  /api/me:
+    get:
+      tags: [Sign-on]
+      operationId: currentUser
+      summary: The signed-on user of the presented token
+      description: >-
+        What COSGN00C left in the COMMAREA, for a caller the realm signed on. The user id is taken
+        from the verified token's `preferred_username`, uppercased into the eight byte key of USRSEC,
+        and never from the request; the USRSEC row read with it decides `nextScreen` exactly as
+        PROCESS-ENTER-KEY did, COADM01C for SEC-USR-TYPE 'A' and COMEN01C for every other type.
+      responses:
+        '200':
+          description: The signed-on user and the next screen
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CurrentUserResponse'
+        '401':
+          $ref: '#/components/responses/Unauthenticated'
+        '404':
+          description: >-
+            The realm knows the user but USRSEC has no row for it, which a provisioning failure or a
+            reconciliation still to run can leave behind
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          $ref: '#/components/responses/InternalError'
+  /api/signon:
+    post:
+      tags: [Sign-on]
+      operationId: signOn
+      summary: Sign on with a user id and password (legacy mode only)
+      security: []
+      description: >-
+        COSGN00C paragraphs PROCESS-ENTER-KEY and READ-USER-SEC-FILE. Both values are uppercased
+        before the read and the comparison, the user id is the eight byte key of USRSEC, and the
+        response says which screen the source would have transferred to: COADM01C for SEC-USR-TYPE
+        'A', COMEN01C for every other type.
+
+
+        Mapped only when `carddemo.security.mode=legacy`. In the default keycloak mode the operation
+        does not exist and the realm's authorization endpoint takes its place; a caller reaches it
+        there and reports itself through GET /api/me.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SignOnRequest'
+      responses:
+        '200':
+          description: The signed-on user, the next screen and the bearer token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SignOnResponse'
+        '400':
+          description: >-
+            A required field was left blank - "Please enter User ID ..." or
+            "Please enter Password ..."
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: >-
+            "User not found. Try again ..." or "Wrong Password. Try again ..."
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          $ref: '#/components/responses/InternalError'
+  /api/admin-menu:
+    get:
+      tags: [Admin Menu]
+      operationId: adminMenu
+      summary: The six options of the administrator menu
+      description: The option table of app/cpy/COADM02Y.cpy as COADM01C displays it.
+      responses:
+        '200':
+          description: The option list in table order
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/MenuOptionResponse'
+        '401':
+          $ref: '#/components/responses/Unauthenticated'
+        '403':
+          $ref: '#/components/responses/NotAnAdministrator'
+  /api/admin-menu/selection:
+    get:
+      tags: [Admin Menu]
+      operationId: selectAdminMenuOption
+      summary: Resolve a keyed option to the program it transfers to
+      description: >-
+        COADM01C paragraph PROCESS-ENTER-KEY. A non-numeric, zero or out of range option is refused
+        with "Please enter a valid option number...".
+      parameters:
+        - name: option
+          in: query
+          required: true
+          description: The option exactly as keyed, because a non-numeric value is a distinct input.
+          schema:
+            type: string
+      responses:
+        '200':
+          description: The selected option
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MenuOptionResponse'
+        '400':
+          $ref: '#/components/responses/ValidationError'
+        '401':
+          $ref: '#/components/responses/Unauthenticated'
+        '403':
+          $ref: '#/components/responses/NotAnAdministrator'
+  /api/users:
+    get:
+      tags: [User Administration]
+      operationId: listUsers
+      summary: One page of the user list
+      description: >-
+        COUSR00C paragraphs PROCESS-PF7-KEY, PROCESS-PF8-KEY and POPULATE-USER-DATA. The browse is
+        keyed, not offset based: FIRST starts at or after the keyed user id (STARTBR plus READNEXT),
+        NEXT reads forward from the last id shown (PF8) and PREVIOUS reads backwards from the first
+        id shown (PF7). A page holds ten rows, as the map does, and the boundary messages of the
+        source are returned in the message field.
+      parameters:
+        - name: direction
+          in: query
+          required: false
+          schema:
+            $ref: '#/components/schemas/BrowseDirection'
+        - name: userId
+          in: query
+          required: false
+          description: >-
+            For FIRST the filter as keyed, for NEXT the last id shown and for PREVIOUS the first id
+            shown.
+          schema:
+            type: string
+            maxLength: 8
+        - name: pageNumber
+          in: query
+          required: false
+          description: The page currently displayed, which the map kept in CDEMO-CU00-PAGE-NUM.
+          schema:
+            type: integer
+            default: 0
+      responses:
+        '200':
+          description: The page, its boundary flags and the message the map would show
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserListResponse'
+        '401':
+          $ref: '#/components/responses/Unauthenticated'
+        '403':
+          $ref: '#/components/responses/NotAnAdministrator'
+        '500':
+          $ref: '#/components/responses/InternalError'
+    post:
+      tags: [User Administration]
+      operationId: addUser
+      summary: Add a user
+      description: >-
+        COUSR01C paragraphs PROCESS-ENTER-KEY and WRITE-USER-SEC-FILE. The five fields are required
+        in map order and a key that already exists is refused with "User ID already exist...".
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserAddForm'
+      responses:
+        '201':
+          description: '"User <id> has been added ..."'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserActionResponse'
+        '400':
+          $ref: '#/components/responses/ValidationError'
+        '401':
+          $ref: '#/components/responses/Unauthenticated'
+        '403':
+          $ref: '#/components/responses/NotAnAdministrator'
+        '409':
+          description: '"User ID already exist..."'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          $ref: '#/components/responses/InternalError'
+  /api/users/{userId}:
+    parameters:
+      - $ref: '#/components/parameters/UserIdPath'
+    get:
+      tags: [User Administration]
+      operationId: getUser
+      summary: Read a user record
+      description: >-
+        The READ-USER-SEC-FILE of COUSR02C and COUSR03C, which loads the stored values into the map
+        before anything is changed or deleted.
+      responses:
+        '200':
+          description: The stored record with its fixed width padding removed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserDetail'
+        '400':
+          $ref: '#/components/responses/ValidationError'
+        '401':
+          $ref: '#/components/responses/Unauthenticated'
+        '403':
+          $ref: '#/components/responses/NotAnAdministrator'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalError'
+    put:
+      tags: [User Administration]
+      operationId: updateUser
+      summary: Update a user
+      description: >-
+        COUSR02C paragraphs PROCESS-ENTER-KEY and UPDATE-USER-INFO. The four editable fields are
+        required, and a submission in which none of them differs from the stored record is refused
+        with "Please modify to update ..." instead of being rewritten.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserUpdateForm'
+      responses:
+        '200':
+          description: '"User <id> has been updated ..."'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserActionResponse'
+        '400':
+          $ref: '#/components/responses/ValidationError'
+        '401':
+          $ref: '#/components/responses/Unauthenticated'
+        '403':
+          $ref: '#/components/responses/NotAnAdministrator'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalError'
+    delete:
+      tags: [User Administration]
+      operationId: deleteUser
+      summary: Delete a user
+      description: >-
+        COUSR03C paragraphs PROCESS-PF5-KEY and DELETE-USER-INFO. The record is read before it is
+        deleted, and a failure of the delete itself reports "Unable to Update User..." because that
+        is the literal the source moves on the DELETE error path.
+      responses:
+        '200':
+          description: '"User <id> has been deleted ..."'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserActionResponse'
+        '400':
+          $ref: '#/components/responses/ValidationError'
+        '401':
+          $ref: '#/components/responses/Unauthenticated'
+        '403':
+          $ref: '#/components/responses/NotAnAdministrator'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalError'
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: >-
+        An access token of the Keycloak realm, RS256-signed and verified against its JWKS, whose
+        `preferred_username` is SEC-USR-ID and whose realm role ADMIN or USER stands for SEC-USR-TYPE
+        'A' or 'U' - the two values COSGN00C left in the COMMAREA for every following screen. In
+        legacy mode it is instead the token POST /api/signon returns, whose subject carries the user
+        id and whose `userType` claim carries the type.
+  parameters:
+    UserIdPath:
+      name: userId
+      in: path
+      required: true
+      description: SEC-USR-ID, the eight byte key of the USRSEC cluster.
+      schema:
+        type: string
+        maxLength: 8
+  responses:
+    ValidationError:
+      description: An edit failed; the message is the text the source screen would show
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    Unauthenticated:
+      description: No token was presented, or the token is expired or not valid
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    NotAnAdministrator:
+      description: >-
+        The token carries a SEC-USR-TYPE other than 'A'. COSGN00C routed those users to COMEN01C,
+        which has no path to the user administration screens.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    NotFound:
+      description: '"User ID NOT found..."'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    InternalError:
+      description: >-
+        A file status other than '00', '10' or the duplicate key paths, which the source reported as
+        "Unable to verify the User ...", "Unable to Add User..." or "Unable to Update User...".
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+  schemas:
+    UserType:
+      type: string
+      description: SEC-USR-TYPE of app/cpy/CSUSR01Y.cpy - A = administrator, U = regular user
+      examples: ['A']
+    BrowseDirection:
+      type: string
+      description: >-
+        FIRST is the ENTER key on the filter, NEXT is PF8 and PREVIOUS is PF7.
+      enum: [FIRST, NEXT, PREVIOUS]
+      default: FIRST
+    SignOnRequest:
+      type: object
+      required: [userId, password]
+      properties:
+        userId:
+          type: string
+          description: Keyed as typed; it is uppercased before the read.
+          examples: ['ADMIN001']
+        password:
+          type: string
+          description: Keyed as typed; it is uppercased and compared as an eight byte field.
+          examples: ['PASSWORD']
+    SignOnResponse:
+      type: object
+      properties:
+        userId:
+          type: string
+        firstName:
+          type: string
+        lastName:
+          type: string
+        userType:
+          $ref: '#/components/schemas/UserType'
+        nextScreen:
+          type: string
+          description: The program the source transferred to - COADM01C or COMEN01C
+          enum: [COADM01C, COMEN01C]
+        accessToken:
+          type: string
+        expiresInSeconds:
+          type: integer
+    CurrentUserResponse:
+      type: object
+      description: >-
+        The same values as SignOnResponse without a token: the caller already holds the realm's token,
+        and what it lacks is the USRSEC row behind it.
+      properties:
+        userId:
+          type: string
+        firstName:
+          type: string
+        lastName:
+          type: string
+        userType:
+          $ref: '#/components/schemas/UserType'
+        nextScreen:
+          type: string
+          description: The program the source transferred to - COADM01C or COMEN01C
+          enum: [COADM01C, COMEN01C]
+    MenuOptionResponse:
+      type: object
+      properties:
+        optionNumber:
+          type: integer
+        name:
+          type: string
+        program:
+          type: string
+          description: The program name in the option table
+    UserSummary:
+      type: object
+      description: One row of the COUSR00C map
+      properties:
+        userId:
+          type: string
+        firstName:
+          type: string
+        lastName:
+          type: string
+        userType:
+          $ref: '#/components/schemas/UserType'
+    UserListResponse:
+      type: object
+      properties:
+        users:
+          type: array
+          maxItems: 10
+          items:
+            $ref: '#/components/schemas/UserSummary'
+        firstUserId:
+          type: [string, 'null']
+          description: The key to send back as userId for a PF7 request
+        lastUserId:
+          type: [string, 'null']
+          description: The key to send back as userId for a PF8 request
+        pageNumber:
+          type: integer
+        nextPageAvailable:
+          type: boolean
+          description: CDEMO-CU00-NEXT-PAGE-FLG
+        message:
+          type: [string, 'null']
+          description: >-
+            The message the map would show - the top and bottom boundary texts, or
+            "No users found..." for an empty browse
+    UserDetail:
+      type: object
+      description: >-
+        The record as the update and delete maps show it. The password is the stored clear text
+        SEC-USR-PWD, which the source displayed on the map as well.
+      properties:
+        userId:
+          type: string
+        firstName:
+          type: string
+        lastName:
+          type: string
+        password:
+          type: string
+        userType:
+          $ref: '#/components/schemas/UserType'
+    UserAddForm:
+      type: object
+      required: [firstName, lastName, userId, password, userType]
+      properties:
+        firstName:
+          type: string
+          maxLength: 20
+        lastName:
+          type: string
+          maxLength: 20
+        userId:
+          type: string
+          maxLength: 8
+        password:
+          type: string
+          maxLength: 8
+        userType:
+          $ref: '#/components/schemas/UserType'
+    UserUpdateForm:
+      type: object
+      required: [firstName, lastName, password, userType]
+      description: The user id is the key and is taken from the path, as the map took it from the key field.
+      properties:
+        firstName:
+          type: string
+          maxLength: 20
+        lastName:
+          type: string
+          maxLength: 20
+        password:
+          type: string
+          maxLength: 8
+        userType:
+          $ref: '#/components/schemas/UserType'
+    UserActionResponse:
+      type: object
+      properties:
+        message:
+          type: string
+          description: The confirmation text of the source screen
+        user:
+          oneOf:
+            - $ref: '#/components/schemas/UserDetail'
+            - type: 'null'
+          description: The stored record after the change; null after a delete
+    ErrorResponse:
+      type: object
+      properties:
+        status:
+          type: string
+        message:
+          type: string
+          description: The text the source screen would show
+        fieldFlags:
+          type: object
+          description: The fields the map would highlight
+          additionalProperties:
+            type: string
+            enum: [VALID, BLANK, NOT_OK]

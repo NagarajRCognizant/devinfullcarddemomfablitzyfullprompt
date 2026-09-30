@@ -1,0 +1,27 @@
+
+> carddemo-e2e@1.0.0 test
+> playwright test
+
+
+Running 10 tests using 1 worker
+
+  ✓  1 journeys.spec.ts:10:3 › journeys with a realm-issued token › an administrator lists the users of USRSEC (825ms)
+  ✓  2 journeys.spec.ts:20:3 › journeys with a realm-issued token › an administrator adds a user, which the realm is given one too (25.1s)
+  ✓  3 journeys.spec.ts:55:3 › journeys with a realm-issued token › a regular user views an account (885ms)
+  ✓  4 journeys.spec.ts:67:3 › journeys with a realm-issued token › a regular user cannot reach the user administration (28.3s)
+  ✓  5 signon.spec.ts:21:3 › sign-on through the realm › an administrator reaches the admin menu after both factors (728ms)
+  ✓  6 signon.spec.ts:28:3 › sign-on through the realm › a regular user reaches the main menu and not the admin one (29.2s)
+  ✓  7 signon.spec.ts:35:3 › sign-on through the realm › the sign-on page has no password field of its own (197ms)
+  ✓  8 signon.spec.ts:47:3 › sign-on through the realm › a user without an authenticator has to enrol one before reaching a screen (885ms)
+  ✓  9 signon.spec.ts:73:3 › sign-on through the realm › wrong codes are refused and in the end lock the account out (1.5s)
+  ✓  10 signon.spec.ts:111:3 › sign-on through the realm › the session survives a reload and signing off ends it at the realm (1.0s)
+
+  Slow test file: journeys.spec.ts (55.1s)
+  Slow test file: signon.spec.ts (33.6s)
+  Consider splitting slow test files to speed up parallel execution
+  10 passed (1.5m)
+
+To open last HTML report run:
+
+  npx playwright show-report
+

@@ -1,0 +1,17 @@
+# Redocly lint configuration for the service contracts.
+#
+# The disabled rule is a consequence of the local scope of this build: the only servers the contracts
+# describe are the gateway and the services on the developer's own machine.
+extends:
+  - recommended
+rules:
+  no-server-example.com: off
+apis:
+  account-management:
+    root: account-service/src/main/resources/openapi/openapi.yaml
+  identity:
+    root: identity-service/src/main/resources/openapi/openapi.yaml
+  authorization:
+    root: authorization-service/src/main/resources/openapi/openapi.yaml
+  transactions:
+    root: transaction-service/src/main/resources/openapi/openapi.yaml

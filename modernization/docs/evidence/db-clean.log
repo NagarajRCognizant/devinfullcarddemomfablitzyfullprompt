@@ -1,0 +1,5 @@
+== drop and recreate both service databases ==
+DROP DATABASE
+CREATE DATABASE
+DROP DATABASE
+CREATE DATABASE

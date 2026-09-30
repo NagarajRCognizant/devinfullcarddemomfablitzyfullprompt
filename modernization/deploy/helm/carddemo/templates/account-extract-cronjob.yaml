@@ -1,0 +1,56 @@
+{{- if .Values.accountExtract.enabled }}
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: {{ include "carddemo.fullname" . }}-account-extract
+  labels:
+    {{- include "carddemo.labels" . | nindent 4 }}
+    app.kubernetes.io/component: account-extract
+spec:
+  # CBACT01C, run by the READACCT job: a scheduled batch step, so it is a CronJob rather than a
+  # deployment, and it runs to completion exactly as the job step did.
+  schedule: {{ .Values.accountExtract.schedule | quote }}
+  concurrencyPolicy: Forbid
+  successfulJobsHistoryLimit: 3
+  failedJobsHistoryLimit: 3
+  jobTemplate:
+    spec:
+      backoffLimit: 0
+      template:
+        metadata:
+          labels:
+            {{- include "carddemo.labels" . | nindent 12 }}
+            app.kubernetes.io/component: account-extract
+        spec:
+          restartPolicy: Never
+          containers:
+            - name: account-extract
+              image: {{ include "carddemo.image" (dict "root" . "component" .Values.accountExtract) }}
+              imagePullPolicy: {{ .Values.image.pullPolicy }}
+              env:
+                - name: {{ .Values.accountService.datasource.urlVariable }}
+                  value: {{ .Values.accountService.datasource.url | quote }}
+                - name: {{ .Values.accountService.datasource.userVariable }}
+                  valueFrom:
+                    secretKeyRef:
+                      name: {{ .Values.accountService.datasource.existingSecret }}
+                      key: {{ .Values.accountService.datasource.usernameKey }}
+                - name: {{ .Values.accountService.datasource.passwordVariable }}
+                  valueFrom:
+                    secretKeyRef:
+                      name: {{ .Values.accountService.datasource.existingSecret }}
+                      key: {{ .Values.accountService.datasource.passwordKey }}
+                - name: CARDDEMO_BATCH_READACCT_OUTPUT_DIRECTORY
+                  value: {{ .Values.accountExtract.outputDirectory | quote }}
+              volumeMounts:
+                - name: extracts
+                  mountPath: {{ .Values.accountExtract.outputDirectory }}
+          volumes:
+            - name: extracts
+              {{- if .Values.accountExtract.persistence.existingClaim }}
+              persistentVolumeClaim:
+                claimName: {{ .Values.accountExtract.persistence.existingClaim }}
+              {{- else }}
+              emptyDir: {}
+              {{- end }}
+{{- end }}

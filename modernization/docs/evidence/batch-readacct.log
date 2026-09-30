@@ -1,0 +1,33 @@
+
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+
+ :: Spring Boot ::                (v3.3.4)
+
+2026-09-17T07:44:44.078Z  INFO 29219 --- [carddemo-batch-account-extract] [           main] c.c.AccountExtractBatchApplication       : Starting AccountExtractBatchApplication v1.0.0-SNAPSHOT using Java 21.0.12 with PID 29219 (/home/ubuntu/repos/Aws-Card-Demo2/modernization/batch-account-extract/target/carddemo-batch-account-extract.jar started by ubuntu in /home/ubuntu/repos/Aws-Card-Demo2/modernization)
+2026-09-17T07:44:44.080Z  INFO 29219 --- [carddemo-batch-account-extract] [           main] c.c.AccountExtractBatchApplication       : No active profile set, falling back to 1 default profile: "default"
+2026-09-17T07:44:44.430Z  INFO 29219 --- [carddemo-batch-account-extract] [           main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2026-09-17T07:44:44.474Z  INFO 29219 --- [carddemo-batch-account-extract] [           main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 38 ms. Found 3 JPA repository interfaces.
+2026-09-17T07:44:44.720Z  INFO 29219 --- [carddemo-batch-account-extract] [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2026-09-17T07:44:45.023Z  INFO 29219 --- [carddemo-batch-account-extract] [           main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection org.postgresql.jdbc.PgConnection@7c112f5f
+2026-09-17T07:44:45.025Z  INFO 29219 --- [carddemo-batch-account-extract] [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2026-09-17T07:44:45.090Z  INFO 29219 --- [carddemo-batch-account-extract] [           main] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2026-09-17T07:44:45.127Z  INFO 29219 --- [carddemo-batch-account-extract] [           main] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.5.3.Final
+2026-09-17T07:44:45.157Z  INFO 29219 --- [carddemo-batch-account-extract] [           main] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
+2026-09-17T07:44:45.389Z  INFO 29219 --- [carddemo-batch-account-extract] [           main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2026-09-17T07:44:46.040Z  INFO 29219 --- [carddemo-batch-account-extract] [           main] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2026-09-17T07:44:46.074Z  INFO 29219 --- [carddemo-batch-account-extract] [           main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2026-09-17T07:44:46.352Z  INFO 29219 --- [carddemo-batch-account-extract] [           main] o.s.d.j.r.query.QueryEnhancerFactory     : Hibernate is in classpath; If applicable, HQL parser will be used.
+2026-09-17T07:44:46.713Z  INFO 29219 --- [carddemo-batch-account-extract] [           main] c.c.AccountExtractBatchApplication       : Started AccountExtractBatchApplication in 2.965 seconds (process running for 3.33)
+2026-09-17T07:44:46.715Z  INFO 29219 --- [carddemo-batch-account-extract] [           main] o.s.b.a.b.JobLauncherApplicationRunner   : Running default command line with: [run.id=1789631083]
+2026-09-17T07:44:46.765Z  INFO 29219 --- [carddemo-batch-account-extract] [           main] o.s.b.c.l.support.SimpleJobLauncher      : Job: [SimpleJob: [name=readAcctJob]] launched with the following parameters: [{'run.id':'{value=1789631083, type=class java.lang.String, identifying=true}'}]
+2026-09-17T07:44:46.783Z  INFO 29219 --- [carddemo-batch-account-extract] [           main] o.s.batch.core.job.SimpleStepHandler     : Executing step: [readAcctStep]
+2026-09-17T07:44:46.885Z  INFO 29219 --- [carddemo-batch-account-extract] [           main] o.s.batch.core.step.AbstractStep         : Step: [readAcctStep] executed in 101ms
+2026-09-17T07:44:46.891Z  INFO 29219 --- [carddemo-batch-account-extract] [           main] o.s.b.c.l.support.SimpleJobLauncher      : Job: [SimpleJob: [name=readAcctJob]] completed with the following parameters: [{'run.id':'{value=1789631083, type=class java.lang.String, identifying=true}'}] and the following status: [COMPLETED] in 116ms
+2026-09-17T07:44:46.895Z  INFO 29219 --- [carddemo-batch-account-extract] [ionShutdownHook] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
+2026-09-17T07:44:46.896Z  INFO 29219 --- [carddemo-batch-account-extract] [ionShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
+2026-09-17T07:44:46.905Z  INFO 29219 --- [carddemo-batch-account-extract] [ionShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.

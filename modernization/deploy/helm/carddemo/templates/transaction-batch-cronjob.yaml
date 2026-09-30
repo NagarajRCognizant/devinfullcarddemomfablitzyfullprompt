@@ -1,0 +1,79 @@
+{{- if .Values.transactionBatch.enabled }}
+{{- $root := . }}
+{{- range $name, $job := .Values.transactionBatch.jobs }}
+{{- if $job.enabled }}
+---
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: {{ include "carddemo.fullname" $root }}-transaction-{{ $name | kebabcase }}
+  labels:
+    {{- include "carddemo.labels" $root | nindent 4 }}
+    app.kubernetes.io/component: transaction-batch
+spec:
+  # One CronJob per converted job step, submitted by name exactly as its JCL job was, and run to
+  # completion rather than kept alive.
+  schedule: {{ $job.schedule | quote }}
+  concurrencyPolicy: Forbid
+  successfulJobsHistoryLimit: 3
+  failedJobsHistoryLimit: 3
+  jobTemplate:
+    spec:
+      backoffLimit: 0
+      template:
+        metadata:
+          labels:
+            {{- include "carddemo.labels" $root | nindent 12 }}
+            app.kubernetes.io/component: transaction-batch
+        spec:
+          restartPolicy: Never
+          containers:
+            - name: transaction-batch
+              image: {{ include "carddemo.image" (dict "root" $root "component" $root.Values.transactionBatch) }}
+              imagePullPolicy: {{ $root.Values.image.pullPolicy }}
+              args:
+                - --spring.batch.job.enabled=true
+                - --spring.batch.job.name={{ $job.jobName }}
+              env:
+                - name: {{ $root.Values.transactionService.datasource.urlVariable }}
+                  value: {{ $root.Values.transactionService.datasource.url | quote }}
+                - name: {{ $root.Values.transactionService.datasource.userVariable }}
+                  valueFrom:
+                    secretKeyRef:
+                      name: {{ $root.Values.transactionService.datasource.existingSecret }}
+                      key: {{ $root.Values.transactionService.datasource.usernameKey }}
+                - name: {{ $root.Values.transactionService.datasource.passwordVariable }}
+                  valueFrom:
+                    secretKeyRef:
+                      name: {{ $root.Values.transactionService.datasource.existingSecret }}
+                      key: {{ $root.Values.transactionService.datasource.passwordKey }}
+                # The account balances the posting and interest steps update belong to the account
+                # context, so they are reached over its API.
+                - name: CARDDEMO_ACCOUNT_SERVICE_URL
+                  value: http://{{ include "carddemo.fullname" $root }}-account-service:{{ $root.Values.accountService.port }}
+                - name: CARDDEMO_BATCH_INPUT_DIR
+                  value: {{ $root.Values.transactionBatch.inputDirectory | quote }}
+                - name: CARDDEMO_BATCH_OUTPUT_DIR
+                  value: {{ $root.Values.transactionBatch.outputDirectory | quote }}
+                {{- include "carddemo.realmEnv" $root | nindent 16 }}
+                - name: KEYCLOAK_CLIENT_ID
+                  value: {{ $root.Values.transactionService.keycloakClient.clientId | quote }}
+                - name: KEYCLOAK_CLIENT_SECRET
+                  valueFrom:
+                    secretKeyRef:
+                      name: {{ $root.Values.transactionService.keycloakClient.existingSecret }}
+                      key: {{ $root.Values.transactionService.keycloakClient.secretKey }}
+              volumeMounts:
+                - name: transaction-output
+                  mountPath: {{ $root.Values.transactionBatch.outputDirectory }}
+          volumes:
+            - name: transaction-output
+              {{- if $root.Values.transactionBatch.persistence.existingClaim }}
+              persistentVolumeClaim:
+                claimName: {{ $root.Values.transactionBatch.persistence.existingClaim }}
+              {{- else }}
+              emptyDir: {}
+              {{- end }}
+{{- end }}
+{{- end }}
+{{- end }}
